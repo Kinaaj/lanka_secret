@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lanka 2027</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Orbitron:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <main class="container" id="mainContainer">
+    <!-- Vlevo: Modrá plocha s bleskovou hranou, linkou a stínem -->
+    <section class="section blue-section" id="blueSection">
+      <div class="blue-surface"></div>
+
+      <!-- Přesná linka kopírující bleskovou hranu -->
+      <svg class="lightning-edge-line blue-edge-line" viewBox="0 0 50 1000" preserveAspectRatio="none">
+        <path class="edge-stroke-line" d="M0,0 L50,180 L10,210 L45,460 L0,490 L50,750 L15,780 L40,1000" />
+      </svg>
+
+      <!-- Horní světlá tenká linka pro bleskové zuby na mobilu -->
+      <svg class="mobile-top-edge blue-top-stroke" viewBox="0 0 100 35" preserveAspectRatio="none">
+        <path class="edge-stroke-line" d="M0,5 L35,26 L42,10 L78,28 L100,5" />
+      </svg>
+
+
+      <!-- Fixní fotka kapitána bráchy (Koda) úplně vlevo -->
+      <img src="assets/images/koda.png" alt="Kapitán Modrého týmu - Koda" class="koda-photo" id="kodaPhoto">
+      <div class="team-koda-title">MODRÝ TÝM</div>
+    </section>
+
+    <!-- Uprostřed: Tmavě šedá plocha s Reality Hyper nadpisem -->
+    <section class="section grey-section">
+      <div class="content-wrapper">
+        <h1 class="main-title">LAN TURNAJ 2027</h1>
+        <div class="teams-versus-subtitle">
+          <span class="versus-blue">MODŘÍ</span>
+          <span class="versus-divider">VS</span>
+          <span class="versus-red">ČERVENÍ</span>
+        </div>
+
+        <!-- Odkaz na živý draft týmů -->
+        <div class="draft-top-link-wrapper">
+          <a href="draft.html" class="draft-portal-btn">
+            <span class="portal-badge">INTERAKTIVNÍ</span>
+            <span class="portal-text">DRAFT TÝMŮ V ARÉNĚ</span>
+            <span class="portal-arrow">➔</span>
+          </a>
+        </div>
+        <!-- Info: Kde a Kdy -->
+        <div class="event-meta-grid">
+          <div class="event-meta-card">
+            <span class="meta-card-label">KDE</span>
+            <span class="meta-card-value">U nás doma na Vrbici</span>
+          </div>
+          <div class="event-meta-card">
+            <span class="meta-card-label">KDY</span>
+            <span class="meta-card-value">??? (bude upřesněno)</span>
+          </div>
+        </div>
+
+        <!-- Odstavec s pravidly a šipkou dolů směřující na hry -->
+        <div class="rules-block">
+          <p class="rules-text">
+            Dva pětičlenné týmy, modří a červení, se utkají v 5 hrách. Hraje se formátem
+            <strong>Best of
+              5</strong> — vyhrává tým, který jako první vyhraje ve <strong>3 hrách</strong>.<br>Hry, ve kterých se
+            rozhodne:
+          </p>
+          <div class="down-arrow-container" aria-hidden="true">
+            <svg class="down-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 4v16m0 0l-6-6m6 6l6-6" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- 5 herních karet vedle sebe (bez nadpisu) -->
+        <div class="games-section">
+          <div class="games-row">
+            <!-- Hra 1: Counter-Strike 2 -->
+            <div class="game-card">
+              <div class="game-thumb-wrapper">
+                <img src="assets/images/cs_icon.jpg" alt="Counter-Strike 2" class="game-thumb cs-thumb">
+              </div>
+              <div class="game-title-bar">Counter-Strike 2</div>
+            </div>
+
+            <!-- Hra 2: League of Legends -->
+            <div class="game-card">
+              <div class="game-thumb-wrapper">
+                <img src="assets/images/lol_icon.webp" alt="League of Legends" class="game-thumb lol-thumb">
+              </div>
+              <div class="game-title-bar">League of Legends</div>
+            </div>
+
+            <!-- Hra 3: Wreckfest -->
+            <div class="game-card">
+              <div class="game-thumb-wrapper">
+                <img src="assets/images/wreckfest_icon.webp" alt="Wreckfest" class="game-thumb wreckfest-thumb">
+              </div>
+              <div class="game-title-bar">Wreckfest</div>
+            </div>
+
+            <!-- Hra 4: Warcraft III -->
+            <div class="game-card">
+              <div class="game-thumb-wrapper">
+                <img src="assets/images/wow_icon.jpg" alt="Warcraft III" class="game-thumb warcraft-thumb">
+              </div>
+              <div class="game-title-bar">Warcraft III</div>
+            </div>
+
+            <!-- Hra 5: Overwatch 2 -->
+            <div class="game-card">
+              <div class="game-thumb-wrapper">
+                <img src="assets/images/overwatch-2_logo.jpg" alt="Overwatch 2" class="game-thumb overwatch-thumb">
+              </div>
+              <div class="game-title-bar">Overwatch 2</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Přehledný seznam co s sebou -->
+        <div class="gear-section">
+          <h2 class="section-title">CO S SEBOU</h2>
+          <div class="gear-clean-list">
+            <div class="gear-clean-item">
+              <span class="gear-num-badge">1</span>
+              <div class="gear-item-text">
+                <strong class="gear-item-heading">PC</strong>
+                <span class="gear-item-sub">Herní PC / notebook + napájecí kabel</span>
+              </div>
+            </div>
+
+            <div class="gear-clean-item">
+              <span class="gear-num-badge">2</span>
+              <div class="gear-item-text">
+                <strong class="gear-item-heading">Monitor</strong>
+                <span class="gear-item-sub">Monitor s DisplayPort nebo HDMI kabelem</span>
+              </div>
+            </div>
+
+            <div class="gear-clean-item">
+              <span class="gear-num-badge">3</span>
+              <div class="gear-item-text">
+                <strong class="gear-item-heading">Periferie</strong>
+                <span class="gear-item-sub">Klávesnice, myš, sluchátka a podložka</span>
+              </div>
+            </div>
+
+            <div class="gear-clean-item">
+              <span class="gear-num-badge">4</span>
+              <div class="gear-item-text">
+                <strong class="gear-item-heading">Pití & Něco na zub</strong>
+                <span class="gear-item-sub">Vezmi si vlastní pití a snacky, oběd zařídíme a na večeři objednáme
+                  pizzu!</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Závěrečná výzva s šipkami do stran -->
+        <div class="team-choice-banner">
+          <div class="choice-arrow arrow-blue" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M19 12H5m0 0l7 7m-7-7l7-7" />
+            </svg>
+          </div>
+          <h2 class="team-choice-title">DO KTERÉHO TÝMU SE PŘIDÁŠ?</h2>
+          <div class="choice-arrow arrow-red" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M5 12h14m0 0l-7-7m7 7l-7 7" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Tlačítko pro spuštění draftu -->
+        <div class="draft-cta-block">
+          <a href="draft.html" class="draft-main-action-btn">
+            <span>VSTOUPIT DO DRAFTING ARÉNY</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M5 12h14m0 0l-7-7m7 7l-7 7" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vpravo: Červená plocha s bleskovou hranou, linkou a stínem -->
+    <section class="section red-section" id="redSection">
+      <div class="red-surface"></div>
+
+      <!-- Přesná linka kopírující bleskovou hranu -->
+      <svg class="lightning-edge-line red-edge-line" viewBox="0 0 55 1000" preserveAspectRatio="none">
+        <path class="edge-stroke-line"
+          d="M15,0 L50,140 L20,160 L55,360 L25,390 L50,600 L12,630 L55,830 L25,860 L40,1000" />
+      </svg>
+
+      <!-- Horní světlá tenká linka pro bleskové zuby na mobilu -->
+      <svg class="mobile-top-edge red-top-stroke" viewBox="0 0 100 35" preserveAspectRatio="none">
+        <path class="edge-stroke-line" d="M0,5 L35,28 L42,10 L78,26 L100,5" />
+      </svg>
+
+      <!-- Fixní fotka kapitána (Kinaj) úplně vpravo -->
+      <img src="assets/images/kinaj.png" alt="Kapitán Červeného týmu - Kinaj" class="kinaj-photo" id="kinajPhoto">
+      <div class="team-kinaj-title">ČERVENÝ TÝM</div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

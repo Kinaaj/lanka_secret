@@ -1,0 +1,1306 @@
+@font-face {
+  font-family: 'Reality Hyper';
+  font-style: normal;
+  font-weight: 400;
+  src: url('assets/fonts/RealityHyper-Regular.woff') format('woff'),
+       url('https://fonts.cdnfonts.com/s/46141/Reality%20Hyper%20Regular.woff') format('woff');
+  font-display: swap;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  background-color: #1a1c22;
+  color: #e5e7eb;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hlavní kontejner */
+.container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #1a1c22;
+  align-items: stretch;
+  position: relative;
+}
+
+/* ==========================================================================
+   1. VLEVO: MODRÁ PLOCHA
+   Normálně: stín doprava = leží opticky NAD středem.
+   Při najetí: sytá modrá + hluboký stín a modré halo doprava.
+   ========================================================================== */
+.blue-section {
+  flex: 1;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  align-self: flex-start;
+  z-index: 5;
+  margin-right: -60px;
+  cursor: default;
+  padding: 2.5rem 1.5rem;
+  filter: drop-shadow(8px 0 12px rgba(0, 0, 0, 0.7));
+  transition: filter 0.35s cubic-bezier(0.16, 1, 0.3, 1), z-index 0.35s ease;
+}
+
+/* Samotná modrá plocha oříznutá bleskem */
+.blue-surface {
+  position: absolute;
+  inset: 0;
+  background-color: #0e3d8c;
+  opacity: 0.45;
+  filter: grayscale(0.85) brightness(0.65);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  clip-path: polygon(
+    0% 0%,
+    calc(100% - 50px) 0%,
+    100% 18%,
+    calc(100% - 40px) 21%,
+    calc(100% - 5px) 46%,
+    calc(100% - 50px) 49%,
+    100% 75%,
+    calc(100% - 35px) 78%,
+    calc(100% - 10px) 100%,
+    0% 100%
+  );
+}
+
+/* Linka přesně kopírující bleskovou hranu vpravo */
+.blue-edge-line {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 7;
+  overflow: visible;
+}
+
+/* Společný styl bleskové linky */
+.lightning-edge-line {
+  display: block;
+}
+
+.mobile-top-edge {
+  display: none;
+}
+
+/* Modrá linka: decentní 2px azurová hrana ladící s materiálem */
+.blue-edge-line .edge-stroke-line {
+  stroke: rgba(148, 163, 184, 0.25);
+  stroke-width: 2;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  fill: none;
+  transition: stroke 0.4s ease;
+}
+
+/* Při najetí: vyzdvižení NAD střed a rozzáření modré hrany */
+.blue-section:hover,
+.container.active-blue .blue-section {
+  z-index: 10;
+  filter: drop-shadow(14px 0 20px rgba(0, 0, 0, 0.85)) drop-shadow(8px 0 14px rgba(19, 81, 216, 0.55));
+}
+
+.blue-section:hover .blue-surface,
+.container.active-blue .blue-surface {
+  background-color: #1351d8;
+  opacity: 1;
+  filter: grayscale(0) saturate(1.1) brightness(1);
+}
+
+.blue-section:hover .blue-edge-line .edge-stroke-line,
+.container.active-blue .blue-section .blue-edge-line .edge-stroke-line {
+  stroke: #93c5fd;
+  stroke-width: 2;
+  filter: none;
+}
+
+.blue-section:hover .team-label,
+.container.active-blue .team-label {
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   2. UPROSTŘED: TMAVĚ ŠEDÁ PLOCHA S REALITY HYPER NADPISEM
+   ========================================================================== */
+.grey-section {
+  flex: 1.5;
+  background-color: #1a1c22;
+  padding: 4.5rem 5rem;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.content-wrapper {
+  max-width: 700px;
+  width: 100%;
+}
+
+/* Reality Hyper nadpis nahoře uprostřed */
+.main-title {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 4.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 3px;
+  line-height: 1.05;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+/* Podnadpis: Modří vs Červení */
+.teams-versus-subtitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 2.2rem;
+}
+
+.versus-blue {
+  color: #9ca3af;
+  text-shadow: none;
+  transition: all 0.25s ease;
+}
+
+.versus-divider {
+  font-size: 0.95rem;
+  color: #6b7280;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.versus-red {
+  color: #9ca3af;
+  text-shadow: none;
+  transition: all 0.25s ease;
+}
+
+/* Zvýraznění textu MODŘÍ při najetí na modrou stranu (bez glow, čistá barva + zvětšení) */
+.container.active-blue .versus-blue {
+  color: #3b82f6;
+  text-shadow: none;
+  transform: scale(1.06);
+}
+
+/* Zvýraznění textu ČERVENÍ při najetí na červenou stranu (bez glow, čistá barva + zvětšení) */
+.container.active-red .versus-red {
+  color: #ef4444;
+  text-shadow: none;
+  transform: scale(1.06);
+}
+
+.lead-text {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #9ca3af;
+  text-align: center;
+  margin-bottom: 2.4rem;
+  max-width: 580px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Rychlé stat boxy ve 2D stylu */
+/* Horní info karty (KDE, KDY) */
+.event-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.event-meta-card {
+  background-color: #22252c;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 3px solid rgba(255, 255, 255, 0.15);
+  padding: 1.1rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.event-meta-card:nth-child(1) {
+  border-top-color: rgba(59, 130, 246, 0.25);
+}
+
+.event-meta-card:nth-child(2) {
+  border-top-color: rgba(239, 68, 68, 0.25);
+}
+
+/* Zvýraznění horní hrany karty KDE při najetí na modrou stranu */
+.container.active-blue .event-meta-card:nth-child(1) {
+  border-top-color: #3b82f6;
+  box-shadow: 0 -4px 14px rgba(59, 130, 246, 0.5);
+}
+
+.container.active-blue .event-meta-card:nth-child(1) .meta-card-label {
+  color: #60a5fa;
+}
+
+/* Zvýraznění horní hrany karty KDY při najetí na červenou stranu */
+.container.active-red .event-meta-card:nth-child(2) {
+  border-top-color: #ef4444;
+  box-shadow: 0 -4px 14px rgba(239, 68, 68, 0.5);
+}
+
+.container.active-red .event-meta-card:nth-child(2) .meta-card-label {
+  color: #f87171;
+}
+
+.meta-card-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #9ca3af;
+  margin-bottom: 0.35rem;
+}
+
+.meta-card-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.4px;
+}
+
+/* Blok s pravidly a šipkou dolů */
+.rules-block {
+  text-align: center;
+  margin-bottom: 1.8rem;
+}
+
+.rules-text {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #d1d5db;
+  max-width: 640px;
+  margin: 0 auto;
+  font-weight: 500;
+}
+
+.down-arrow-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.down-arrow-icon {
+  width: 28px;
+  height: 28px;
+  color: #9ca3af;
+  animation: bounceDown 1.8s infinite ease-in-out;
+}
+
+@keyframes bounceDown {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+    color: #60a5fa;
+  }
+}
+
+/* ==========================================================================
+   5 HERNÍCH KARET VEDLE SEBE (OBRÁZEK ÚPLNĚ DO KRAJŮ, BEZ HOVERU)
+   ========================================================================== */
+.games-section {
+  margin-bottom: 2.8rem;
+}
+
+.games-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.85rem;
+  align-items: stretch;
+}
+
+.game-card {
+  background-color: #22252c;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 6px;
+  overflow: hidden; /* Obrázek vyplňuje kartu úplně do krajů */
+  padding: 0; /* Žádný vnitřní okraj kolem obrázku */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  cursor: default;
+}
+
+/* Obal obrázku roztažený úplně ke krajům karty */
+.game-thumb-wrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background-color: #16181e;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* CS ikona posunutá opačně – úplně nahoru */
+.cs-thumb {
+  object-fit: cover;
+  object-position: center top;
+}
+
+/* LoL ikona jde plně do krajů */
+.lol-thumb {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Wreckfest ikona: mírně přiblížená a posunutá nahoru */
+.wreckfest-thumb {
+  object-fit: cover;
+  object-position: center 25%;
+  transform: scale(1.18);
+}
+
+/* Warcraft III ikona */
+.warcraft-thumb {
+  object-fit: contain;
+  background-color: #000000;
+  padding: 0.25rem;
+}
+
+/* Overwatch 2 ikona */
+.overwatch-thumb {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Placeholder pro neoznámené hry */
+.placeholder-thumb {
+  background-color: #191c24;
+}
+
+.mystery-q {
+  font-family: 'Reality Hyper', 'Chakra Petch', sans-serif;
+  font-size: 2.4rem;
+  color: #6b7280;
+  line-height: 1;
+}
+
+.unannounced-card {
+  border-style: dashed;
+  opacity: 0.75;
+}
+
+/* Spodní lišta s celým názvem hry */
+.game-title-bar {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+  line-height: 1.25;
+  min-height: 2.8rem;
+  padding: 0.5rem 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  word-break: break-word;
+  background-color: #22252c;
+}
+
+/* Sekce výbavy */
+.info-section {
+  margin-top: 1rem;
+}
+
+.section-title {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* 2D mřížka výbavy */
+/* Přehledný seznam co s sebou (žádné dlaždice) */
+.gear-clean-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.gear-clean-item {
+  background-color: #22252c;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.95rem 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  border-radius: 6px;
+  cursor: default;
+}
+
+.gear-num-badge {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #9ca3af;
+  min-width: 28px;
+}
+
+.gear-item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.gear-item-heading {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.2px;
+}
+
+.gear-item-sub {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+/* Call to action: DO KTERÉHO TÝMU SE PŘIDÁŠ? */
+.team-choice-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 3.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1.6rem 2rem;
+  background: linear-gradient(90deg, rgba(30, 58, 138, 0.25) 0%, rgba(26, 28, 34, 0.85) 50%, rgba(153, 27, 27, 0.25) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.team-choice-title {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-align: center;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
+  line-height: 1.2;
+}
+
+.choice-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.choice-arrow svg {
+  width: 38px;
+  height: 38px;
+}
+
+.arrow-blue {
+  color: #60a5fa;
+  animation: pulseLeft 1.6s infinite ease-in-out;
+}
+
+.arrow-red {
+  color: #f87171;
+  animation: pulseRight 1.6s infinite ease-in-out;
+}
+
+@keyframes pulseLeft {
+  0%, 100% {
+    transform: translateX(0);
+    filter: drop-shadow(0 0 2px rgba(96, 165, 250, 0.5));
+  }
+  50% {
+    transform: translateX(-6px);
+    filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.9));
+  }
+}
+
+@keyframes pulseRight {
+  0%, 100% {
+    transform: translateX(0);
+    filter: drop-shadow(0 0 2px rgba(248, 113, 113, 0.5));
+  }
+  50% {
+    transform: translateX(6px);
+    filter: drop-shadow(0 0 10px rgba(248, 113, 113, 0.9));
+  }
+}
+
+/* ==========================================================================
+   3. VPRAVO: ČERVENÁ PLOCHA
+   Normálně: stín doleva = leží opticky NAD středem.
+   Při najetí: sytá červená + hluboký stín a červené halo doleva.
+   ========================================================================== */
+.red-section {
+  flex: 1;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  align-self: flex-start;
+  z-index: 5;
+  margin-left: -60px;
+  cursor: default;
+  padding: 2.5rem 1.5rem;
+  filter: drop-shadow(-8px 0 12px rgba(0, 0, 0, 0.7));
+  transition: filter 0.35s cubic-bezier(0.16, 1, 0.3, 1), z-index 0.35s ease;
+}
+
+/* Samotná červená plocha oříznutá bleskem */
+.red-surface {
+  position: absolute;
+  inset: 0;
+  background-color: #8c1b24;
+  opacity: 0.45;
+  filter: grayscale(0.85) brightness(0.65);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  clip-path: polygon(
+    15px 0%,
+    50px 14%,
+    20px 16%,
+    55px 36%,
+    25px 39%,
+    50px 60%,
+    12px 63%,
+    55px 83%,
+    25px 86%,
+    40px 100%,
+    100% 100%,
+    100% 0%
+  );
+}
+
+/* Linka přesně kopírující bleskovou hranu vlevo */
+.red-edge-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 55px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 7;
+  overflow: visible;
+}
+
+/* Červená linka: decentní 2px korálová hrana ladící s materiálem */
+.red-edge-line .edge-stroke-line {
+  stroke: rgba(148, 163, 184, 0.25);
+  stroke-width: 2;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  fill: none;
+  transition: stroke 0.4s ease;
+}
+
+/* Při najetí: vyzdvižení NAD střed a rozzáření červené hrany */
+.red-section:hover,
+.container.active-red .red-section {
+  z-index: 10;
+  filter: drop-shadow(-14px 0 20px rgba(0, 0, 0, 0.85)) drop-shadow(-8px 0 14px rgba(198, 40, 40, 0.55));
+}
+
+.red-section:hover .red-surface,
+.container.active-red .red-surface {
+  background-color: #c62828;
+  opacity: 1;
+  filter: grayscale(0) saturate(1.1) brightness(1);
+}
+
+.red-section:hover .red-edge-line .edge-stroke-line,
+.container.active-red .red-section .red-edge-line .edge-stroke-line {
+  stroke: #fca5a5;
+  stroke-width: 2;
+  filter: none;
+}
+
+.red-section:hover .team-label,
+.container.active-red .team-label {
+  color: #ffffff;
+}
+
+/* Popisy v postranních pruzích */
+.team-label {
+  position: relative;
+  z-index: 6;
+  font-family: 'Reality Hyper', 'Chakra Petch', sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+  user-select: none;
+  transition: color 0.35s ease;
+}
+
+/* ==========================================================================
+   4. KAPITÁN MODRÉHO TÝMU: KODA (FIXNÍ, VLEVO S LEHKÝM OŘEZEM, 90VH)
+   ========================================================================== */
+.koda-photo {
+  position: absolute;
+  left: -20.5vh;
+  bottom: 0;
+  z-index: 10; /* Nad modrou plochou */
+  height: 90vh;
+  max-height: 90vh;
+  width: auto;
+  object-fit: contain;
+  object-position: bottom left;
+  opacity: 0.7; /* Lehce utlumená bez barvy v klidu */
+  pointer-events: auto;
+  cursor: default;
+  transform-origin: bottom left;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: grayscale(0.85) brightness(0.75) contrast(0.95)
+          drop-shadow(2px 0 10px rgba(0, 0, 0, 0.6));
+}
+
+/* Nápis Modrý tým v 1/3 výšky fotky */
+.team-koda-title {
+  position: absolute;
+  bottom: 28vh;
+  left: 2rem;
+  z-index: 12; /* Nad fotkou */
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 3.3rem;
+  font-weight: 800;
+  letter-spacing: 3.5px;
+  color: #94a3b8;
+  opacity: 0.65;
+  text-transform: uppercase;
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.95);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Zvýraznění Kody společně s modrou barvou */
+.blue-section:hover .koda-photo,
+.container.active-blue .koda-photo {
+  opacity: 1;
+  filter: grayscale(0)
+          drop-shadow(4px 0 20px rgba(0, 0, 0, 0.85))
+          drop-shadow(0 0 28px rgba(59, 130, 246, 0.95))
+          drop-shadow(0 0 55px rgba(37, 99, 235, 0.7))
+          brightness(1.1)
+          saturate(1.2);
+  transform: scale(1.03);
+}
+
+/* Rozzáření nápisu při aktivaci modré strany */
+.blue-section:hover .team-koda-title,
+.container.active-blue .team-koda-title {
+  color: #ffffff;
+  opacity: 1;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 1), 0 0 28px rgba(147, 197, 253, 0.95), 0 0 45px rgba(59, 130, 246, 0.85);
+  transform: translateX(4px) scale(1.02);
+}
+
+/* ==========================================================================
+   5. KAPITÁN ČERVENÉHO TÝMU: KINAJ (FIXNÍ, VPRAVO S LEHKÝM OŘEZEM, 90VH)
+   ========================================================================== */
+.kinaj-photo {
+  position: absolute;
+  right: -21vh;
+  bottom: 0;
+  z-index: 10; /* Nad červenou plochou */
+  height: 92vh;
+  max-height: 92vh;
+  width: auto;
+  object-fit: contain;
+  object-position: bottom right;
+  opacity: 0.7; /* Lehce utlumená bez barvy v klidu */
+  pointer-events: auto;
+  cursor: default;
+  transform-origin: bottom right;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: grayscale(0.85) brightness(0.75) contrast(0.95)
+          drop-shadow(-2px 0 10px rgba(0, 0, 0, 0.6));
+}
+
+/* Nápis Tým Kinaj v 1/3 výšky fotky */
+.team-kinaj-title {
+  position: absolute;
+  bottom: 28vh;
+  right: 2rem;
+  z-index: 12; /* Nad fotkou */
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 3.3rem;
+  font-weight: 800;
+  letter-spacing: 3.5px;
+  color: #94a3b8;
+  opacity: 0.65;
+  text-transform: uppercase;
+  text-align: right;
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.95);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Zvýraznění Kinaje společně s červenou barvou */
+.red-section:hover .kinaj-photo,
+.container.active-red .kinaj-photo {
+  opacity: 1;
+  filter: grayscale(0)
+          drop-shadow(-4px 0 20px rgba(0, 0, 0, 0.85))
+          drop-shadow(0 0 28px rgba(239, 68, 68, 0.95))
+          drop-shadow(0 0 55px rgba(220, 38, 38, 0.7))
+          brightness(1.05)
+          saturate(1.0);
+  transform: scale(1.03);
+}
+
+/* Rozzáření nápisu při aktivaci červené strany */
+.red-section:hover .team-kinaj-title,
+.container.active-red .team-kinaj-title {
+  color: #ffffff;
+  opacity: 1;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 1), 0 0 28px rgba(254, 202, 202, 0.95), 0 0 45px rgba(239, 68, 68, 0.85);
+  transform: translateX(-4px) scale(1.02);
+}
+
+@media (max-width: 900px) {
+  /* Přechod z 3 pevných desktopových sloupců do responzivního gridu */
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    min-height: 100vh;
+    height: auto;
+    overflow-x: hidden;
+  }
+
+  /* Hlavní obsah se roztáhne přes celou šířku nahoře */
+  .grey-section {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    padding: 2.5rem 1.2rem 2rem 1.2rem;
+    overflow-y: visible;
+    height: auto;
+  }
+
+  .content-wrapper {
+    max-width: 100%;
+  }
+
+  /* Responzivní hlavní nadpis */
+  .main-title {
+    font-size: clamp(2rem, 8.5vw, 2.9rem);
+    letter-spacing: 2px;
+    margin-bottom: 0.35rem;
+  }
+
+  .teams-versus-subtitle {
+    font-size: 1.15rem;
+    letter-spacing: 2px;
+    gap: 0.6rem;
+    margin-bottom: 1.8rem;
+  }
+
+  /* Info karty KDE a KDY */
+  .event-meta-grid {
+    gap: 0.75rem;
+    margin-bottom: 1.6rem;
+  }
+
+  .event-meta-card {
+    padding: 0.85rem 0.95rem;
+  }
+
+  .meta-card-label {
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+  }
+
+  .meta-card-value {
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+
+  /* Pravidla */
+  .rules-block {
+    margin-bottom: 1.5rem;
+  }
+
+  .rules-text {
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
+
+  .down-arrow-container {
+    margin-top: 0.75rem;
+  }
+
+  /* 5 herních karet: nahoře 3, dole 2 vycentrované */
+  .games-section {
+    margin-bottom: 2.2rem;
+  }
+
+  .games-row {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.55rem;
+  }
+
+  .game-card:nth-child(1) { grid-column: span 2; }
+  .game-card:nth-child(2) { grid-column: span 2; }
+  .game-card:nth-child(3) { grid-column: span 2; }
+  .game-card:nth-child(4) { grid-column: 2 / span 2; }
+  .game-card:nth-child(5) { grid-column: 4 / span 2; }
+
+  .game-title-bar {
+    font-size: 0.72rem;
+    padding: 0.35rem 0.2rem;
+    min-height: 2.4rem;
+    line-height: 1.2;
+  }
+
+  /* Seznam Co s sebou */
+  .gear-clean-list {
+    gap: 0.65rem;
+  }
+
+  .gear-clean-item {
+    padding: 0.75rem 0.9rem;
+    gap: 0.85rem;
+  }
+
+  .gear-num-badge {
+    font-size: 1.05rem;
+    min-width: 22px;
+  }
+
+  .gear-item-heading {
+    font-size: 0.95rem;
+  }
+
+  .gear-item-sub {
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
+  /* Výzva k volbě týmu */
+  .team-choice-banner {
+    gap: 0.6rem;
+    padding: 1.1rem 0.8rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .team-choice-title {
+    font-size: clamp(1.15rem, 4.8vw, 1.45rem);
+    letter-spacing: 1px;
+  }
+
+  .choice-arrow {
+    width: 32px;
+    height: 32px;
+  }
+
+  .choice-arrow svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  /* Na mobilu šipky směřují dolů k týmům */
+  .arrow-blue {
+    animation: pulseDownBlue 1.6s infinite ease-in-out;
+  }
+
+  .arrow-red {
+    animation: pulseDownRed 1.6s infinite ease-in-out;
+  }
+
+  .arrow-blue svg {
+    transform: rotate(-90deg);
+  }
+
+  .arrow-red svg {
+    transform: rotate(90deg);
+  }
+
+  @keyframes pulseDownBlue {
+    0%, 100% {
+      transform: translateY(0);
+      filter: drop-shadow(0 0 2px rgba(96, 165, 250, 0.5));
+    }
+    50% {
+      transform: translateY(5px);
+      filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.9));
+    }
+  }
+
+  @keyframes pulseDownRed {
+    0%, 100% {
+      transform: translateY(0);
+      filter: drop-shadow(0 0 2px rgba(248, 113, 113, 0.5));
+    }
+    50% {
+      transform: translateY(5px);
+      filter: drop-shadow(0 0 10px rgba(248, 113, 113, 0.9));
+    }
+  }
+
+  /* Na mobilu jsou barvy zobrazené trvale */
+  .versus-blue {
+    color: #60a5fa;
+  }
+
+  .versus-red {
+    color: #f87171;
+  }
+
+  .event-meta-card:nth-child(1) {
+    border-top-color: #3b82f6;
+  }
+
+  .event-meta-card:nth-child(2) {
+    border-top-color: #ef4444;
+  }
+
+  /* Týmové bloky s kapitány: vedle sebe jako souboj dole pod obsahem, trvale v barvách, nenaklikávatelné */
+  .blue-section {
+    grid-column: 1;
+    grid-row: 2;
+    position: relative;
+    height: 380px;
+    min-height: 380px;
+    margin-right: -20px;
+    margin-left: 0;
+    padding: 0.8rem;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .red-section {
+    grid-column: 2;
+    grid-row: 2;
+    position: relative;
+    height: 380px;
+    min-height: 380px;
+    margin-left: -20px;
+    margin-right: 0;
+    padding: 0.8rem;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .blue-surface {
+    background-color: #1351d8;
+    opacity: 1;
+    filter: grayscale(0) saturate(1.1) brightness(1);
+    clip-path: polygon(
+      0% 5px,
+      35% 26px,
+      42% 10px,
+      78% 28px,
+      calc(100% - 35px) 5px,
+      100% 18%,
+      calc(100% - 30px) 21%,
+      calc(100% - 5px) 46%,
+      calc(100% - 35px) 49%,
+      100% 75%,
+      calc(100% - 25px) 78%,
+      calc(100% - 10px) 100%,
+      0% 100%
+    );
+  }
+
+  .red-surface {
+    background-color: #c62828;
+    opacity: 1;
+    filter: grayscale(0) saturate(1.1) brightness(1);
+    clip-path: polygon(
+      15px 5px,
+      35% 28px,
+      42% 10px,
+      78% 26px,
+      100% 5px,
+      100% 100%,
+      40px 100%,
+      25px 86%,
+      55px 83%,
+      12px 63%,
+      50px 60%,
+      25px 39%,
+      55px 36%,
+      20px 16%,
+      50px 14%
+    );
+  }
+
+  .blue-edge-line {
+    width: 35px;
+  }
+
+  .blue-edge-line .edge-stroke-line {
+    stroke: #93c5fd;
+  }
+
+  .red-edge-line {
+    width: 35px;
+  }
+
+  .red-edge-line .edge-stroke-line {
+    stroke: #fca5a5;
+  }
+
+  /* Horní světlé tenké linky podél bleskových zubů na mobilu */
+  .mobile-top-edge {
+    display: block;
+    position: absolute;
+    top: 0;
+    height: 35px;
+    pointer-events: none;
+    z-index: 8;
+    overflow: visible;
+  }
+
+  .blue-top-stroke {
+    left: 0;
+    width: calc(100% - 35px);
+  }
+
+  .blue-top-stroke .edge-stroke-line {
+    stroke: #93c5fd;
+    stroke-width: 2;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+    fill: none;
+  }
+
+  .red-top-stroke {
+    left: 15px;
+    width: calc(100% - 15px);
+  }
+
+  .red-top-stroke .edge-stroke-line {
+    stroke: #fca5a5;
+    stroke-width: 2;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+    fill: none;
+  }
+
+  .koda-photo {
+    left: -35px;
+    height: 350px;
+    max-height: 350px;
+    bottom: 0;
+    opacity: 1;
+    filter: grayscale(0) drop-shadow(2px 0 10px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 16px rgba(59, 130, 246, 0.7)) brightness(1.1) saturate(1.15);
+    pointer-events: none;
+  }
+
+  .team-koda-title {
+    font-size: 1.3rem;
+    bottom: 1rem;
+    left: 0.7rem;
+    letter-spacing: 1.5px;
+    opacity: 1;
+    color: #ffffff;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 1), 0 0 16px rgba(59, 130, 246, 0.7);
+  }
+
+  .kinaj-photo {
+    right: -35px;
+    height: 355px;
+    max-height: 355px;
+    bottom: 0;
+    opacity: 1;
+    filter: grayscale(0) drop-shadow(-2px 0 10px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 16px rgba(239, 68, 68, 0.7)) brightness(1.05) saturate(1.0);
+    pointer-events: none;
+  }
+
+  .team-kinaj-title {
+    font-size: 1.3rem;
+    bottom: 1rem;
+    right: 0.7rem;
+    letter-spacing: 1.5px;
+    opacity: 1;
+    color: #ffffff;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 1), 0 0 16px rgba(239, 68, 68, 0.7);
+  }
+}
+
+@media (max-width: 480px) {
+  .main-title {
+    font-size: 2.2rem;
+  }
+
+  .event-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .blue-section,
+  .red-section {
+    height: 330px;
+    min-height: 330px;
+  }
+
+  .koda-photo {
+    height: 310px;
+    max-height: 310px;
+    left: -30px;
+  }
+
+  .kinaj-photo {
+    height: 315px;
+    max-height: 315px;
+    right: -30px;
+  }
+
+  .team-koda-title,
+  .team-kinaj-title {
+    font-size: 1.15rem;
+    bottom: 0.8rem;
+  }
+}
+
+/* ==========================================================================
+   TLAČÍTKA PRO PŘECHOD NA DRAFT TÝMŮ
+   ========================================================================== */
+.draft-top-link-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: -1.2rem;
+  margin-bottom: 2rem;
+}
+
+.draft-portal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1.25rem;
+  background: linear-gradient(90deg, rgba(30, 58, 138, 0.45) 0%, rgba(26, 28, 34, 0.85) 50%, rgba(153, 27, 27, 0.45) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 30px;
+  color: #ffffff;
+  text-decoration: none;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.draft-portal-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4), 0 8px 25px rgba(239, 68, 68, 0.4);
+}
+
+.portal-badge {
+  background: #f59e0b;
+  color: #000000;
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  padding: 0.18rem 0.45rem;
+  border-radius: 4px;
+}
+
+.portal-text {
+  text-transform: uppercase;
+}
+
+.portal-arrow {
+  color: #60a5fa;
+  transition: transform 0.25s ease;
+}
+
+.draft-portal-btn:hover .portal-arrow {
+  transform: translateX(4px);
+  color: #f87171;
+}
+
+.draft-cta-block {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+.draft-main-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  padding: 1.1rem 2.2rem;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #b91c1c 100%);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  color: #ffffff;
+  text-decoration: none;
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 25px rgba(59, 130, 246, 0.4);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.draft-main-action-btn svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.25s ease;
+}
+
+.draft-main-action-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  border-color: #ffffff;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.8), 0 0 35px rgba(59, 130, 246, 0.7), 0 0 35px rgba(239, 68, 68, 0.7);
+}
+
+.draft-main-action-btn:hover svg {
+  transform: translateX(5px);
+}
+

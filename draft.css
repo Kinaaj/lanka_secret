@@ -1,0 +1,601 @@
+@font-face {
+  font-family: 'Reality Hyper';
+  font-style: normal;
+  font-weight: 400;
+  src: url('assets/fonts/RealityHyper-Regular.woff') format('woff'),
+       url('https://fonts.cdnfonts.com/s/46141/Reality%20Hyper%20Regular.woff') format('woff');
+  font-display: swap;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  background-color: #1a1c22;
+  color: #e5e7eb;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   HLAVNÍ KONTEJNER (3 SLOUPCE STEJNĚ JAKO INDEX.HTML)
+   ========================================================================== */
+.container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #1a1c22;
+  align-items: stretch;
+  position: relative;
+}
+
+/* ==========================================================================
+   1. VLEVO: MODRÝ TÝM
+   ========================================================================== */
+.blue-section {
+  flex: 1;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  align-self: flex-start;
+  z-index: 5;
+  margin-right: -60px;
+  cursor: default;
+  padding: 0 4.5rem 0 1.5rem;
+  filter: drop-shadow(14px 0 20px rgba(0, 0, 0, 0.85)) drop-shadow(8px 0 16px rgba(19, 81, 216, 0.65));
+  transition: filter 0.35s cubic-bezier(0.16, 1, 0.3, 1), z-index 0.35s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.blue-surface {
+  position: absolute;
+  inset: 0;
+  background-color: #1351d8;
+  opacity: 1;
+  filter: grayscale(0) saturate(1.1) brightness(1);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  clip-path: polygon(
+    0% 0%,
+    calc(100% - 50px) 0%,
+    100% 18%,
+    calc(100% - 40px) 21%,
+    calc(100% - 5px) 46%,
+    calc(100% - 50px) 49%,
+    100% 75%,
+    calc(100% - 35px) 78%,
+    calc(100% - 10px) 100%,
+    0% 100%
+  );
+  pointer-events: none;
+}
+
+.blue-edge-line {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 7;
+  overflow: visible;
+}
+
+.lightning-edge-line {
+  display: block;
+}
+
+.mobile-top-edge {
+  display: none;
+}
+
+.blue-edge-line .edge-stroke-line {
+  stroke: #93c5fd;
+  stroke-width: 2;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  fill: none;
+  transition: stroke 0.35s ease, stroke-width 0.35s ease, filter 0.35s ease;
+}
+
+/* Zvýraznění modré strany při přetahování - jemnější a čistší */
+.blue-section.drag-active-target {
+  z-index: 25 !important;
+  filter: drop-shadow(16px 0 24px rgba(0, 0, 0, 0.85))
+          drop-shadow(0 0 22px rgba(59, 130, 246, 0.45)) !important;
+}
+
+.blue-section.drag-active-target .blue-surface {
+  background-color: #1754db !important;
+  opacity: 1 !important;
+  filter: brightness(1.06) !important;
+}
+
+.blue-section.drag-active-target .blue-edge-line .edge-stroke-line {
+  stroke: #bfdbfe !important;
+  stroke-width: 2.6 !important;
+  filter: drop-shadow(0 0 6px #60a5fa) !important;
+}
+
+.blue-section.drag-active-target .team-title-heading {
+  color: #ffffff !important;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 20px rgba(96, 165, 250, 0.5) !important;
+}
+
+
+/* ==========================================================================
+   2. VPRAVO: ČERVENÝ TÝM
+   ========================================================================== */
+.red-section {
+  flex: 1;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  align-self: flex-start;
+  z-index: 5;
+  margin-left: -60px;
+  cursor: default;
+  padding: 0 1.5rem 0 4.5rem;
+  filter: drop-shadow(-14px 0 20px rgba(0, 0, 0, 0.85)) drop-shadow(-8px 0 16px rgba(198, 40, 40, 0.65));
+  transition: filter 0.35s cubic-bezier(0.16, 1, 0.3, 1), z-index 0.35s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.red-surface {
+  position: absolute;
+  inset: 0;
+  background-color: #c62828;
+  opacity: 1;
+  filter: grayscale(0) saturate(1.1) brightness(1);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  clip-path: polygon(
+    15px 0%,
+    50px 14%,
+    20px 16%,
+    55px 36%,
+    25px 39%,
+    50px 60%,
+    12px 63%,
+    55px 83%,
+    25px 86%,
+    40px 100%,
+    100% 100%,
+    100% 0%
+  );
+  pointer-events: none;
+}
+
+.red-edge-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 55px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 7;
+  overflow: visible;
+}
+
+.red-edge-line .edge-stroke-line {
+  stroke: #fca5a5;
+  stroke-width: 2;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  fill: none;
+  transition: stroke 0.35s ease, stroke-width 0.35s ease, filter 0.35s ease;
+}
+
+/* Zvýraznění červené strany při přetahování - jemnější a čistší */
+.red-section.drag-active-target {
+  z-index: 25 !important;
+  filter: drop-shadow(-16px 0 24px rgba(0, 0, 0, 0.85))
+          drop-shadow(0 0 22px rgba(239, 68, 68, 0.45)) !important;
+}
+
+.red-section.drag-active-target .red-surface {
+  background-color: #cf2a2a !important;
+  opacity: 1 !important;
+  filter: brightness(1.06) !important;
+}
+
+.red-section.drag-active-target .red-edge-line .edge-stroke-line {
+  stroke: #fecaca !important;
+  stroke-width: 2.6 !important;
+  filter: drop-shadow(0 0 6px #f87171) !important;
+}
+
+.red-section.drag-active-target .team-title-heading {
+  color: #ffffff !important;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 20px rgba(248, 113, 113, 0.5) !important;
+}
+
+
+/* ==========================================================================
+   OBSAH UVNITŘ TÝMOVÝCH STRAN (MODRÁ & ČERVENÁ)
+   ========================================================================== */
+.team-panel-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: auto 0;
+}
+
+/* Pouze nápisy MODRÝ TÝM a ČERVENÝ TÝM - posunuto více nahoru */
+.team-title-heading {
+  position: absolute;
+  bottom: calc(100% + 2.8rem);
+  left: 0;
+  right: 0;
+  text-align: center;
+  pointer-events: none;
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  color: #ffffff;
+  text-transform: uppercase;
+  line-height: 1;
+  margin: 0;
+  transition: all 0.3s ease;
+}
+
+.blue-title {
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 22px rgba(59, 130, 246, 0.7);
+}
+
+.red-title {
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 22px rgba(239, 68, 68, 0.7);
+}
+
+/* ==========================================================================
+   TÝMOVÉ ARÉNY: 2 SLOUPCE (VLEVO 3 POLE / VPRAVO 2 POLE A ZRCADLOVĚ)
+   ========================================================================== */
+.team-zigzag-arena {
+  position: relative;
+  display: flex;
+  gap: 1.1rem;
+  justify-content: center;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.team-subcol {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 165px;
+}
+
+.team-subcol-3 {
+  margin-top: 0;
+}
+
+/* Sloupec se 2 poli je posunutý přesně do mezer mezi 3 poli */
+.team-subcol-2 {
+  margin-top: 112.5px;
+}
+
+/* Jednotlivé pole (slot) pro kartu */
+.slot-field {
+  width: 165px;
+  height: 209px;
+  border-radius: 8px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+}
+
+/* Prázdné pole */
+.slot-field.is-empty {
+  border: 1.5px dashed rgba(255, 255, 255, 0.12);
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Zvýraznění prázdných polí při přetahování nad týmem */
+.blue-section.drag-active-target .slot-field.is-empty {
+  border-color: rgba(147, 197, 253, 0.45);
+  background-color: rgba(59, 130, 246, 0.14);
+}
+
+.red-section.drag-active-target .slot-field.is-empty {
+  border-color: rgba(254, 202, 202, 0.45);
+  background-color: rgba(239, 68, 68, 0.14);
+}
+
+/* ==========================================================================
+   3. UPROSTŘED: TMAVĚ ŠEDÁ PLOCHA S VOLNÝMI HRÁČI
+   ========================================================================== */
+.grey-section {
+  flex: 1.4;
+  background-color: #1a1c22;
+  padding: 1.5rem 2.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.content-wrapper {
+  max-width: 600px;
+  width: 100%;
+  margin: auto 0;
+}
+
+/* Horní ovládací lišta: Reset & Fullscreen fixně nahoře */
+.draft-top-controls {
+  position: absolute;
+  top: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.top-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.hud-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 6px;
+  background-color: #22252c;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e5e7eb;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hud-action-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.hud-action-btn:hover {
+  background-color: #323744;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+/* Mřížka volných hráčů (3 sloupce, spodní 2 karty přesně na středu) */
+.pool-cards-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 575px;
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   VŠECHNY KARTIČKY HRÁČŮ (ZVĚTŠENÉ, STEJNĚ VELKÉ, PLNĚ NEPRŮHLEDNÉ)
+   ========================================================================== */
+.player-card {
+  width: 165px;
+  background-color: #22252c;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  opacity: 1 !important; /* VŽDY PLNĚ NEPRŮHLEDNÁ */
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.player-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+  z-index: 10;
+}
+
+.player-card:active {
+  cursor: grabbing;
+}
+
+/* Fotka hráče (čtvercový poměr 1:1, stejný pro všechny) */
+.player-card .card-photo-wrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: #16181e;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.player-card .card-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  pointer-events: none;
+}
+
+/* Informace pod fotkou (přezdívka + reálné jméno) */
+.player-card .card-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.25rem;
+  background-color: #22252c;
+  min-height: 44px;
+  overflow: hidden;
+}
+
+/* Přezdívka pod fotkou (Trebkiller i ostatní zůstávají původně velcí) */
+.player-card .card-nickname {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 1.02rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  color: #ffffff;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  line-height: 1.15;
+}
+
+/* Velmi dlouhé přezdívky (Pravdomil Kecal) - zvětšeno na 0.83rem, aby byly dobře čitelné a stále se vešly */
+.player-card .card-nickname.is-very-long-name {
+  font-size: 0.83rem;
+  letter-spacing: 0.25px;
+}
+
+/* Reálné jméno pod přezdívkou */
+.player-card .card-realname {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: #9ca3af;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  line-height: 1.15;
+  margin-top: 2px;
+}
+
+/* Karta v ruce a zdroj: ŽÁDNÁ PRŮHLEDNOST */
+.player-card.is-dragging-source {
+  opacity: 1 !important;
+  border: 2px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Karty na modré straně */
+.blue-section .player-card {
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+.blue-section .player-card .card-nickname {
+  color: #bfdbfe;
+}
+
+.blue-section .player-card .card-realname {
+  color: #93c5fd;
+  opacity: 0.8;
+}
+
+/* Karty na červené straně */
+.red-section .player-card {
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.red-section .player-card .card-nickname {
+  color: #fecaca;
+}
+
+.red-section .player-card .card-realname {
+  color: #fca5a5;
+  opacity: 0.8;
+}
+
+/* ==========================================================================
+   RESPONSIVITA
+   ========================================================================== */
+@media (max-width: 900px) {
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: auto;
+  }
+
+  .grey-section {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    padding: 2rem 1.2rem;
+    height: auto;
+  }
+
+  .blue-section {
+    grid-column: 1;
+    grid-row: 2;
+    position: relative;
+    height: auto;
+    min-height: 400px;
+    margin-right: 0;
+    padding: 1.5rem 1rem;
+  }
+
+  .red-section {
+    grid-column: 2;
+    grid-row: 2;
+    position: relative;
+    height: auto;
+    min-height: 400px;
+    margin-left: 0;
+    padding: 1.5rem 1rem;
+  }
+
+  .team-panel-content {
+    margin: 0;
+  }
+
+  .team-title-heading {
+    position: static;
+    margin-bottom: 1.5rem;
+  }
+
+  .draft-top-controls {
+    position: static;
+    transform: none;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .pool-cards-grid {
+    grid-template-columns: repeat(2, 140px);
+  }
+}

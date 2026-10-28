@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lanka 2027 — Draftování týmů</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Orbitron:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="draft.css">
+</head>
+
+<body>
+
+  <main class="container" id="mainContainer">
+
+    <!-- ==========================================================================
+         VLEVO: MODRÝ TÝM
+         2 sloupce: vlevo 3 pole, vpravo 2 pole (zig-zag)
+         ========================================================================== -->
+    <section class="section blue-section" id="blueSection" data-team="blue">
+      <div class="blue-surface"></div>
+
+      <!-- Přesná linka kopírující bleskovou hranu -->
+      <svg class="lightning-edge-line blue-edge-line" viewBox="0 0 50 1000" preserveAspectRatio="none">
+        <path class="edge-stroke-line" d="M0,0 L50,180 L10,210 L45,460 L0,490 L50,750 L15,780 L40,1000" />
+      </svg>
+
+      <!-- Horní linka pro mobil -->
+      <svg class="mobile-top-edge blue-top-stroke" viewBox="0 0 100 35" preserveAspectRatio="none">
+        <path class="edge-stroke-line" d="M0,5 L35,26 L42,10 L78,28 L100,5" />
+      </svg>
+
+      <div class="team-panel-content">
+        <h2 class="team-title-heading blue-title">MODRÝ TÝM</h2>
+
+        <!-- Dva sloupce: vlevo 3 pole, vpravo 2 pole -->
+        <div class="team-zigzag-arena blue-zigzag">
+          <!-- Levý sloupec (3 pole) -->
+          <div class="team-subcol team-subcol-3" id="blueColLeft">
+            <div class="slot-field" id="blueSlot1" data-slot="1"></div>
+            <div class="slot-field is-empty" id="blueSlot3" data-slot="3"></div>
+            <div class="slot-field is-empty" id="blueSlot5" data-slot="5"></div>
+          </div>
+          <!-- Pravý sloupec (2 pole, posunutý o půl pole dolů) -->
+          <div class="team-subcol team-subcol-2" id="blueColRight">
+            <div class="slot-field is-empty" id="blueSlot2" data-slot="2"></div>
+            <div class="slot-field is-empty" id="blueSlot4" data-slot="4"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================================================
+         UPROSTŘED: TMAVĚ ŠEDÁ PLOCHA S VOLNÝMI HRÁČI (3 sloupce, spodní 2 na střed)
+         ========================================================================== -->
+    <section class="section grey-section" id="greySection" data-team="pool">
+      <!-- Horní ovládací lišta: Pouze Reset + Fullscreen pevně nahoře -->
+      <div class="draft-top-controls">
+        <div class="top-buttons-group">
+          <button id="resetDraftBtn" class="hud-action-btn" title="Vrátit všechny hráče zpět do výběru">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+            </svg>
+            <span>RESET</span>
+          </button>
+          <button id="fullscreenBtn" class="hud-action-btn" title="Zobrazit na celou obrazovku">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+            </svg>
+            <span>FULLSCREEN</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="content-wrapper">
+        <!-- Mřížka volných karet hráčů (3, 3, dole 2 na středu) -->
+        <div class="pool-cards-grid" id="poolCardsGrid">
+          <!-- Karty hráčů generované v draft.js -->
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================================================
+         VPRAVO: ČERVENÝ TÝM
+         2 sloupce: vlevo 2 pole, vpravo 3 pole (zrcadlový zig-zag)
+         ========================================================================== -->
+    <section class="section red-section" id="redSection" data-team="red">
+      <div class="red-surface"></div>
+
+      <!-- Přesná linka kopírující bleskovou hranu -->
+      <svg class="lightning-edge-line red-edge-line" viewBox="0 0 55 1000" preserveAspectRatio="none">
+        <path class="edge-stroke-line"
+          d="M15,0 L50,140 L20,160 L55,360 L25,390 L50,600 L12,630 L55,830 L25,860 L40,1000" />
+      </svg>
+
+      <!-- Horní linka pro mobil -->
+      <svg class="mobile-top-edge red-top-stroke" viewBox="0 0 100 35" preserveAspectRatio="none">
+        <path class="edge-stroke-line" d="M0,5 L35,28 L42,10 L78,26 L100,5" />
+      </svg>
+
+      <div class="team-panel-content">
+        <h2 class="team-title-heading red-title">ČERVENÝ TÝM</h2>
+
+        <!-- Dva sloupce: vlevo 2 pole, vpravo 3 pole (naopak) -->
+        <div class="team-zigzag-arena red-zigzag">
+          <!-- Levý sloupec (2 pole, posunutý o půl pole dolů) -->
+          <div class="team-subcol team-subcol-2" id="redColLeft">
+            <div class="slot-field is-empty" id="redSlot2" data-slot="2"></div>
+            <div class="slot-field is-empty" id="redSlot4" data-slot="4"></div>
+          </div>
+          <!-- Pravý sloupec (3 pole) -->
+          <div class="team-subcol team-subcol-3" id="redColRight">
+            <div class="slot-field" id="redSlot1" data-slot="1"></div>
+            <div class="slot-field is-empty" id="redSlot3" data-slot="3"></div>
+            <div class="slot-field is-empty" id="redSlot5" data-slot="5"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="draft.js"></script>
+</body>
+
+</html>
