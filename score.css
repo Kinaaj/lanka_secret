@@ -1,0 +1,790 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  background-color: #1a1c22;
+  color: #e5e7eb;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* =====================================================================
+   SPIKE PANELY — fixní boční prvky, rozšiřitelné na team mód
+   ===================================================================== */
+.spike-panel {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: 80px;
+  z-index: 10;
+  overflow: hidden;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.teams-visible .spike-panel {
+  width: 310px;
+}
+
+.spike-left  { left: 0; }
+.spike-right { right: 0; }
+
+/* Barevné plochy — clip-path VŽDY zigzag, jen šířka panelu se mění */
+.spike-surface {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.spike-surface-blue {
+  background-color: #1351d8;
+  clip-path: polygon(
+    0% 0%,
+    calc(100% - 50px) 0%,
+    100% 18%,
+    calc(100% - 40px) 21%,
+    calc(100% - 5px) 46%,
+    calc(100% - 50px) 49%,
+    100% 75%,
+    calc(100% - 35px) 78%,
+    calc(100% - 10px) 100%,
+    0% 100%
+  );
+  filter: drop-shadow(6px 0 18px rgba(0,0,0,0.8)) drop-shadow(4px 0 14px rgba(19,81,216,0.6));
+}
+
+.spike-surface-red {
+  background-color: #c62828;
+  clip-path: polygon(
+    15px 0%,
+    50px 14%,
+    20px 16%,
+    55px 36%,
+    25px 39%,
+    50px 60%,
+    12px 63%,
+    55px 83%,
+    25px 86%,
+    40px 100%,
+    100% 100%,
+    100% 0%
+  );
+  filter: drop-shadow(-6px 0 18px rgba(0,0,0,0.8)) drop-shadow(-4px 0 14px rgba(198,40,40,0.6));
+}
+
+/* SVG stroke — vždy viditelný, pasuje na inner edge */
+.spike-edge {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.spike-edge-left {
+  right: 0;
+  width: 50px;
+}
+
+.spike-edge-right {
+  left: 0;
+  width: 55px;
+}
+
+.spike-stroke {
+  stroke-width: 2;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  fill: none;
+}
+
+.spike-stroke-blue { stroke: #93c5fd; }
+.spike-stroke-red  { stroke: #fca5a5; }
+
+/* =====================================================================
+   OBSAH SIDEBARU — skrytý v normálním módu
+   ===================================================================== */
+.team-sidebar-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  overflow: hidden;
+}
+
+body.teams-visible .team-sidebar-content {
+  opacity: 1;
+  pointer-events: all;
+  transition: opacity 0.3s ease 0.2s;
+}
+
+/* Název týmu — nad zigzag arénou */
+.sidebar-team-title {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 1.4rem;
+  line-height: 1;
+}
+
+.blue-title-text {
+  text-shadow: 0 2px 14px rgba(0,0,0,0.9), 0 0 22px rgba(59,130,246,0.7);
+}
+
+.red-title-text {
+  text-shadow: 0 2px 14px rgba(0,0,0,0.9), 0 0 22px rgba(239,68,68,0.7);
+}
+
+/* Zigzag layout pro karty — 2 sub-sloupce jako v draft */
+.sidebar-zigzag {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  position: relative;
+}
+
+.sidebar-subcol {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100px;
+}
+
+/* Pravý (nebo levý) sloupec se 2 kartami je posunutý o půl výšky karty dolů */
+.sidebar-subcol-2 {
+  margin-top: 80px;
+}
+
+/* ── Kompaktní karta hráče ─────────────────────────────── */
+.sidebar-card {
+  width: 100px;
+  background-color: #22252c;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 7px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sidebar-card:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.65);
+}
+
+/* Blue team cards */
+.spike-left .sidebar-card {
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.spike-left .sidebar-card-nick {
+  color: #bfdbfe;
+}
+
+/* Red team cards */
+.spike-right .sidebar-card {
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.spike-right .sidebar-card-nick {
+  color: #fecaca;
+}
+
+.sidebar-card-photo-wrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: #16181e;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-card-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  pointer-events: none;
+}
+
+.sidebar-card-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.2rem;
+  min-height: 36px;
+  background-color: #22252c;
+}
+
+.sidebar-card-nick {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  line-height: 1.15;
+}
+
+.sidebar-card-nick.is-long {
+  font-size: 0.54rem;
+  letter-spacing: 0.1px;
+}
+
+.sidebar-card-real {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.55rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  margin-top: 1px;
+  line-height: 1.1;
+}
+
+/* Padding aby karty nepřekrývaly zigzag edge:
+   Blue: vpravo máme zigzag, pravý sloupec karet musí skončit před ním */
+.spike-left .team-sidebar-content {
+  padding: 0 58px 0 12px;
+}
+
+/* Red: vlevo máme zigzag */
+.spike-right .team-sidebar-content {
+  padding: 0 12px 0 60px;
+}
+
+/* =====================================================================
+   HLAVNÍ LAYOUT
+   ===================================================================== */
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.top-controls {
+  position: fixed;
+  top: 1.4rem;
+  right: 5rem;
+  z-index: 200;
+}
+
+.top-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.hud-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 6px;
+  background-color: #22252c;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e5e7eb;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hud-action-btn svg { width: 15px; height: 15px; }
+
+.hud-action-btn:hover {
+  background-color: #323744;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.hud-action-btn.btn-active {
+  background-color: #323744;
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+}
+
+.content-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 6rem 3rem;
+  transition: padding 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.teams-visible .content-area {
+  padding-left: 330px;
+  padding-right: 330px;
+}
+
+/* =====================================================================
+   SCORE TABLE
+   ===================================================================== */
+.score-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 5rem;
+}
+
+.score-table {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 28px;
+}
+
+/* =====================================================================
+   INDIKÁTOR JÍDLA / PŘESTÁVKY MEZI SLOUPCI (VARIANTA A)
+   ===================================================================== */
+.table-break-marker {
+  position: absolute;
+  top: -50px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #ffffff;
+  opacity: 0.9;
+  transition: opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+  z-index: 10;
+  cursor: default;
+  pointer-events: auto;
+}
+
+.table-break-marker:hover {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-2px);
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.75));
+}
+
+.break-marker-icon svg {
+  width: 23px;
+  height: 23px;
+  display: block;
+}
+
+.break-marker-arrow svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+  opacity: 0.95;
+}
+
+/* Směrová šipka průběhu turnaje (zleva doprava) */
+.table-direction-arrow {
+  position: absolute;
+  top: -36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  opacity: 0.85;
+  transition: opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+  z-index: 10;
+  cursor: default;
+  pointer-events: auto;
+}
+
+.table-direction-arrow:hover {
+  opacity: 1;
+  transform: translateX(4px);
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.7));
+}
+
+.table-direction-arrow svg {
+  width: 28px;
+  height: 14px;
+  display: block;
+}
+
+
+
+
+.labels-col {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 100px;
+}
+
+.label-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #6b7280;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0 0.5rem;
+}
+
+.label-cell-icon   { height: 190px; flex-shrink: 0; }
+.label-cell-spacer { flex: 1; }
+
+.label-cell-winner {
+  min-height: 100px;
+  color: #9ca3af;
+  font-size: 0.7rem;
+  border-top: 3px solid rgba(255, 255, 255, 0.18);
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+/* Herní sloupce */
+.game-col {
+  display: flex;
+  flex-direction: column;
+  background-color: #22252c;
+  border: 3.5px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  overflow: hidden;
+  width: 215px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  transition: border-color 0.25s ease;
+}
+
+.game-col.col-blue {
+  border-color: #1351d8;
+}
+
+.game-col.col-red {
+  border-color: #c62828;
+}
+
+.gcell-icon {
+  position: relative;
+  width: 100%;
+  height: 190px;
+  background-color: #1a1c22;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.game-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  opacity: 0.82;
+  display: block;
+}
+
+.game-icon-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #4b5563;
+  letter-spacing: 1.5px;
+  text-align: center;
+  background: rgba(255,255,255,0.03);
+}
+
+/* Kontejner kol — výchozí prostorný režim pro max Bo3 */
+.gcell-rounds-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 295px;
+}
+
+/* Buňka kola — výchozí prostorný režim */
+.gcell-round {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 98px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Původní kompaktní režim, pokud je v turnaji aspoň jedna Bo5 hra */
+.score-table.has-bo5 .gcell-rounds-wrapper {
+  min-height: auto;
+}
+
+.score-table.has-bo5 .gcell-round {
+  min-height: 68px;
+}
+
+/* Klikací a hover zóny (vlevo modrá, vpravo červená) */
+.gcell-click-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: opacity 0.2s ease, background 0.2s ease;
+  user-select: none;
+}
+
+.gcell-click-zone.zone-left {
+  left: 0;
+  justify-content: flex-start;
+  padding-left: 0.85rem;
+  background: linear-gradient(90deg, rgba(19, 81, 216, 0.25) 0%, rgba(19, 81, 216, 0.04) 100%);
+}
+
+.gcell-click-zone.zone-right {
+  right: 0;
+  justify-content: flex-end;
+  padding-right: 0.85rem;
+  background: linear-gradient(270deg, rgba(198, 40, 40, 0.25) 0%, rgba(198, 40, 40, 0.04) 100%);
+}
+
+.zone-label {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  pointer-events: none;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.zone-left .zone-label {
+  color: #93c5fd;
+}
+
+.zone-right .zone-label {
+  color: #fca5a5;
+}
+
+/* Při najetí na buňku se jemně rozsvítí obě strany (jasná indikace) */
+.gcell-round:hover .gcell-click-zone,
+.gcell-winner:hover .gcell-click-zone {
+  opacity: 0.85;
+}
+
+/* Zvýraznění aktivní strany pod kurzorem */
+.gcell-click-zone.zone-left:hover {
+  opacity: 1 !important;
+  background: linear-gradient(90deg, rgba(19, 81, 216, 0.45) 0%, rgba(19, 81, 216, 0.12) 100%) !important;
+}
+
+.gcell-click-zone.zone-right:hover {
+  opacity: 1 !important;
+  background: linear-gradient(270deg, rgba(198, 40, 40, 0.45) 0%, rgba(198, 40, 40, 0.12) 100%) !important;
+}
+
+.gcell-click-zone:hover .zone-label {
+  transform: scale(1.08);
+}
+
+.round-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  transition: all 0.15s ease;
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Náhled zbarvení tečky, pokud je ještě prázdná a najedeme myší */
+.gcell-round:not(.state-blue):not(.state-red):has(.zone-left:hover) .round-dot {
+  border-color: #60a5fa;
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+}
+
+.gcell-round:not(.state-blue):not(.state-red):has(.zone-right:hover) .round-dot {
+  border-color: #f87171;
+  box-shadow: 0 0 10px rgba(248, 113, 113, 0.5);
+}
+
+.gcell-round.state-blue .round-dot {
+  background: #1351d8;
+  border-color: #60a5fa;
+}
+
+.gcell-round.state-red .round-dot {
+  background: #c62828;
+  border-color: #f87171;
+}
+
+.gcell-divider {
+  height: 5px;
+  background: rgba(255,255,255,0.15);
+  flex-shrink: 0;
+  margin-top: 0;
+}
+
+.gcell-winner {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #374151;
+  user-select: none;
+  background-color: #16181e;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+
+.winner-cell-text {
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.gcell-winner:hover { background-color: #1e2128; color: #6b7280; }
+
+.gcell-winner.state-blue {
+  background-color: #1351d8;
+  color: #ffffff;
+
+  border-top: 1px solid #1351d8;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.gcell-winner.state-red {
+  background-color: #c62828;
+  color: #ffffff;
+  border-top: 1px solid #c62828;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+/* =====================================================================
+   PANEL VÍTĚZE TURNAJE
+   ===================================================================== */
+.tournament-winner-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 230px;
+  min-height: 490px;
+  background-color: #22252c;
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+  transform: translateY(-45px);
+}
+
+.winner-panel-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  padding: 2rem 1.2rem;
+  text-align: center;
+}
+
+.winner-panel-title {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #6b7280;
+  text-transform: uppercase;
+  line-height: 1.6;
+}
+
+.winner-panel-value {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 1.85rem;
+  font-weight: 900;
+  letter-spacing: 2.5px;
+  color: #4b5563;
+  text-transform: uppercase;
+  line-height: 1.25;
+  transition: all 0.4s ease;
+}
+
+.tournament-winner-panel.winner-blue {
+  border-color: #1351d8;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  background-color: #1351d8;
+}
+
+.tournament-winner-panel.winner-blue .winner-panel-title {
+  color: #bfdbfe;
+}
+
+.tournament-winner-panel.winner-blue .winner-panel-value {
+  color: #ffffff;
+}
+
+.tournament-winner-panel.winner-red {
+  border-color: #c62828;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  background-color: #c62828;
+}
+
+.tournament-winner-panel.winner-red .winner-panel-title {
+  color: #fecaca;
+}
+
+.tournament-winner-panel.winner-red .winner-panel-value {
+  color: #ffffff;
+}
