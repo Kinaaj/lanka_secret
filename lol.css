@@ -1,0 +1,1062 @@
+/* =====================================================================
+   LEAGUE OF LEGENDS PICKING STYLES (DĚDÍ Z cs.css)
+   INTERAKTIVNÍ DIAGONÁLNĚ ŘEZANÁ MAPA SUMMONER'S RIFT
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   ROZSTŘEL / 2:0 RYCHLÁ VOLBA
+   --------------------------------------------------------------------- */
+.lol-lead-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 680px;
+  padding: 1rem 1.4rem;
+  border-radius: 12px;
+  background: rgba(34, 37, 44, 0.95);
+  border: 2px solid rgba(250, 204, 21, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 20px rgba(250, 204, 21, 0.15);
+  margin-bottom: 1.8rem;
+  animation: viewFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.lol-lead-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.lol-lead-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(250, 204, 21, 0.15);
+  color: #facc15;
+  flex-shrink: 0;
+}
+
+.lol-lead-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.lol-lead-title {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.lol-lead-desc {
+  font-size: 0.78rem;
+  color: #d1d5db;
+  margin-top: 0.15rem;
+}
+
+.lol-lead-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  background: #facc15;
+  color: #111827;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 14px rgba(250, 204, 21, 0.35);
+}
+
+.lol-lead-btn:hover {
+  background: #fde047;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(250, 204, 21, 0.5);
+}
+
+/* Rychlá tlačítka pro stav 2:0 pod RPS kartami */
+
+
+/* ---------------------------------------------------------------------
+   ČASOVÁ OSA — UZEL PŘESKOČENÉHO ROZSTŘELU (PROHRÁVAJÍCÍ 2:0 ZAČÍNÁ)
+   Sjednoceno stylově s Warcraftem (šedá paleta, stejný rozměr i rámeček)
+   --------------------------------------------------------------------- */
+.timeline-skip-node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.95rem;
+  border-radius: 11px;
+  background-color: #22252c;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+  user-select: none;
+}
+
+.timeline-skip-node.is-active {
+  border-color: #ffffff;
+  background-color: #2b303c;
+  transform: scale(1.04);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 12px rgba(255, 255, 255, 0.18);
+}
+
+.timeline-skip-node.is-completed {
+  border-color: rgba(255, 255, 255, 0.15);
+  opacity: 0.75;
+}
+
+.timeline-skip-node .skip-svg {
+  width: 17px;
+  height: 17px;
+  display: block;
+  stroke: #94a3b8;
+  flex-shrink: 0;
+}
+
+/* ---------------------------------------------------------------------
+   INTERAKTIVNÍ DIAGONÁLNÍ MAPA SUMMONER'S RIFT
+   --------------------------------------------------------------------- */
+.lol-side-selector-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  animation: viewFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.lol-map-board {
+  position: relative;
+  width: 100%;
+  max-width: 740px;
+  aspect-ratio: 624 / 444;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 3.5px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 50px rgba(0, 0, 0, 0.8);
+  background-color: #0c0e12;
+}
+
+/* Podkladová mapa */
+.lol-map-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.3;
+  filter: brightness(0.6) contrast(1.15);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Diagonální poloviny mapy */
+.lol-half {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+/* Jemná světelná vrstva při najetí */
+.lol-half::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 72%);
+  z-index: 3;
+}
+
+.lol-half:hover::after {
+  opacity: 1;
+}
+
+/* Blue side: Vlevo dole (trojúhelník 0,0 -> 100%,100% -> 0,100%) */
+.lol-half-blue {
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+  z-index: 2;
+}
+
+/* Red side: Vpravo nahoře (trojúhelník 0,0 -> 100%,0 -> 100%,100%) */
+.lol-half-red {
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  z-index: 2;
+}
+
+/* Vnitřní vrstva s obrázkem mapy (přirozené barvy mapy) */
+.lol-half-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('map_picks/lol/lol-map.png');
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.95) contrast(1.05);
+  transition: transform 0.35s ease, filter 0.35s ease;
+}
+
+/* Zvýraznění při najetí myši — pouze pro najetou stranu (druhá strana zůstává beze změny) */
+.lol-half:hover .lol-half-img {
+  transform: scale(1.035);
+  filter: brightness(1.35) contrast(1.15);
+}
+
+/* Kliknutí na stranu (animace) */
+.lol-half.is-selecting {
+  animation: cardSelectPulse 0.2s ease forwards;
+}
+
+/* Štítky stran — pouze čistý text bez modré či červené barvy */
+.lol-half-card {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.6rem;
+  border-radius: 12px;
+  background: rgba(14, 17, 23, 0.9);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+  z-index: 10;
+}
+
+.lol-card-blue-pos {
+  bottom: 2.2rem;
+  left: 2.2rem;
+}
+
+.lol-card-red-pos {
+  top: 2.2rem;
+  right: 2.2rem;
+}
+
+.lol-half:hover .lol-half-card {
+  border-color: #ffffff;
+  background: rgba(18, 22, 30, 0.98);
+  transform: scale(1.08) translateY(-4px);
+  box-shadow: 0 0 32px rgba(255, 255, 255, 0.45), 0 14px 40px rgba(0, 0, 0, 0.9);
+}
+
+.lol-side-title {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: #ffffff;
+  line-height: 1;
+  transition: text-shadow 0.25s ease;
+}
+
+.lol-half:hover .lol-side-title {
+  text-shadow: 0 0 16px rgba(255, 255, 255, 0.85);
+}
+
+/* Diagonální oddělovač (Řeka) — neutrální čistá linie bez zabarvení */
+.lol-river-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* ---------------------------------------------------------------------
+   SOUHRN DOKONČENÉHO VÝBĚRU (SUMMARY)
+   --------------------------------------------------------------------- */
+.lol-summary-card-sides {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0.4rem;
+}
+
+.lol-summary-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0.8rem;
+  border-radius: 6px;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.lol-summary-pill.pill-blue-side {
+  background: rgba(19, 81, 216, 0.2);
+  border: 1.5px solid rgba(19, 81, 216, 0.6);
+  color: #93c5fd;
+}
+
+.lol-summary-pill.pill-red-side {
+  background: rgba(198, 40, 40, 0.2);
+  border: 1.5px solid rgba(198, 40, 40, 0.6);
+  color: #fca5a5;
+}
+
+.lol-summary-chooser {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.72rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  margin-top: 0.2rem;
+}
+
+/* ---------------------------------------------------------------------
+   ČASOVÁ OSA — UZLY (ROLE, OBA TÝMY)
+   --------------------------------------------------------------------- */
+.timeline-roles-node {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #9ca3af;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.timeline-role-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.timeline-roles-node.is-active {
+  border-color: #86efac;
+  color: #ffffff;
+  background: rgba(134, 239, 172, 0.12);
+  box-shadow: 0 0 16px rgba(134, 239, 172, 0.25);
+}
+
+.timeline-roles-node.is-completed {
+  border-color: rgba(134, 239, 172, 0.5);
+  color: #86efac;
+  background: rgba(134, 239, 172, 0.07);
+}
+
+.team-mini-label.team-both {
+  background: linear-gradient(135deg, rgba(19, 81, 216, 0.35) 0%, rgba(198, 40, 40, 0.35) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #e2e8f0;
+}
+
+.top-turn-display.turn-card-both {
+  background: linear-gradient(135deg, rgba(19, 81, 216, 0.8) 0%, rgba(198, 40, 40, 0.8) 100%);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+}
+
+/* ---------------------------------------------------------------------
+   VÝBĚR PORAŽENÉHO (PRO 2. A 3. HRU)
+   --------------------------------------------------------------------- */
+.loser-prompt-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 680px;
+  animation: viewFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.loser-prompt-header {
+  text-align: center;
+  margin-bottom: 1.8rem;
+}
+
+.loser-match-tag {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #facc15;
+  margin-bottom: 0.3rem;
+}
+
+.loser-prompt-title {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.loser-prompt-subtitle {
+  font-size: 0.88rem;
+  color: #9ca3af;
+  margin-top: 0.3rem;
+}
+
+.loser-cards-wrapper {
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.loser-team-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 2rem 1.4rem;
+  border-radius: 14px;
+  background: rgba(22, 26, 35, 0.9);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.loser-team-card.card-blue {
+  border: 2.5px solid rgba(19, 81, 216, 0.5);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+}
+
+.loser-team-card.card-blue:hover {
+  border-color: #1351d8;
+  background: rgba(19, 81, 216, 0.18);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(19, 81, 216, 0.45);
+}
+
+.loser-team-card.card-red {
+  border: 2.5px solid rgba(198, 40, 40, 0.5);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+}
+
+.loser-team-card.card-red:hover {
+  border-color: #c62828;
+  background: rgba(198, 40, 40, 0.18);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(198, 40, 40, 0.45);
+}
+
+.loser-card-badge {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.card-blue .loser-card-badge {
+  color: #93c5fd;
+}
+
+.card-red .loser-card-badge {
+  color: #fca5a5;
+}
+
+.loser-card-status {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #d1d5db;
+}
+
+.loser-card-btn {
+  margin-top: 0.6rem;
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #ffffff;
+  transition: background 0.2s ease;
+}
+
+.card-blue:hover .loser-card-btn {
+  background: #1351d8;
+}
+
+.card-red:hover .loser-card-btn {
+  background: #c62828;
+}
+
+.lol-reselect-loser-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #9ca3af;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.lol-reselect-loser-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ---------------------------------------------------------------------
+   ROZHOZENÍ ROLÍ HRÁČŮ — VELKÁ MAPA S MODRÝM A ČERVENÝM SLOUPECEM
+   --------------------------------------------------------------------- */
+.roles-workspace-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1340px;
+  animation: viewFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.roles-workspace-header {
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+
+.roles-match-tag {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #86efac;
+  margin-bottom: 0.25rem;
+}
+
+.roles-title {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 1.55rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.roles-subtitle {
+  font-size: 0.86rem;
+  color: #9ca3af;
+  margin-top: 0.25rem;
+}
+
+/* Hlavní 3-sloupcová scéna: Modrý sloupeček | Velká mapa s pozicemi | Červený sloupeček */
+.lol-map-roles-stage {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 1.4rem;
+  width: 100%;
+}
+
+/* Týmové sloupečky — úzký moderní sloupeček s fixní výškou pro 5 karet, aby se po přesunu hráče nezmenšoval */
+.roles-team-column {
+  width: 136px;
+  min-width: 136px;
+  height: 696px;
+  min-height: 696px;
+  box-sizing: border-box;
+  border-radius: 14px;
+  padding: 0.75rem 0.55rem;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+/* Modrý sloupeček — jako styl dlaždice vítězného modrého týmu */
+.roles-team-column.team-blue-col {
+  background: linear-gradient(180deg, #1351d8 0%, #0d3896 100%);
+  border: 2px solid #2563eb;
+  box-shadow: 0 8px 28px rgba(19, 81, 216, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Červený sloupeček — jako styl dlaždice vítězného červeného týmu */
+.roles-team-column.team-red-col {
+  background: linear-gradient(180deg, #c62828 0%, #8e1b1b 100%);
+  border: 2px solid #ef4444;
+  box-shadow: 0 8px 28px rgba(198, 40, 40, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.roles-team-col-header {
+  text-align: center;
+  margin-bottom: 0.55rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
+}
+
+.roles-team-col-title {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 0.86rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #ffffff;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.roles-team-pool {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  justify-content: flex-start;
+}
+
+/* Hráčská dlaždice — fixní velikost, vertikálně větší pro krásný portrét */
+.player-draggable-tile {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  flex: none;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #0d1117;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  cursor: grab;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  touch-action: none;
+}
+
+.player-draggable-tile:hover {
+  border-color: #ffffff;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+.player-draggable-tile:active {
+  cursor: grabbing;
+}
+
+.player-draggable-tile.tile-blue {
+  border-color: rgba(96, 165, 250, 0.5);
+}
+
+.player-draggable-tile.tile-blue:hover {
+  border-color: #93c5fd;
+  box-shadow: 0 6px 20px rgba(19, 81, 216, 0.55);
+}
+
+.player-draggable-tile.tile-red {
+  border-color: rgba(248, 113, 113, 0.5);
+}
+
+.player-draggable-tile.tile-red:hover {
+  border-color: #fca5a5;
+  box-shadow: 0 6px 20px rgba(198, 40, 40, 0.55);
+}
+
+.player-draggable-tile.is-selected {
+  border-color: #facc15 !important;
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.75) !important;
+  transform: scale(1.04);
+}
+
+.player-draggable-tile.is-dragging {
+  opacity: 0.35;
+}
+
+.tile-player-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+  pointer-events: none;
+}
+
+.tile-player-name-banner {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.65) 25%, rgba(0, 0, 0, 0.95) 100%);
+  padding: 10px 4px 4px 4px;
+  color: #ffffff;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.roles-pool-empty-placeholder {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: rgba(255, 255, 255, 0.65);
+  text-transform: uppercase;
+  text-align: center;
+  padding: 1.5rem 0.2rem;
+  border: 1.5px dashed rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.15);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Kontejner velké mapy — obnovena původní velká velikost */
+.roles-map-board {
+  position: relative;
+  flex: 1;
+  max-width: 985px;
+  height: 696px;
+  aspect-ratio: 1.41;
+  /* 624 / 444 */
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 42px rgba(0, 0, 0, 0.65);
+  background-color: #0d1117;
+  user-select: none;
+}
+
+/* Podkladová mapa při rozhazování rolí */
+.roles-map-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  /* ZDE MŮŽETE ZESVĚTLIT / ZTMAVIT MAPU: */
+  /* brightness(1.0) = původní, vyšší hodnota = světlejší (např. 1.25 = o 25 % světlejší) */
+  filter: brightness(1.25) contrast(1.05);
+}
+
+/* Šedé čtverečky na mapě pro pozice (TOP, JUNGLE, MID, ADC, BOT) — zvětšené */
+.map-role-slot {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  transform: translate(-50%, -50%);
+  border-radius: 14px;
+  background: rgba(18, 22, 30, 0.85);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  /* ZÁKLAD: Nereaguje, pokud se nedrží kartička hráče */
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 5;
+  user-select: none;
+}
+
+.map-role-slot.slot-side-blue {
+  border: 2px dashed rgba(96, 165, 250, 0.45);
+}
+
+.map-role-slot.slot-side-red {
+  border: 2px dashed rgba(248, 113, 113, 0.45);
+}
+
+/* Prázdný slot na mapě nemá hover ani transformaci, dokud se nedrží hráč */
+.map-role-slot.is-drop-target {
+  cursor: pointer;
+  border-color: #facc15 !important;
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.65) !important;
+  background: rgba(35, 42, 58, 0.95);
+  transform: translate(-50%, -50%) scale(1.05);
+  animation: slotPulse 1.8s ease-in-out infinite;
+}
+
+.map-role-slot.is-drop-target:hover {
+  border-color: #ffffff !important;
+  box-shadow: 0 0 24px rgba(255, 255, 255, 0.75) !important;
+  background: rgba(50, 60, 80, 0.98);
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.roles-map-board.dragging-side-blue .map-role-slot[data-side="blue"]:not(.is-filled),
+.roles-map-board.dragging-side-red .map-role-slot[data-side="red"]:not(.is-filled) {
+  cursor: pointer;
+  border-color: #facc15 !important;
+  box-shadow: 0 0 18px rgba(250, 204, 21, 0.65) !important;
+  transform: translate(-50%, -50%) scale(1.04);
+}
+
+.map-role-slot.is-drag-over {
+  border-color: #ffffff !important;
+  background: rgba(55, 65, 85, 0.98) !important;
+  box-shadow: 0 0 24px rgba(255, 255, 255, 0.75) !important;
+  transform: translate(-50%, -50%) scale(1.1) !important;
+}
+
+@keyframes slotPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 14px rgba(250, 204, 21, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 22px rgba(250, 204, 21, 0.75);
+  }
+}
+
+/* Vnitřek prázdného šedého slotu (pouze role, žádný nápis týmu) */
+.slot-empty-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.slot-role-tag {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.98rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.75);
+  text-transform: uppercase;
+}
+
+/* Obsazený slot hráčem (fotka + overlay) */
+.map-role-slot.is-filled {
+  border-style: solid;
+  cursor: grab;
+  padding: 0;
+  overflow: hidden;
+}
+
+.map-role-slot.is-filled:hover {
+  transform: translate(-50%, -50%) scale(1.06);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+}
+
+.map-role-slot.is-filled:active {
+  cursor: grabbing;
+}
+
+.map-role-slot.is-filled.slot-blue {
+  border-color: #60a5fa;
+  box-shadow: 0 4px 18px rgba(19, 81, 216, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.map-role-slot.is-filled.slot-red {
+  border-color: #f87171;
+  box-shadow: 0 4px 18px rgba(198, 40, 40, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Zvýraznění vybraného hráče pro prohození na mapě */
+.map-role-slot.is-filled.is-selected {
+  border-color: #facc15 !important;
+  box-shadow: 0 0 24px rgba(250, 204, 21, 0.85) !important;
+  transform: translate(-50%, -50%) scale(1.08) !important;
+  z-index: 12;
+}
+
+/* Ostatní obsazené sloty vlastního týmu při výběru — indikace možnosti prohození */
+.map-role-slot.is-filled.can-swap {
+  cursor: pointer;
+}
+
+.map-role-slot.is-filled.can-swap:hover {
+  border-color: #facc15 !important;
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.7) !important;
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+.slot-player-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+/* Pouze jméno dole na fotce — žádný text TOP/ADC, žádný křížek */
+.slot-filled-name-banner {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.75) 35%, rgba(0, 0, 0, 0.95) 100%);
+  padding: 8px 2px 4px 2px;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.6px;
+  color: #ffffff;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.roles-confirm-bar {
+  position: absolute;
+  top: calc(100% + 2.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  width: max-content;
+  z-index: 20;
+}
+
+.confirm-roles-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.8rem 2rem;
+  border-radius: 10px;
+  background: #86efac;
+  color: #0f172a;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(134, 239, 172, 0.35);
+}
+
+.confirm-roles-btn:hover {
+  background: #4ade80;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(134, 239, 172, 0.5);
+}
+
+/* ---------------------------------------------------------------------
+   ROZŠÍŘENÝ SOUHRN (VČETNĚ ROLÍ)
+   --------------------------------------------------------------------- */
+.lol-summary-full-wrapper {
+  max-width: 1020px;
+}
+
+.lol-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.4rem;
+  width: 100%;
+}
+
+.lol-summary-match-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.lol-summary-roles-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.summary-team-roles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.summary-team-roles-title {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  margin-bottom: 0.2rem;
+}
+
+.summary-team-roles-title.text-blue {
+  color: #93c5fd;
+}
+
+.summary-team-roles-title.text-red {
+  color: #fca5a5;
+}
+
+.summary-role-line {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+}
+
+.summary-role-badge {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #d1d5db;
+}
+
+.summary-role-pname {
+  color: #ffffff;
+  font-weight: 700;
+}

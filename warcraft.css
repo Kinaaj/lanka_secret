@@ -1,0 +1,274 @@
+/* =====================================================================
+   WARCRAFT III PICKING STYLES (DĚDÍ VŠECHNO Z cs.css)
+   PŘIZPŮSOBENÍ PRO MAPY NA ŠÍŘKU (LANDSCAPE POMĚR STRAN ~ 1.42 : 1)
+   ===================================================================== */
+
+/* Mřížka map — karty na šířku (landscape) odpovídající rozlišení map */
+.map-card-image-box {
+  width: 100%;
+  aspect-ratio: 1.42 / 1;
+  height: auto !important;
+  background-color: #1a1c22;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Obrázek mapy na kartě */
+.map-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  display: block;
+}
+
+/* Tlačítko pro detail mapy v pravém horním rohu dlaždice */
+.map-detail-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 12;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.32rem 0.65rem;
+  border-radius: 7px;
+  background: rgba(14, 18, 25, 0.88);
+  border: 1.2px solid rgba(255, 255, 255, 0.25);
+  color: #f1f5f9;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+  user-select: none;
+}
+
+.map-detail-btn:hover {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: #facc15;
+  color: #ffffff;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.75), 0 0 14px rgba(250, 204, 21, 0.45);
+}
+
+.map-detail-btn svg {
+  width: 13px;
+  height: 13px;
+  stroke: #facc15;
+}
+
+/* Souhrn dokončení — obrázky na šířku */
+.summary-map-image-box {
+  width: 100%;
+  aspect-ratio: 1.42 / 1;
+  height: auto !important;
+  background-color: #1a1c22;
+  overflow: hidden;
+  position: relative;
+}
+
+.summary-map-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* =====================================================================
+   MODAL PRO DETAIL MAPY (LIGHTBOX SE ZAČERNĚNÝM POZADÍM)
+   ===================================================================== */
+.map-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(4, 6, 10, 0.92);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.map-modal-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.map-modal-window {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-width: 95vw;
+  max-height: 94vh;
+  background: #11141c;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.95), 0 0 40px rgba(0, 0, 0, 0.75);
+  transform: scale(0.96);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.map-modal-backdrop.is-open .map-modal-window {
+  transform: scale(1);
+}
+
+.map-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.4rem;
+  background: #171b26;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.12);
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.map-modal-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.map-modal-title {
+  margin: 0;
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.map-modal-badge {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.map-modal-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.map-modal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.95rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.map-modal-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: #ffffff;
+}
+
+.map-modal-toggle-numbers.is-active {
+  background: rgba(245, 158, 11, 0.22);
+  border-color: #f59e0b;
+  color: #fbbf24;
+}
+
+.map-modal-close-btn {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+}
+
+.map-modal-close-btn:hover {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: #ef4444;
+  color: #ffffff;
+}
+
+.map-modal-image-area {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #090b10;
+  overflow: auto;
+  padding: 0.6rem;
+  max-height: calc(94vh - 65px);
+}
+
+.map-modal-img {
+  max-width: 100%;
+  max-height: calc(94vh - 80px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  border-radius: 6px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.85);
+}
+
+/* Krok 0: Poražený z CS2 v timeline */
+.timeline-cs2loser-node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.95rem;
+  border-radius: 11px;
+  background-color: #22252c;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+  user-select: none;
+}
+
+.timeline-cs2loser-node.is-active {
+  border-color: #ffffff;
+  background-color: #2b303c;
+  transform: scale(1.04);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 12px rgba(255, 255, 255, 0.18);
+}
+
+.timeline-cs2loser-node.is-completed {
+  border-color: rgba(255, 255, 255, 0.15);
+  opacity: 0.75;
+}
+
+.cs2loser-svg {
+  width: 17px;
+  height: 17px;
+  display: block;
+  stroke: #f59e0b;
+  flex-shrink: 0;
+}
+
+

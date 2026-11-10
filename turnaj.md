@@ -22,7 +22,7 @@
 
 #### Krátká pauza
 
-#### Warcraft III (Bo1? nebo Bo3?)
+#### Warcraft III (Bo3)
 - Týmová porada
 - 1. Mapa
 - ...??
@@ -56,6 +56,22 @@
 #### Wreckfest (Bo3 či Bo5)
 - Upřesníme.
 
+
+## Soupiska týmů
+
+#### Červený tým
+- Kinaj (kapitán)
+- Balib
+- Pravdomil
+- Kahanate
+- Trebkiller
+
+#### Modrý tým
+- Koda (kapitán)
+- Giry
+- Winters
+- Vojcii
+- Chleba
 
 ## Co udělat po tom, co dojedou
 - Zapojit PC.

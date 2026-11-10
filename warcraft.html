@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lanka 2027 — Warcraft III Pickování map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Orbitron:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="cs.css">
+  <link rel="stylesheet" href="warcraft.css">
+</head>
+
+<body>
+
+  <!-- ── BAREVNÝ PRUH VLEVO (Modrá) ────────────────────────────────────── -->
+  <div class="side-panel side-panel-left" aria-hidden="true">
+    <div class="side-surface side-surface-blue"></div>
+    <svg class="side-edge side-edge-left" viewBox="0 0 50 1000" preserveAspectRatio="none">
+      <path class="side-stroke side-stroke-blue" d="M0,0 L50,180 L10,210 L45,460 L0,490 L50,750 L15,780 L40,1000" />
+    </svg>
+  </div>
+
+  <!-- ── BAREVNÝ PRUH VPRAVO (Červená) ─────────────────────────────────── -->
+  <div class="side-panel side-panel-right" aria-hidden="true">
+    <div class="side-surface side-surface-red"></div>
+    <svg class="side-edge side-edge-right" viewBox="0 0 55 1000" preserveAspectRatio="none">
+      <path class="side-stroke side-stroke-red" d="M15,0 L50,140 L20,160 L55,360 L25,390 L50,600 L12,630 L55,830 L25,860 L40,1000" />
+    </svg>
+  </div>
+
+  <main class="container" id="mainContainer">
+
+    <!-- Horní lišta: Indikátor týmu na řadě + HUD tlačítka -->
+    <header class="top-header">
+      <div class="top-turn-display" id="topTurnDisplay">
+        <!-- Renderováno dynamicky v warcraft.js -->
+      </div>
+
+      <div class="top-buttons-group">
+        <button id="resetPickBtn" class="hud-action-btn" title="Resetovat pickování map">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+          <span>RESET PICKU</span>
+        </button>
+        <a href="score.html" id="headerScoreBtn" class="hud-action-btn" title="Přejít na skóre">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span>SKÓRE</span>
+        </a>
+        <button id="fullscreenBtn" class="hud-action-btn" title="Zobrazit na celou obrazovku">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+          </svg>
+          <span>FULLSCREEN</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Hlavní rozvržení: Osnova vlevo + Pracovní plocha vpravo -->
+    <div class="pick-layout">
+      <!-- LEVÝ SLOUPEC: ČASOVÁ OSA -->
+      <aside class="timeline-column" id="timelineCol">
+        <div class="timeline-container" id="timelineContainer"></div>
+      </aside>
+
+      <!-- PRAVÁ ČÁST: INTERAKTIVNÍ VÝBĚR -->
+      <section class="workspace-column" id="workspaceCol"></section>
+    </div>
+
+  </main>
+
+  <!-- Modal: Detail mapy na celou obrazovku se začerněným pozadím -->
+  <div class="map-modal-backdrop" id="mapModalBackdrop" aria-hidden="true">
+    <div class="map-modal-window" role="dialog" aria-modal="true" aria-labelledby="mapModalTitle">
+      <div class="map-modal-header">
+        <div class="map-modal-title-wrap">
+          <h2 class="map-modal-title" id="mapModalTitle">Název mapy</h2>
+          <span class="map-modal-badge">Warcraft III</span>
+        </div>
+        <div class="map-modal-controls">
+          <button type="button" class="map-modal-btn map-modal-toggle-numbers" id="mapModalToggleNumbersBtn" title="Přepnout čísla kempů">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M7 7h10M7 12h10M7 17h6"/>
+            </svg>
+            <span id="mapModalToggleNumbersLabel">ČÍSLA KEMPŮ: ZAP</span>
+          </button>
+          <button type="button" class="map-modal-btn map-modal-close-btn" id="mapModalCloseBtn" title="Zavřít (Esc)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            <span>ZAVŘÍT</span>
+          </button>
+        </div>
+      </div>
+      <div class="map-modal-image-area">
+        <img src="" alt="" id="mapModalImg" class="map-modal-img" draggable="false">
+      </div>
+    </div>
+  </div>
+
+  <script src="warcraft.js"></script>
+</body>
+
+</html>
+

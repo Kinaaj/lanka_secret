@@ -30,8 +30,13 @@ body.teams-visible .spike-panel {
   width: 310px;
 }
 
-.spike-left  { left: 0; }
-.spike-right { right: 0; }
+.spike-left {
+  left: 0;
+}
+
+.spike-right {
+  right: 0;
+}
 
 /* Barevné plochy — clip-path VŽDY zigzag, jen šířka panelu se mění */
 .spike-surface {
@@ -42,38 +47,34 @@ body.teams-visible .spike-panel {
 
 .spike-surface-blue {
   background-color: #1351d8;
-  clip-path: polygon(
-    0% 0%,
-    calc(100% - 50px) 0%,
-    100% 18%,
-    calc(100% - 40px) 21%,
-    calc(100% - 5px) 46%,
-    calc(100% - 50px) 49%,
-    100% 75%,
-    calc(100% - 35px) 78%,
-    calc(100% - 10px) 100%,
-    0% 100%
-  );
-  filter: drop-shadow(6px 0 18px rgba(0,0,0,0.8)) drop-shadow(4px 0 14px rgba(19,81,216,0.6));
+  clip-path: polygon(0% 0%,
+      calc(100% - 50px) 0%,
+      100% 18%,
+      calc(100% - 40px) 21%,
+      calc(100% - 5px) 46%,
+      calc(100% - 50px) 49%,
+      100% 75%,
+      calc(100% - 35px) 78%,
+      calc(100% - 10px) 100%,
+      0% 100%);
+  filter: drop-shadow(6px 0 18px rgba(0, 0, 0, 0.8)) drop-shadow(4px 0 14px rgba(19, 81, 216, 0.6));
 }
 
 .spike-surface-red {
   background-color: #c62828;
-  clip-path: polygon(
-    15px 0%,
-    50px 14%,
-    20px 16%,
-    55px 36%,
-    25px 39%,
-    50px 60%,
-    12px 63%,
-    55px 83%,
-    25px 86%,
-    40px 100%,
-    100% 100%,
-    100% 0%
-  );
-  filter: drop-shadow(-6px 0 18px rgba(0,0,0,0.8)) drop-shadow(-4px 0 14px rgba(198,40,40,0.6));
+  clip-path: polygon(15px 0%,
+      50px 14%,
+      20px 16%,
+      55px 36%,
+      25px 39%,
+      50px 60%,
+      12px 63%,
+      55px 83%,
+      25px 86%,
+      40px 100%,
+      100% 100%,
+      100% 0%);
+  filter: drop-shadow(-6px 0 18px rgba(0, 0, 0, 0.8)) drop-shadow(-4px 0 14px rgba(198, 40, 40, 0.6));
 }
 
 /* SVG stroke — vždy viditelný, pasuje na inner edge */
@@ -103,8 +104,13 @@ body.teams-visible .spike-panel {
   fill: none;
 }
 
-.spike-stroke-blue { stroke: #93c5fd; }
-.spike-stroke-red  { stroke: #fca5a5; }
+.spike-stroke-blue {
+  stroke: #93c5fd;
+}
+
+.spike-stroke-red {
+  stroke: #fca5a5;
+}
 
 /* =====================================================================
    OBSAH SIDEBARU — skrytý v normálním módu
@@ -142,11 +148,11 @@ body.teams-visible .team-sidebar-content {
 }
 
 .blue-title-text {
-  text-shadow: 0 2px 14px rgba(0,0,0,0.9), 0 0 22px rgba(59,130,246,0.7);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 22px rgba(59, 130, 246, 0.7);
 }
 
 .red-title-text {
-  text-shadow: 0 2px 14px rgba(0,0,0,0.9), 0 0 22px rgba(239,68,68,0.7);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 22px rgba(239, 68, 68, 0.7);
 }
 
 /* Zigzag layout pro karty — 2 sub-sloupce jako v draft */
@@ -260,7 +266,7 @@ body.teams-visible .team-sidebar-content {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.55rem;
   font-weight: 600;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255, 255, 255, 0.45);
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
@@ -323,7 +329,10 @@ body.teams-visible .team-sidebar-content {
   transition: all 0.2s ease;
 }
 
-.hud-action-btn svg { width: 15px; height: 15px; }
+.hud-action-btn svg {
+  width: 15px;
+  height: 15px;
+}
 
 .hud-action-btn:hover {
   background-color: #323744;
@@ -434,9 +443,6 @@ body.teams-visible .content-area {
   display: block;
 }
 
-
-
-
 .labels-col {
   display: flex;
   flex-direction: column;
@@ -458,8 +464,14 @@ body.teams-visible .content-area {
   padding: 0 0.5rem;
 }
 
-.label-cell-icon   { height: 190px; flex-shrink: 0; }
-.label-cell-spacer { flex: 1; }
+.label-cell-icon {
+  height: 190px;
+  flex-shrink: 0;
+}
+
+.label-cell-spacer {
+  flex: 1;
+}
 
 .label-cell-winner {
   min-height: 100px;
@@ -507,7 +519,7 @@ body.teams-visible .content-area {
   height: 100%;
   object-fit: cover;
   object-position: center center;
-  opacity: 0.82;
+  opacity: 1;
   display: block;
 }
 
@@ -523,7 +535,20 @@ body.teams-visible .content-area {
   color: #4b5563;
   letter-spacing: 1.5px;
   text-align: center;
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.gcell-icon-clickable {
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+
+.gcell-icon-clickable:hover {
+  filter: brightness(1.18);
+}
+
+.gcell-icon-clickable:hover .game-icon-img {
+  opacity: 1;
 }
 
 /* Kontejner kol — výchozí prostorný režim pro max Bo3 */
@@ -531,7 +556,7 @@ body.teams-visible .content-area {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 295px;
+  min-height: 405px;
 }
 
 /* Buňka kola — výchozí prostorný režim */
@@ -540,7 +565,7 @@ body.teams-visible .content-area {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 98px;
+  min-height: 135px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   cursor: pointer;
   transition: background-color 0.15s ease;
@@ -554,7 +579,62 @@ body.teams-visible .content-area {
 }
 
 .score-table.has-bo5 .gcell-round {
-  min-height: 68px;
+  min-height: 80px;
+}
+
+/* Pozadí mapy v buňce kola */
+.round-bg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  /* ZDE LZE NASTAVIT PRŮHLEDNOST (OPACITY) OBRÁZKU MAPY: */
+  opacity: 0.8;
+  pointer-events: none;
+  z-index: 0;
+  filter: contrast(1.15) brightness(0.65);
+  transition: opacity 0.25s ease, transform 0.25s ease, filter 0.25s ease;
+}
+
+.gcell-round:hover .round-bg-image {
+  opacity: 0.52;
+  filter: contrast(1.15) brightness(0.75);
+  transform: scale(1.03);
+}
+
+/* Jemný tmavý přechod přes mapu pro perfektní kontrast textu a tečky */
+.round-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(22, 24, 29, 0.35) 0%, rgba(22, 24, 29, 0.75) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Popisek vybrané mapy a strany vlevo dole */
+.round-info-label {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  font-family: 'Chakra Petch', sans-serif;
+  /* ── ZDE LZE NASTAVIT VELIKOST A OPACITY PÍSMA POPISEK V BUŇKÁCH: ── */
+  font-size: 0.6rem;
+  opacity: 0.85;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95), 0 0 10px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  z-index: 5;
+  line-height: 1.1;
+  max-width: calc(100% - 20px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Klikací a hover zóny (vlevo modrá, vpravo červená) */
@@ -565,7 +645,7 @@ body.teams-visible .content-area {
   width: 50%;
   display: flex;
   align-items: center;
-  z-index: 1;
+  z-index: 3;
   opacity: 0;
   pointer-events: auto;
   cursor: pointer;
@@ -605,9 +685,8 @@ body.teams-visible .content-area {
   color: #fca5a5;
 }
 
-/* Při najetí na buňku se jemně rozsvítí obě strany (jasná indikace) */
-.gcell-round:hover .gcell-click-zone,
-.gcell-winner:hover .gcell-click-zone {
+/* Při najetí na buňku kola se jemně rozsvítí obě strany (jasná indikace) */
+.gcell-round:hover .gcell-click-zone {
   opacity: 0.85;
 }
 
@@ -627,41 +706,46 @@ body.teams-visible .content-area {
 }
 
 .round-dot {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  border: 2px solid rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.04);
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  background-color: #1a1c23;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
   transition: all 0.15s ease;
   position: relative;
-  z-index: 2;
+  z-index: 4;
   pointer-events: none;
 }
 
 /* Náhled zbarvení tečky, pokud je ještě prázdná a najedeme myší */
 .gcell-round:not(.state-blue):not(.state-red):has(.zone-left:hover) .round-dot {
+  background-color: #1a1c23;
   border-color: #60a5fa;
-  box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+  box-shadow: 0 0 12px rgba(96, 165, 250, 0.6), 0 2px 10px rgba(0, 0, 0, 0.7);
 }
 
 .gcell-round:not(.state-blue):not(.state-red):has(.zone-right:hover) .round-dot {
+  background-color: #1a1c23;
   border-color: #f87171;
-  box-shadow: 0 0 10px rgba(248, 113, 113, 0.5);
+  box-shadow: 0 0 12px rgba(248, 113, 113, 0.6), 0 2px 10px rgba(0, 0, 0, 0.7);
 }
 
 .gcell-round.state-blue .round-dot {
-  background: #1351d8;
+  background-color: #1351d8;
   border-color: #60a5fa;
+  box-shadow: 0 0 14px rgba(19, 81, 216, 0.7), 0 2px 10px rgba(0, 0, 0, 0.7);
 }
 
 .gcell-round.state-red .round-dot {
-  background: #c62828;
+  background-color: #c62828;
   border-color: #f87171;
+  box-shadow: 0 0 14px rgba(198, 40, 40, 0.7), 0 2px 10px rgba(0, 0, 0, 0.7);
 }
 
 .gcell-divider {
   height: 5px;
-  background: rgba(255,255,255,0.15);
+  background: rgba(255, 255, 255, 0.15);
   flex-shrink: 0;
   margin-top: 0;
 }
@@ -673,7 +757,7 @@ body.teams-visible .content-area {
   align-items: center;
   justify-content: center;
   min-height: 100px;
-  cursor: pointer;
+  cursor: default;
   transition: all 0.2s ease;
   font-family: 'Chakra Petch', 'Orbitron', sans-serif;
   font-size: 0.95rem;
@@ -683,7 +767,7 @@ body.teams-visible .content-area {
   color: #374151;
   user-select: none;
   background-color: #16181e;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   flex-shrink: 0;
 }
 
@@ -692,8 +776,6 @@ body.teams-visible .content-area {
   z-index: 2;
   pointer-events: none;
 }
-
-.gcell-winner:hover { background-color: #1e2128; color: #6b7280; }
 
 .gcell-winner.state-blue {
   background-color: #1351d8;
@@ -720,11 +802,11 @@ body.teams-visible .content-area {
   align-items: center;
   justify-content: center;
   width: 230px;
-  min-height: 490px;
+  min-height: 600px;
   background-color: #22252c;
-  border: 1px solid rgba(255,255,255,0.09);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 14px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
   transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   flex-shrink: 0;
   transform: translateY(-45px);
@@ -763,7 +845,7 @@ body.teams-visible .content-area {
 
 .tournament-winner-panel.winner-blue {
   border-color: #1351d8;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
   background-color: #1351d8;
 }
 
@@ -777,7 +859,7 @@ body.teams-visible .content-area {
 
 .tournament-winner-panel.winner-red {
   border-color: #c62828;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
   background-color: #c62828;
 }
 

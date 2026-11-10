@@ -1,25 +1,77 @@
 // =====================================================================
 // CONFIG
 // =====================================================================
-const NUM_GAMES = 5;
-const GAMES_TO_WIN = 3;
-const DEFAULT_ROUNDS = 3;
 
-// rounds:   počet kol pro danou hru (např. 1 pro Bo1, 3 pro Bo3, 5 pro Bo5)
-// position: CSS object-position (např. 'center top', '50% 30%')
-// scale:    přiblížení obrázku (1 = normální, 1.3 = 30% přiblížení)
-const GAME_ICONS = [
-  { label: 'HRA 1', src: 'assets/images/cs_icon.jpg', position: 'center top', scale: 1, rounds: 3 },
-  { label: 'HRA 2', src: 'assets/images/warcraft_logo.jpeg', position: 'center center', scale: 1.1, rounds: 1 },
-  { label: 'HRA 3', src: 'assets/images/lol_icon.webp', position: 'center center', scale: 1.05, rounds: 3 },
-  { label: 'HRA 4', src: 'assets/images/overwatch-2_logo.jpg', position: 'center center', scale: 1, rounds: 3 },
-  { label: 'HRA 5', src: 'assets/images/wreckfest_icon.webp', position: 'center top', scale: 1.15, rounds: 3 },
+// Seznam her v turnaji (pořadí v poli = pořadí sloupců na obrazovce):
+// - id:         jedinečný identifikátor hry (pro uložení dat, specifický pick, přestávky)
+// - name:       plný název hry
+// - src:        cesta k logu / ikoně
+// - rounds:     počet kol pro danou hru (např. 1 pro Bo1, 3 pro Bo3, 5 pro Bo5)
+// - pickUrl:    cesta na specifickou pickovací obrazovku (např. 'cs.html', pro hry bez picku nechat null)
+// - position:   CSS object-position (např. 'center top', '50% 30%')
+// - scale:      přiblížení obrázku (1 = normální, 1.15 = 15% přiblížení)
+// - label:      (volitelné) pokud chybí, automaticky se generuje 'HRA 1', 'HRA 2', atd.
+const GAMES = [
+  {
+    id: 'cs2',
+    name: 'Counter-Strike 2',
+    src: 'assets/images/cs_icon.jpg',
+    position: 'center top',
+    scale: 1,
+    rounds: 3,
+    pickUrl: 'cs.html',
+  },
+  {
+    id: 'warcraft',
+    name: 'Warcraft III',
+    src: 'assets/images/warcraft_logo.png',
+    position: 'center bottom',
+    translateX: -10,
+    scale: 1.25,
+    rounds: 3,
+    pickUrl: 'warcraft.html',
+  },
+  {
+    id: 'lol',
+    name: 'League of Legends',
+    src: 'assets/images/lol_icon.webp',
+    position: 'center center',
+    scale: 1.05,
+    rounds: 3,
+    pickUrl: 'lol.html',
+  },
+  {
+    id: 'overwatch',
+    name: 'Overwatch 2',
+    src: 'assets/images/overwatch-2_logo.jpg',
+    position: 'center center',
+    scale: 1,
+    rounds: 5,
+    pickUrl: null,
+  },
+  {
+    id: 'wreckfest',
+    name: 'Wreckfest',
+    src: 'assets/images/wreckfest_icon.webp',
+    position: 'center top',
+    scale: 1.15,
+    rounds: 3,
+    pickUrl: null,
+  },
 ];
 
-// Přestávky / jídlo mezi sloupečky (Varianta A)
+// Počet her a potřebný počet výher pro celkové vítězství
+const NUM_GAMES = GAMES.length;
+const GAMES_TO_WIN = Math.ceil(NUM_GAMES / 2);
+const DEFAULT_ROUNDS = 3;
+const GAME_ICONS = GAMES; // alias pro zpětnou kompatibilitu
+
+// Přestávky / jídlo mezi sloupečky
+// - afterGameId: umístí značku za hru s daným id (odolné proti změně pořadí her)
+// - afterGameIndex: alternativně lze zadat pevný index (0-based)
 const SCHEDULE_BREAKS = [
-  { afterGameIndex: 1, label: 'Oběd' },    // Mezi Warcraftem (Hra 2) a LoLkem (Hra 3)
-  { afterGameIndex: 3, label: 'Večeře' },  // Mezi Overwatchem (Hra 4) a Wreckfestem (Hra 5)
+  { afterGameId: 'warcraft', label: 'Oběd' },    // Mezi Warcraftem a další hrou
+  { afterGameId: 'overwatch', label: 'Večeře' }, // Mezi Overwatchem a další hrou
 ];
 
 
@@ -47,10 +99,86 @@ const ALL_PLAYERS_DEFAULT = [
 ];
 
 // =====================================================================
+// PICK DATA PRO JEDNOTLIVÉ HRY (z pickovací obrazovky)
+// Složka: map_picks/<gameId>/<mapId>.<ext>
+// =====================================================================
+function resolveMapImage(gameId, roundData) {
+  if (!roundData) return null;
+
+  // 1. Přímá cesta nebo explicitní název souboru
+  if (roundData.mapImage) {
+    if (roundData.mapImage.includes('/')) return roundData.mapImage;
+    return `map_picks/${gameId}/${roundData.mapImage}`;
+  }
+
+  // 2. ID nebo název mapy
+  const rawId = roundData.mapId || roundData.map || roundData.mapName;
+  if (!rawId) return null;
+
+  const cleanId = String(rawId).toLowerCase().trim()
+    .replace(/\s+/g, '')
+    .replace(/^dustii$/, 'dust2');
+
+  if (cleanId === 'cache') return `map_picks/${gameId}/cache.webp`;
+  return `map_picks/${gameId}/${cleanId}.jpg`;
+}
+
+function getGamePickData(gameId) {
+  try {
+    const raw = localStorage.getItem(`lanka_pick_${gameId}`);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {
+    console.error(`Chyba při čtení pick dat pro ${gameId}:`, e);
+  }
+  return null;
+}
+
+// =====================================================================
 // STAV SKÓRE
 // =====================================================================
 const results = GAME_ICONS.map(g => new Array(g.rounds || DEFAULT_ROUNDS).fill(0));
 const gameWinner = new Array(NUM_GAMES).fill(0);
+
+function saveTournamentScore() {
+  try {
+    localStorage.setItem('lanka_tournament_score', JSON.stringify({ results, gameWinner }));
+  } catch (e) { /* ignore */ }
+}
+
+function loadTournamentScore() {
+  try {
+    const raw = localStorage.getItem('lanka_tournament_score');
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (Array.isArray(data.results)) {
+        data.results.forEach((rArr, g) => {
+          if (results[g] && Array.isArray(rArr)) {
+            rArr.forEach((val, r) => {
+              if (results[g][r] !== undefined) results[g][r] = val;
+            });
+          }
+        });
+      }
+      if (Array.isArray(data.gameWinner)) {
+        data.gameWinner.forEach((w, g) => {
+          if (gameWinner[g] !== undefined) gameWinner[g] = w;
+        });
+      }
+
+      // Pojistka: pokud vítěz hry nebyl explicitně uložen, dopočítáme z kol
+      for (let g = 0; g < NUM_GAMES; g++) {
+        if (!gameWinner[g] && results[g]) {
+          const numRounds = GAME_ICONS[g].rounds || DEFAULT_ROUNDS;
+          const maj = Math.ceil(numRounds / 2);
+          const b = results[g].filter(v => v === 1).length;
+          const r = results[g].filter(v => v === 2).length;
+          if (b >= maj && b > r) gameWinner[g] = 1;
+          else if (r >= maj && r > b) gameWinner[g] = 2;
+        }
+      }
+    }
+  } catch (e) { /* ignore */ }
+}
 
 // =====================================================================
 // SCORE TABLE
@@ -85,25 +213,99 @@ function buildTable() {
 
   // Herní sloupce
   for (let g = 0; g < NUM_GAMES; g++) {
-    const game = GAME_ICONS[g];
+    const game = GAMES[g];
     const numRounds = game.rounds || DEFAULT_ROUNDS;
+    const gameLabel = game.label || `HRA ${g + 1}`;
 
     const col = document.createElement('div');
     col.className = 'game-col';
     col.id = `gameCol-${g}`;
+    if (gameWinner[g] === 1) col.classList.add('col-blue');
+    else if (gameWinner[g] === 2) col.classList.add('col-red');
 
     // Ikona
     const iconCell = document.createElement('div');
     iconCell.className = 'gcell-icon';
+    if (game.pickUrl) {
+      iconCell.classList.add('gcell-icon-clickable');
+      iconCell.title = `Přejít na pickování (${game.name || gameLabel})`;
+      iconCell.addEventListener('click', () => {
+        let url = game.pickUrl;
+        if (game.id === 'warcraft') {
+          let cs2W = gameWinner[0];
+          if (!cs2W && results[0]) {
+            const b = results[0].filter(v => v === 1).length;
+            const r = results[0].filter(v => v === 2).length;
+            if (b >= 2) cs2W = 1;
+            else if (r >= 2) cs2W = 2;
+          }
+          if (cs2W === 1) {
+            url += '?cs2_winner=blue';
+          } else if (cs2W === 2) {
+            url += '?cs2_winner=red';
+          }
+        }
+        if (game.id === 'lol') {
+          let g0W = gameWinner[0];
+          let g1W = gameWinner[1];
+          if (!g0W && results[0]) {
+            const b = results[0].filter(v => v === 1).length;
+            const r = results[0].filter(v => v === 2).length;
+            if (b >= 2) g0W = 1;
+            else if (r >= 2) g0W = 2;
+          }
+          if (!g1W && results[1]) {
+            const b = results[1].filter(v => v === 1).length;
+            const r = results[1].filter(v => v === 2).length;
+            if (b >= 2) g1W = 1;
+            else if (r >= 2) g1W = 2;
+          }
+
+          const params = [];
+          if (g0W === 1 && g1W === 1) {
+            params.push('lead=blue');
+          } else if (g0W === 2 && g1W === 2) {
+            params.push('lead=red');
+          }
+
+          const lol1 = (results[2] && results[2][0]) || (gameWinner[2] || 0);
+          const lol2 = (results[2] && results[2][1]) || 0;
+          if (lol1 === 1) params.push('lol_g1=blue');
+          else if (lol1 === 2) params.push('lol_g1=red');
+          if (lol2 === 1) params.push('lol_g2=blue');
+          else if (lol2 === 2) params.push('lol_g2=red');
+
+          if (params.length > 0) {
+            url += '?' + params.join('&');
+          }
+        }
+        window.location.href = url;
+      });
+    }
     const img = document.createElement('img');
     img.src = game.src;
-    img.alt = game.label;
+    img.alt = gameLabel;
     img.className = 'game-icon-img';
     img.style.objectPosition = game.position || 'center center';
+    const transforms = [];
     if (game.scale && game.scale !== 1) {
-      img.style.transform = `scale(${game.scale})`;
+      transforms.push(`scale(${game.scale})`);
     }
-    img.onerror = () => img.replaceWith(createIconFallback(game.label));
+    const offX = game.translateX !== undefined ? game.translateX : game.offsetX;
+    if (offX !== undefined) {
+      transforms.push(`translateX(${typeof offX === 'number' ? offX + 'px' : offX})`);
+    }
+    const offY = game.translateY !== undefined ? game.translateY : game.offsetY;
+    if (offY !== undefined) {
+      transforms.push(`translateY(${typeof offY === 'number' ? offY + 'px' : offY})`);
+    }
+    if (game.transform) {
+      transforms.push(game.transform);
+    }
+    if (transforms.length > 0) {
+      img.style.transform = transforms.join(' ');
+    }
+    img.onerror = () => img.replaceWith(createIconFallback(gameLabel));
     iconCell.appendChild(img);
     col.appendChild(iconCell);
 
@@ -111,9 +313,51 @@ function buildTable() {
     const roundsWrapper = document.createElement('div');
     roundsWrapper.className = 'gcell-rounds-wrapper';
 
+    // Pick data pro celou hru (pokud existují)
+    const pickData = getGamePickData(game.id);
+
     for (let r = 0; r < numRounds; r++) {
       const roundCell = document.createElement('div');
       roundCell.className = 'gcell-round';
+      roundCell.id = `roundCell-${g}-${r}`;
+
+      // ── MAPA NA POZADÍ A INFO VLEVO DOLE (z picku) ──
+      const roundData = pickData?.rounds?.[r];
+      if (roundData) {
+        const mapImgSrc = resolveMapImage(game.id, roundData);
+        if (mapImgSrc) {
+          const bg = document.createElement('div');
+          bg.className = 'round-bg-image';
+          bg.style.backgroundImage = `url('${encodeURI(mapImgSrc)}')`;
+          roundCell.appendChild(bg);
+
+          const overlay = document.createElement('div');
+          overlay.className = 'round-bg-overlay';
+          roundCell.appendChild(overlay);
+        }
+
+        const mapTitle = roundData.mapName || roundData.metaTop || roundData.map || '';
+        let ctLabel = '';
+        // U Warcraftu chceme zobrazit pouze název mapy (žádné Modří, Červení ani Decider)
+        if (game.id !== 'warcraft') {
+          if (roundData.ctTeam) {
+            ctLabel = `CT: ${roundData.ctTeam === 'blue' ? 'Modří' : 'Červení'}`;
+          } else if (roundData.metaBottom) {
+            ctLabel = roundData.metaBottom
+              .replace(/MODRÝ/i, 'Modří')
+              .replace(/ČERVENÝ/i, 'Červení');
+          }
+        }
+
+        const infoText = [mapTitle, ctLabel].filter(Boolean).join(', ');
+
+        if (infoText) {
+          const infoEl = document.createElement('div');
+          infoEl.className = 'round-info-label';
+          infoEl.textContent = infoText;
+          roundCell.appendChild(infoEl);
+        }
+      }
 
       const zoneLeft = document.createElement('div');
       zoneLeft.className = 'gcell-click-zone zone-left';
@@ -167,53 +411,19 @@ function buildTable() {
     winCell.className = 'gcell-winner';
     winCell.id = `gameWinnerCell-${g}`;
 
-    const winZoneLeft = document.createElement('div');
-    winZoneLeft.className = 'gcell-click-zone zone-left';
-    winZoneLeft.title = 'Vítěz: Modrý tým';
-    const winLabelLeft = document.createElement('span');
-    winLabelLeft.className = 'zone-label';
-    winLabelLeft.textContent = 'MODRÝ';
-    winZoneLeft.appendChild(winLabelLeft);
-
-    const winZoneRight = document.createElement('div');
-    winZoneRight.className = 'gcell-click-zone zone-right';
-    winZoneRight.title = 'Vítěz: Červený tým';
-    const winLabelRight = document.createElement('span');
-    winLabelRight.className = 'zone-label';
-    winLabelRight.textContent = 'ČERVENÝ';
-    winZoneRight.appendChild(winLabelRight);
-
     const winText = document.createElement('span');
     winText.className = 'winner-cell-text';
-
-    winCell.appendChild(winZoneLeft);
-    winCell.appendChild(winZoneRight);
     winCell.appendChild(winText);
 
     applyWinnerState(winCell, gameWinner[g]);
-
-    winCell.addEventListener('click', (e) => {
-      const rect = winCell.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const isLeft = clickX < rect.width / 2;
-
-      if (isLeft) {
-        gameWinner[g] = gameWinner[g] === 1 ? 0 : 1;
-      } else {
-        gameWinner[g] = gameWinner[g] === 2 ? 0 : 2;
-      }
-
-      applyWinnerState(winCell, gameWinner[g]);
-      applyColHighlight(g);
-      updateTournamentWinner();
-    });
     col.appendChild(winCell);
 
-    applyColHighlight(g);
     table.appendChild(col);
+    applyColHighlight(g, col);
   }
 
   renderBreakMarkers(table);
+  updateTournamentWinner();
 }
 
 function renderBreakMarkers(table) {
@@ -240,9 +450,14 @@ function renderBreakMarkers(table) {
   }
 
   SCHEDULE_BREAKS.forEach(b => {
+    let afterIdx = b.afterGameIndex;
+    if (afterIdx === undefined && b.afterGameId) {
+      afterIdx = GAMES.findIndex(g => g.id === b.afterGameId);
+    }
+    if (afterIdx === undefined || afterIdx < 0) return;
 
-    const leftCol = document.getElementById(`gameCol-${b.afterGameIndex}`);
-    const rightCol = document.getElementById(`gameCol-${b.afterGameIndex + 1}`);
+    const leftCol = document.getElementById(`gameCol-${afterIdx}`);
+    const rightCol = document.getElementById(`gameCol-${afterIdx + 1}`);
     if (!leftCol || !rightCol) return;
 
     const marker = document.createElement('div');
@@ -297,8 +512,8 @@ function applyWinnerState(cell, state) {
   else { textEl.textContent = ''; }
 }
 
-function applyColHighlight(g) {
-  const col = document.getElementById(`gameCol-${g}`);
+function applyColHighlight(g, colEl) {
+  const col = colEl || document.getElementById(`gameCol-${g}`);
   if (!col) return;
   col.classList.remove('col-blue', 'col-red');
   if (gameWinner[g] === 1) col.classList.add('col-blue');
@@ -313,12 +528,12 @@ function recalcGameWinner(g) {
     if (results[g][r] === 2) red++;
   }
   const maj = Math.ceil(numRounds / 2);
-  const cell = document.getElementById(`gameWinnerCell-${g}`);
-  if (!cell) return;
   if (blue >= maj && blue > red) gameWinner[g] = 1;
   else if (red >= maj && red > blue) gameWinner[g] = 2;
   else gameWinner[g] = 0;
-  applyWinnerState(cell, gameWinner[g]);
+
+  const cell = document.getElementById(`gameWinnerCell-${g}`);
+  if (cell) applyWinnerState(cell, gameWinner[g]);
   applyColHighlight(g);
 }
 
@@ -340,6 +555,7 @@ function updateTournamentWinner() {
   } else {
     val.textContent = '—';
   }
+  saveTournamentScore();
 }
 
 // =====================================================================
@@ -431,25 +647,80 @@ function createEmptySlot() {
 document.getElementById('resetBtn').addEventListener('click', () => {
   results.forEach(gRounds => gRounds.fill(0));
   gameWinner.fill(0);
+  try {
+    localStorage.removeItem('lanka_tournament_score');
+  } catch (e) { /* ignore */ }
   buildTable();
   updateTournamentWinner();
 });
 
 // =====================================================================
-// FULLSCREEN
+// INIT & EXTERNAL SYNC
 // =====================================================================
-document.getElementById('fullscreenBtn').addEventListener('click', () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(() => { });
-  } else {
-    document.exitFullscreen().catch(() => { });
+
+// Synchronizace pick dat z URL parametrů (zajišťuje spolehlivý přenos i přes file:// protokol)
+function syncPickDataFromUrl() {
+  try {
+    const url = new URL(window.location.href);
+    let hasUpdates = false;
+
+    // 1. Zpracování resetu hry (?reset_cs2=1)
+    for (const [key] of url.searchParams.entries()) {
+      if (key.startsWith('reset_')) {
+        const gameId = key.replace('reset_', '');
+        localStorage.removeItem(`lanka_pick_${gameId}`);
+        hasUpdates = true;
+      }
+    }
+
+    // 2. Zpracování picknutých dat hry (?pick_cs2=...)
+    for (const [key, value] of url.searchParams.entries()) {
+      if (key.startsWith('pick_')) {
+        const gameId = key.replace('pick_', '');
+        try {
+          const data = JSON.parse(decodeURIComponent(value));
+          localStorage.setItem(`lanka_pick_${gameId}`, JSON.stringify(data));
+          hasUpdates = true;
+        } catch (err) {
+          console.error('Chyba při parsování dat z URL pro ' + gameId, err);
+        }
+      }
+    }
+
+    // 3. Po synchronizaci vyčistíme URL, aby adresa zůstala čistá
+    if (hasUpdates) {
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, '', cleanUrl);
+    }
+  } catch (e) {
+    console.warn('Nelze synchronizovat pick data z URL:', e);
+  }
+}
+
+syncPickDataFromUrl();
+loadTournamentScore();
+buildTable();
+
+window.addEventListener('pageshow', () => {
+  syncPickDataFromUrl();
+  loadTournamentScore();
+  buildTable();
+});
+
+// Automatická aktualizace tabulky při změně pick dat (např. z jiné záložky)
+window.addEventListener('storage', (e) => {
+  if (e.key && e.key.startsWith('lanka_pick_')) {
+    buildTable();
+    updateTournamentWinner();
   }
 });
 
-// =====================================================================
-// INIT
-// =====================================================================
-buildTable();
+// Pomocná globální funkce pro uložení pick dat a okamžité překreslení
+window.setGamePickData = (gameId, data) => {
+  localStorage.setItem(`lanka_pick_${gameId}`, JSON.stringify(data));
+  buildTable();
+  updateTournamentWinner();
+};
 
 window.addEventListener('resize', () => {
   renderBreakMarkers();

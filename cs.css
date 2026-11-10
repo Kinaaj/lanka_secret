@@ -1,0 +1,1704 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  background-color: #1a1c22;
+  color: #e5e7eb;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* =====================================================================
+   BOČNÍ BAREVNÉ PRUHY (Blesková hrana)
+   ===================================================================== */
+.side-panel {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: 80px;
+  z-index: 10;
+  overflow: hidden;
+  pointer-events: none;
+  transition: opacity 0.35s ease, filter 0.35s ease;
+}
+
+.side-panel-left {
+  left: 0;
+}
+
+.side-panel-right {
+  right: 0;
+}
+
+body.turn-active-blue .side-panel-left {
+  opacity: 1;
+  filter: brightness(1.25);
+}
+
+body.turn-active-blue .side-panel-right {
+  opacity: 0.18;
+  filter: grayscale(0.7);
+}
+
+body.turn-active-red .side-panel-right {
+  opacity: 1;
+  filter: brightness(1.25);
+}
+
+body.turn-active-red .side-panel-left {
+  opacity: 0.18;
+  filter: grayscale(0.7);
+}
+
+.side-surface {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.side-surface-blue {
+  background-color: #1351d8;
+  clip-path: polygon(0% 0%,
+      calc(100% - 50px) 0%,
+      100% 18%,
+      calc(100% - 40px) 21%,
+      calc(100% - 5px) 46%,
+      calc(100% - 50px) 49%,
+      100% 75%,
+      calc(100% - 35px) 78%,
+      calc(100% - 10px) 100%,
+      0% 100%);
+  filter: drop-shadow(6px 0 18px rgba(0, 0, 0, 0.8)) drop-shadow(4px 0 14px rgba(19, 81, 216, 0.6));
+}
+
+.side-surface-red {
+  background-color: #c62828;
+  clip-path: polygon(15px 0%,
+      50px 14%,
+      20px 16%,
+      55px 36%,
+      25px 39%,
+      50px 60%,
+      12px 63%,
+      55px 83%,
+      25px 86%,
+      40px 100%,
+      100% 100%,
+      100% 0%);
+  filter: drop-shadow(-6px 0 18px rgba(0, 0, 0, 0.8)) drop-shadow(-4px 0 14px rgba(198, 40, 40, 0.6));
+}
+
+.side-edge {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.side-edge-left {
+  right: 0;
+  width: 50px;
+}
+
+.side-edge-right {
+  left: 0;
+  width: 55px;
+}
+
+.side-stroke {
+  stroke-width: 2;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  fill: none;
+}
+
+.side-stroke-blue {
+  stroke: #93c5fd;
+}
+
+.side-stroke-red {
+  stroke: #fca5a5;
+}
+
+/* =====================================================================
+   HLAVNÍ KONTEJNER
+   ===================================================================== */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 0 95px;
+}
+
+/* =====================================================================
+   HORNÍ LIŠTA: TÝM NA ŘADĚ (UPROSTŘED NAHOŘE) + HUD TLAČÍTKA (VPRAVO)
+   ===================================================================== */
+.top-header {
+  position: fixed;
+  top: 1.15rem;
+  left: 95px;
+  right: 95px;
+  z-index: 200;
+  pointer-events: none;
+}
+
+.top-turn-display {
+  position: fixed;
+  top: 1.15rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 3rem;
+  border-radius: 10px;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 900;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #ffffff;
+  user-select: none;
+  pointer-events: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  transition: background-color 0.25s ease;
+}
+
+.top-turn-display.turn-card-blue {
+  background-color: #1351d8;
+}
+
+.top-turn-display.turn-card-red {
+  background-color: #c62828;
+}
+
+.top-turn-display.is-hidden {
+  display: none !important;
+}
+
+.top-buttons-group {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  pointer-events: auto;
+}
+
+.hud-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 6px;
+  background-color: #22252c;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e5e7eb;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.hud-action-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.hud-action-btn:hover {
+  background-color: #323744;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+/* =====================================================================
+   HLAVNÍ ROZLOŽENÍ: OSNOVA VLEVO + PLOCHA VPRAVO
+   ===================================================================== */
+.pick-layout {
+  display: flex;
+  align-items: stretch;
+  gap: 3.5rem;
+  width: 100%;
+  max-width: 1750px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 1.5rem 0;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* =====================================================================
+   LEVÁ ČASOVÁ OSA (OSNOVA PICKOVÁNÍ) — ZVĚTŠENÁ NA PLNOU VÝŠKU
+   ===================================================================== */
+.timeline-column {
+  width: 360px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  margin: auto 0;
+}
+
+.timeline-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+}
+
+/* Po zvolení týmů nápisy Tým A / Tým B zmizí a osa se plně vycentruje */
+.timeline-container.teams-chosen .timeline-row-team,
+.timeline-container.teams-chosen .timeline-row-team-spacer {
+  display: none;
+}
+
+/* Řádek osnovy: Vlevo tým (těsně u osy), vpravo akce */
+.timeline-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* Aktivní řádek je plně zvýrazněn */
+.timeline-row.is-active {
+  opacity: 1;
+}
+
+/* Již proběhlé řádky jsou mírně ztlumeny */
+.timeline-row.is-completed {
+  opacity: 0.8;
+}
+
+/* Budoucí řádky, které teprve přijdou na řadu, jsou decentně ztlumeny, ale jasně čitelné */
+.timeline-row:not(.is-active):not(.is-completed) {
+  opacity: 0.65;
+}
+
+.timeline-row-team {
+  width: 85px;
+  flex-shrink: 0;
+  text-align: right;
+  padding-right: 0.55rem;
+}
+
+/* Popisek týmu: TÝM A, TÝM B v týmové barvě nebo neutrální */
+.team-mini-label {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.92rem;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+  font-weight: 700;
+  transition: color 0.25s ease, opacity 0.25s ease;
+}
+
+.team-mini-label.team-neutral {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.team-mini-label.team-blue {
+  color: #60a5fa;
+}
+
+.team-mini-label.team-red {
+  color: #f87171;
+}
+
+.timeline-row.is-active .team-mini-label {
+  font-weight: 900;
+  opacity: 1;
+}
+
+.timeline-row:not(.is-active) .team-mini-label {
+  opacity: 0.88;
+}
+
+.timeline-row-action {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Spojovací šipka směrem dolů vycentrovaná vůči akci */
+.timeline-arrow-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 28px;
+  color: rgba(255, 255, 255, 0.32);
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.timeline-arrow-row.is-passed {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.timeline-arrow-row.is-next-active {
+  color: #ffffff;
+  transform: scale(1.15);
+}
+
+.timeline-row-team-spacer {
+  width: 85px;
+  flex-shrink: 0;
+}
+
+.timeline-arrow-icon {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeline-arrow-icon svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+/* 1. KROK: Kámen Nůžky Papír (ikony: kámen, papír i nůžky vedle sebe, bez textu) */
+.timeline-rps-node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.35rem;
+  border-radius: 11px;
+  background-color: #22252c;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+}
+
+.rps-icons-row {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.rps-svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+  opacity: 0.85;
+}
+
+.timeline-rps-node.is-active {
+  border-color: #ffffff;
+  background-color: #2b303c;
+  transform: scale(1.06);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 12px rgba(255, 255, 255, 0.18);
+}
+
+.timeline-rps-node.is-completed {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 2. BANY: ČISTÝ VYCENTROVANÝ TEXT V AKCI S BAREVNÝM KŘÍŽKEM A BAREVNÝM TEXTEM */
+.ban-action-centered {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.15rem;
+  letter-spacing: 1.8px;
+  transition: all 0.25s ease;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  user-select: none;
+}
+
+.ban-cross-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Modrý BAN s křížkem */
+.ban-action-centered.ban-blue .ban-cross-icon {
+  stroke: #60a5fa;
+}
+
+.ban-action-centered.ban-blue .ban-keyword {
+  color: #60a5fa;
+}
+
+/* Červený BAN s křížkem */
+.ban-action-centered.ban-red .ban-cross-icon {
+  stroke: #f87171;
+}
+
+.ban-action-centered.ban-red .ban-keyword {
+  color: #f87171;
+}
+
+/* Neutrální BAN (před rozstřelem) */
+.ban-action-centered.ban-neutral .ban-cross-icon {
+  stroke: rgba(255, 255, 255, 0.7);
+}
+
+.ban-action-centered.ban-neutral .ban-keyword {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.ban-keyword {
+  font-weight: 800;
+}
+
+/* Aktivní BAN má výraznou týmovou kapsli */
+.ban-action-centered.is-active-action {
+  padding: 0.45rem 1.75rem;
+  border-radius: 999px;
+  transform: scale(1.08);
+}
+
+.ban-action-centered.is-active-action.ban-blue {
+  background: rgba(30, 64, 175, 0.3);
+  border: 2px solid #60a5fa;
+  box-shadow: 0 0 14px rgba(96, 165, 250, 0.22);
+}
+
+.ban-action-centered.is-active-action.ban-red {
+  background: rgba(185, 28, 28, 0.3);
+  border: 2px solid #f87171;
+  box-shadow: 0 0 14px rgba(248, 113, 113, 0.22);
+}
+
+.ban-action-centered.is-active-action.ban-neutral {
+  background: rgba(255, 255, 255, 0.12);
+  border: 2px solid #ffffff;
+}
+
+.timeline-row.is-active .ban-keyword {
+  font-weight: 900;
+}
+
+/* 3. PICKY (1., 2. a 3. MAPA): RÁMEČEK PRO MAPU (ZVĚTŠENÝ ŠIROKOÚHLÝ OBDÉLNÍK 16:9) */
+.timeline-map-frame {
+  width: 260px;
+  height: 146px;
+  background-color: #22252c;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-radius: 13px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.timeline-map-frame.frame-blue {
+  border-color: rgba(96, 165, 250, 0.35);
+}
+
+.timeline-map-frame.frame-red {
+  border-color: rgba(248, 113, 113, 0.35);
+}
+
+/* Aktivní rámeček: jasný týmový okraj, lehký zoom a týmové pozadí */
+.timeline-map-frame.is-active {
+  transform: scale(1.03);
+}
+
+.timeline-map-frame.is-active.frame-blue {
+  border-color: #60a5fa;
+  background-color: #171d2b;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(96, 165, 250, 0.22);
+}
+
+.timeline-map-frame.is-active.frame-red {
+  border-color: #f87171;
+  background-color: #2b1a1d;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(248, 113, 113, 0.22);
+}
+
+.timeline-map-frame.is-active:not(.frame-blue):not(.frame-red) {
+  border-color: #ffffff;
+  background-color: #262a34;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(255, 255, 255, 0.18);
+}
+
+.timeline-map-frame.has-map {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.timeline-map-frame.has-map.frame-blue {
+  border-color: rgba(96, 165, 250, 0.5);
+}
+
+.timeline-map-frame.has-map.frame-red {
+  border-color: rgba(248, 113, 113, 0.5);
+}
+
+/* Stav před vybráním mapy (čistý text čísla mapy + aktivní status) */
+.frame-prepick-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 100%;
+  height: 100%;
+}
+
+.frame-order-title {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #d1d5db;
+}
+
+.timeline-map-frame.is-active .frame-order-title {
+  color: #ffffff;
+  font-weight: 900;
+}
+
+.frame-active-status {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 0.22rem 0.8rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.timeline-map-frame.is-active.frame-blue .frame-active-status {
+  background: rgba(96, 165, 250, 0.22);
+  color: #93c5fd;
+  border-color: rgba(147, 197, 253, 0.4);
+}
+
+.timeline-map-frame.is-active.frame-red .frame-active-status {
+  background: rgba(248, 113, 113, 0.22);
+  color: #fca5a5;
+  border-color: rgba(252, 165, 165, 0.4);
+}
+
+.frame-ct-selecting {
+  color: #facc15 !important;
+  letter-spacing: 1.3px;
+  animation: pulse-selecting 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse-selecting {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* Stav po vybrání mapy (Vložený obrázek mapy bez názvu + CT text bíle vlevo dole) */
+.frame-map-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.frame-bottom-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.25) 55%, rgba(0, 0, 0, 0) 100%);
+  pointer-events: none;
+}
+
+.frame-ct-tag {
+  position: absolute;
+  bottom: 11px;
+  left: 13px;
+  max-width: calc(100% - 26px);
+  z-index: 3;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  text-align: left;
+  color: #ffffff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95), 0 2px 8px rgba(0, 0, 0, 0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Týmové barvy textu */
+.team-name-label {
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.team-name-label.team-blue {
+  color: #93c5fd;
+}
+
+.team-name-label.team-red {
+  color: #fca5a5;
+}
+
+.team-name-label.team-neutral {
+  color: #d1d5db;
+}
+
+/* =====================================================================
+   PRAVÁ PRACOVNÍ PLOCHA — AUTOMATICKY VERTIKÁLNĚ VYCENTROVANÁ
+   ===================================================================== */
+.workspace-column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto 0;
+}
+
+.workspace-header {
+  text-align: center;
+  margin: 0 0 2rem 0;
+}
+
+.workspace-phase-badge {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 0.25rem 0.8rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  display: inline-block;
+  margin-bottom: 0.6rem;
+  color: #9ca3af;
+}
+
+.workspace-phase-badge.badge-blue {
+  background: rgba(19, 81, 216, 0.25);
+  color: #93c5fd;
+  border: 1px solid rgba(147, 197, 253, 0.3);
+}
+
+.workspace-phase-badge.badge-red {
+  background: rgba(198, 40, 40, 0.25);
+  color: #fca5a5;
+  border: 1px solid rgba(252, 165, 165, 0.3);
+}
+
+.workspace-title {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin-bottom: 0.35rem;
+}
+
+.workspace-subtitle {
+  font-size: 0.88rem;
+  color: #9ca3af;
+}
+
+/* =====================================================================
+   KROK 1: VÝBĚR KÁMEN NŮŽKY PAPÍR (2 KARTY VE STYLU VÍTĚZE V SCORE)
+   ČISTÝ VZHLED BEZ ZÁŘIVÝCH HALO EFEKTŮ
+   ===================================================================== */
+.rps-cards-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  width: 100%;
+  margin-top: 0;
+}
+
+.rps-team-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 260px;
+  min-height: 290px;
+  background-color: #22252c;
+  border: 3.5px solid rgba(255, 255, 255, 0.09);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+  padding: 2.2rem 1.4rem;
+  text-align: center;
+  user-select: none;
+  gap: 1.2rem;
+}
+
+.rps-team-card:hover {
+  transform: translateY(-5px);
+}
+
+.rps-card-tag {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.rps-card-title {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.rps-card-btn-hint {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #d1d5db;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+/* Modrá karta (bez barevné záře) */
+.rps-card-blue .rps-card-title {
+  color: #93c5fd;
+}
+
+.rps-card-blue:hover {
+  border-color: #1351d8;
+}
+
+.rps-card-blue:hover .rps-card-btn-hint {
+  background: #1351d8;
+  color: #ffffff;
+}
+
+/* Červená karta (bez barevné záře) */
+.rps-card-red .rps-card-title {
+  color: #fca5a5;
+}
+
+.rps-card-red:hover {
+  border-color: #c62828;
+}
+
+.rps-card-red:hover .rps-card-btn-hint {
+  background: #c62828;
+  color: #ffffff;
+}
+
+/* =====================================================================
+   MŘÍŽKA MAP (OHRANIČENÍ JAKO SLOUPCE V DRAFT/SCORE)
+   ===================================================================== */
+.maps-grid-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0;
+}
+
+.maps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.6rem;
+  width: 100%;
+}
+
+.map-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #22252c;
+  border: 3.5px solid rgba(255, 255, 255, 0.09);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, filter 0.25s ease;
+  position: relative;
+  user-select: none;
+}
+
+.map-card:hover:not(.is-banned):not(.is-picked) {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.7);
+}
+
+.active-picker-blue .map-card:hover:not(.is-banned):not(.is-picked) {
+  border-color: #1351d8;
+}
+
+.active-picker-red .map-card:hover:not(.is-banned):not(.is-picked) {
+  border-color: #c62828;
+}
+
+.map-card-image-box {
+  width: 100%;
+  height: 165px;
+  background-color: #1a1c22;
+  overflow: hidden;
+  position: relative;
+}
+
+.map-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.82;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  display: block;
+}
+
+.map-card:hover .map-card-img {
+  transform: scale(1.05);
+  opacity: 0.95;
+}
+
+.map-card-footer {
+  padding: 0.8rem 1.05rem;
+  background-color: #22252c;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.map-card-title {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.map-card-status-badge {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+/* BANNED STAV */
+.map-card.is-banned {
+  opacity: 0.32;
+  filter: grayscale(0.9);
+  cursor: not-allowed;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.map-card.is-banned .map-card-img {
+  transform: none !important;
+}
+
+.map-card-banned-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.65);
+  color: #ef4444;
+  z-index: 5;
+  gap: 0.3rem;
+}
+
+.map-card-banned-overlay svg {
+  width: 38px;
+  height: 38px;
+  stroke: #ef4444;
+}
+
+.map-card-banned-overlay span {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #fca5a5;
+  text-transform: uppercase;
+}
+
+/* BAN HOVER KŘÍŽEK & PICK HOVER FAJVA */
+.map-card-hover-cross,
+.map-card-hover-check {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.65);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 8;
+}
+
+.map-card-hover-cross svg {
+  width: 60px;
+  height: 60px;
+}
+
+.map-card-hover-check svg {
+  width: 64px;
+  height: 64px;
+}
+
+/* Hover pro BAN fázi podle aktivního týmu */
+.active-picker-blue.is-ban-phase .map-card:hover:not(.is-banned):not(.is-picked) {
+  border-color: #1351d8 !important;
+}
+
+.active-picker-blue.is-ban-phase .map-card:hover:not(.is-banned):not(.is-picked) .map-card-hover-cross {
+  opacity: 1;
+}
+
+.active-picker-blue.is-ban-phase .map-card-hover-cross svg {
+  stroke: #60a5fa;
+}
+
+.active-picker-red.is-ban-phase .map-card:hover:not(.is-banned):not(.is-picked) {
+  border-color: #c62828 !important;
+}
+
+.active-picker-red.is-ban-phase .map-card:hover:not(.is-banned):not(.is-picked) .map-card-hover-cross {
+  opacity: 1;
+}
+
+.active-picker-red.is-ban-phase .map-card-hover-cross svg {
+  stroke: #f87171;
+}
+
+/* Hover pro PICK fázi podle aktivního týmu (s fajvkou) */
+.active-picker-blue.is-pick-phase .map-card:hover:not(.is-banned):not(.is-picked) {
+  border-color: #1351d8 !important;
+}
+
+.active-picker-blue.is-pick-phase .map-card:hover:not(.is-banned):not(.is-picked) .map-card-hover-check {
+  opacity: 1;
+}
+
+.active-picker-blue.is-pick-phase .map-card-hover-check svg {
+  stroke: #60a5fa;
+}
+
+.active-picker-red.is-pick-phase .map-card:hover:not(.is-banned):not(.is-picked) {
+  border-color: #c62828 !important;
+}
+
+.active-picker-red.is-pick-phase .map-card:hover:not(.is-banned):not(.is-picked) .map-card-hover-check {
+  opacity: 1;
+}
+
+.active-picker-red.is-pick-phase .map-card-hover-check svg {
+  stroke: #f87171;
+}
+
+/* PICKED STAV (NEUTRÁLNÍ ZELENÁ FAJVA) */
+.map-card.is-picked {
+  opacity: 0.95;
+  border-color: rgba(34, 197, 94, 0.45);
+  cursor: default;
+}
+
+.map-card-picked-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.62);
+  z-index: 6;
+  gap: 0.45rem;
+  pointer-events: none;
+}
+
+.picked-check-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.18);
+  border: 2px solid #22c55e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.picked-check-circle svg {
+  width: 26px;
+  height: 26px;
+  stroke: #22c55e;
+}
+
+.picked-order-title {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #86efac;
+  text-transform: uppercase;
+}
+
+.map-card-status-badge.status-picked {
+  color: #22c55e;
+  font-weight: 800;
+}
+
+/* =====================================================================
+   KROK: VOLBA ZAČÍNAJÍCÍ STRANY (CT vs T)
+   ===================================================================== */
+.side-selection-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 680px;
+  margin: 0;
+}
+
+/* Karta vybrané mapy nad volbou stran */
+.side-map-card {
+  width: 290px;
+  background-color: #22252c;
+  border: 3.5px solid rgba(34, 197, 94, 0.45);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55);
+  margin-bottom: 2rem;
+  user-select: none;
+  animation: viewFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.side-map-image-box {
+  width: 100%;
+  height: 165px;
+  background-color: #1a1c22;
+  overflow: hidden;
+  position: relative;
+}
+
+.side-map-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.side-map-order-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 0.25rem 0.65rem;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #86efac;
+  border: 1px solid rgba(134, 239, 172, 0.35);
+  backdrop-filter: blur(4px);
+}
+
+.side-map-footer {
+  padding: 0.8rem 1.1rem;
+  background-color: #22252c;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.side-map-title {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.02rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.side-map-status-badge {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #22c55e;
+}
+
+.side-cards-container {
+  display: flex;
+  gap: 2.5rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.side-choice-card {
+  flex: 1;
+  max-width: 270px;
+  min-height: 250px;
+  background-color: #22252c;
+  border: 3.5px solid rgba(255, 255, 255, 0.09);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem 1.2rem;
+  user-select: none;
+}
+
+.side-choice-card:hover {
+  transform: translateY(-5px);
+}
+
+.side-choice-card.card-ct:hover {
+  border-color: #94a3b8;
+}
+
+.side-choice-card.card-t:hover {
+  border-color: #d97706;
+}
+
+.side-badge-logo {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  line-height: 1;
+}
+
+.card-ct .side-badge-logo {
+  color: #e2e8f0;
+}
+
+.card-t .side-badge-logo {
+  color: #fcd34d;
+}
+
+.side-name-title {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.side-sub-desc {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Decider: Karty stran se neklikají ručně */
+.side-choice-card.is-decider-side {
+  cursor: default;
+}
+
+.side-choice-card.is-decider-side:hover {
+  transform: none;
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+.side-choice-card.is-decider-side.card-ct:hover {
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+.side-choice-card.is-decider-side.card-t:hover {
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+.side-choice-card.is-flicker-active {
+  border-color: #ffffff !important;
+  background-color: #2c2f38 !important;
+  transform: scale(1.04) !important;
+  box-shadow: 0 6px 26px rgba(0, 0, 0, 0.7), 0 0 24px rgba(255, 255, 255, 0.45) !important;
+  filter: brightness(1.2);
+}
+
+/* Decider: Vzhled přesně podle hoveru dlaždice kamene/nůžek (.rps-card-blue:hover / .rps-card-red:hover) */
+.side-choice-card.is-assigned-blue,
+.side-choice-card.is-assigned-blue:hover {
+  background-color: #22252c !important;
+  border-color: #1351d8 !important;
+  transform: translateY(-5px) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+.side-choice-card.is-assigned-blue .side-badge-logo {
+  color: #93c5fd !important;
+}
+
+.side-choice-card.is-assigned-blue .side-name-title {
+  color: #ffffff !important;
+}
+
+.side-choice-card.is-assigned-blue .side-sub-desc {
+  color: #9ca3af !important;
+}
+
+.side-choice-card.is-assigned-red,
+.side-choice-card.is-assigned-red:hover {
+  background-color: #22252c !important;
+  border-color: #c62828 !important;
+  transform: translateY(-5px) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+.side-choice-card.is-assigned-red .side-badge-logo {
+  color: #fca5a5 !important;
+}
+
+.side-choice-card.is-assigned-red .side-name-title {
+  color: #ffffff !important;
+}
+
+.side-choice-card.is-assigned-red .side-sub-desc {
+  color: #9ca3af !important;
+}
+
+.side-slot-placeholder {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 0.4rem;
+}
+
+.side-assigned-pill {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+  text-align: center;
+  animation: viewFadeIn 0.3s ease both;
+}
+
+.side-assigned-pill.pill-blue {
+  background: #1351d8;
+  color: #ffffff;
+}
+
+.side-assigned-pill.pill-red {
+  background: #c62828;
+  color: #ffffff;
+}
+
+.side-draw-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 2.6rem;
+  border-radius: 8px;
+  background: #2a2e39;
+  border: 1.5px solid rgba(250, 204, 21, 0.5);
+  color: #ffffff;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 2rem;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 14px rgba(250, 204, 21, 0.15);
+}
+
+.side-draw-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: #facc15;
+}
+
+.side-draw-btn:hover:not(:disabled) {
+  background: #383e4d;
+  border-color: #facc15;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.6), 0 0 20px rgba(250, 204, 21, 0.3);
+}
+
+.side-draw-btn:disabled {
+  opacity: 0.75;
+  cursor: wait;
+}
+
+.side-proceed-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.95rem 2.8rem;
+  border-radius: 8px;
+  background: #232731;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  color: #ffffff;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 14px rgba(255, 255, 255, 0.12);
+  animation: viewFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.side-proceed-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: #ffffff;
+  transition: transform 0.2s ease;
+}
+
+.side-proceed-btn:hover {
+  background: #2e3442;
+  border-color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 255, 255, 0.25);
+}
+
+.side-proceed-btn:hover svg {
+  transform: translateX(3px);
+}
+
+/* =====================================================================
+   KROK: NÁHODNÝ VÝBĚR PRO 3. MAPU (DECIDER) PŘÍMO V MŘÍŽCE MAP
+   ===================================================================== */
+/* Žluté zvýraznění zbývajících 2 kandidátů pro losování */
+.map-card.is-decider-candidate {
+  border-color: #facc15;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 16px rgba(250, 204, 21, 0.25);
+  cursor: pointer;
+  animation: candidatePulse 2.4s infinite ease-in-out;
+}
+
+.map-card.is-decider-candidate:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: #fde047;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.7), 0 0 24px rgba(250, 204, 21, 0.45);
+}
+
+.map-card-status-badge.status-decider {
+  color: #facc15;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+@keyframes candidatePulse {
+  0%, 100% {
+    border-color: rgba(250, 204, 21, 0.65);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 12px rgba(250, 204, 21, 0.2);
+  }
+  50% {
+    border-color: #facc15;
+    box-shadow: 0 4px 22px rgba(0, 0, 0, 0.65), 0 0 20px rgba(250, 204, 21, 0.45);
+  }
+}
+
+/* Střídavé blikání při animaci losování */
+.map-card.is-decider-candidate.is-flicker-active {
+  border-color: #ffffff !important;
+  background-color: #2c2f38;
+  transform: scale(1.04);
+  box-shadow: 0 6px 26px rgba(0, 0, 0, 0.7), 0 0 24px rgba(255, 255, 255, 0.5);
+  filter: brightness(1.2);
+}
+
+/* Lišta a tlačítko pod mřížkou (absolutně pod mřížkou, aby se mřížka map neposunula vertikálně) */
+.decider-action-bar {
+  position: absolute;
+  top: calc(100% + 1.5rem);
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  z-index: 15;
+  pointer-events: auto;
+  animation: viewFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.decider-draw-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.85rem 2.4rem;
+  border-radius: 8px;
+  background: #2a2e39;
+  border: 1.5px solid rgba(250, 204, 21, 0.5);
+  color: #ffffff;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 14px rgba(250, 204, 21, 0.15);
+}
+
+.decider-draw-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: #facc15;
+}
+
+.decider-draw-btn:hover:not(:disabled) {
+  background: #383e4d;
+  border-color: #facc15;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.6), 0 0 20px rgba(250, 204, 21, 0.3);
+}
+
+.decider-draw-btn:disabled {
+  opacity: 0.75;
+  cursor: wait;
+}
+
+.decider-proceed-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.95rem 2.6rem;
+  border-radius: 8px;
+  background: #232731;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  color: #ffffff;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 14px rgba(255, 255, 255, 0.12);
+  animation: viewFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.decider-proceed-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: #ffffff;
+  transition: transform 0.2s ease;
+}
+
+.decider-proceed-btn:hover {
+  background: #2e3442;
+  border-color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 255, 255, 0.25);
+}
+
+.decider-proceed-btn:hover svg {
+  transform: translateX(3px);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =====================================================================
+   DOKONČENÝ PICK (SUMMARY)
+   ===================================================================== */
+.summary-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+  max-width: 900px;
+  margin: 0;
+}
+
+.summary-title {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-align: center;
+}
+
+.summary-maps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.8rem;
+  width: 100%;
+}
+
+.summary-map-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #22252c;
+  border: 3.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.summary-map-order {
+  padding: 0.5rem 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  color: #86efac;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.summary-map-image-box {
+  width: 100%;
+  height: 140px;
+  background-color: #1a1c22;
+  overflow: hidden;
+}
+
+.summary-map-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.summary-map-details {
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.summary-map-name {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.summary-map-side {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #e2e8f0;
+}
+
+.summary-go-score-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 2.2rem;
+  border-radius: 8px;
+  background-color: #2a2e39;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.summary-go-score-btn:hover {
+  background-color: #383e4d;
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 12px rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.summary-go-score-btn:active {
+  background-color: #2e333e;
+  border-color: rgba(255, 255, 255, 0.65);
+  transform: translateY(0);
+}
+
+/* =====================================================================
+   RESPONSIVITA
+   ===================================================================== */
+@media (max-width: 1400px) {
+  .pick-layout {
+    gap: 2.2rem;
+  }
+
+  .maps-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  .map-card-image-box {
+    height: 105px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .maps-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
