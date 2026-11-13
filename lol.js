@@ -1615,8 +1615,8 @@ function render() {
       const turn = document.getElementById('topTurnDisplay');
       if (turn) { turn.className = 'top-turn-display is-hidden'; turn.innerHTML = ''; }
     },
-    reset() {
-      if (confirm('Opravdu chcete resetovat volbu stran a rozhození rolí pro League of Legends a začít znovu?')) {
+    reset(silent = false) {
+      if (silent || confirm('Opravdu chcete resetovat volbu stran a rozhození rolí pro League of Legends a začít znovu?')) {
         resetState();
         syncWithTournamentScore();
         render();

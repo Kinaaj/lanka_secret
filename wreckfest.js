@@ -143,8 +143,8 @@ function loadState() {
   return false;
 }
 
-function resetPick() {
-  if (confirm('Opravdu chceš resetovat celý pick Wreckfestu?')) {
+function resetPick(silent = false) {
+  if (silent || confirm('Opravdu chceš resetovat celý pick Wreckfestu?')) {
     localStorage.removeItem(STORAGE_KEY);
     pickState = {
       currentStepIndex: 0,
@@ -982,8 +982,8 @@ function render() {
       const turn = document.getElementById('topTurnDisplay');
       if (turn) { turn.className = 'top-turn-display is-hidden'; turn.innerHTML = ''; }
     },
-    reset() {
-      resetPick();
+    reset(silent = false) {
+      resetPick(silent);
     }
   };
 

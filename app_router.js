@@ -26,6 +26,7 @@
       this.activeModule = null;
       this.isTransitioning = false;
       this.isInitialLoad = true;
+      this.curtainFlipIndex = 0;
     }
 
     init() {
@@ -182,15 +183,18 @@
       // 2. Kompletní smazání všech uložených draftů map a rolí
       const games = ['cs2', 'warcraft', 'lol', 'overwatch', 'wreckfest'];
       games.forEach(g => {
-        localStorage.removeItem(`lanka_pick_${g}`);
-        localStorage.removeItem(`lanka_saved_pick_${g}`);
+        try {
+          localStorage.removeItem(`lanka_pick_${g}`);
+          localStorage.removeItem(`lanka_saved_pick_${g}`);
+          localStorage.removeItem(`lanka_pick_${g}_backup`);
+        } catch (e) {}
       });
 
-      // 3. Reset in-memory modulů
+      // 3. Tichý reset in-memory modulů bez otevírání browser dialogů (silent = true)
       if (window.LankaPickModules) {
         Object.values(window.LankaPickModules).forEach(mod => {
           if (mod && typeof mod.reset === 'function') {
-            try { mod.reset(); } catch (e) {}
+            try { mod.reset(true); } catch (e) {}
           }
         });
       }
@@ -236,11 +240,12 @@
         badge.textContent = GAME_TITLES[target] || target.toUpperCase();
       }
 
-      // Náhodně zvolíme, zda se v překryvu dostane modrá přes červenou, nebo červená přes modrou
-      const blueOverRed = Math.random() < 0.5;
+      // Deterministicky střídáme překrytí: jednou je červená nahoře (red-over-blue), jednou modrá nahoře (blue-over-red)
+      const redOverBlue = (this.curtainFlipIndex % 2 === 0);
+      this.curtainFlipIndex++;
       if (overlay) {
-        overlay.classList.toggle('blue-over-red', blueOverRed);
-        overlay.classList.toggle('red-over-blue', !blueOverRed);
+        overlay.classList.toggle('red-over-blue', redOverBlue);
+        overlay.classList.toggle('blue-over-red', !redOverBlue);
         overlay.classList.remove('is-closed');
         overlay.classList.add('is-active', 'is-closing');
       }

@@ -1377,8 +1377,8 @@ function render() {
       const turn = document.getElementById('topTurnDisplay');
       if (turn) { turn.className = 'top-turn-display is-hidden'; turn.innerHTML = ''; }
     },
-    reset() {
-      if (confirm('Opravdu chcete resetovat celé pickování CS2 a začít znovu?')) {
+    reset(silent = false) {
+      if (silent || confirm('Opravdu chcete resetovat celé pickování CS2 a začít znovu?')) {
         resetState();
         render();
       }

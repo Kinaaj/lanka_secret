@@ -1295,8 +1295,8 @@ function initModalListeners() {
       const turn = document.getElementById('topTurnDisplay');
       if (turn) { turn.className = 'top-turn-display is-hidden'; turn.innerHTML = ''; }
     },
-    reset() {
-      if (confirm('Opravdu chcete resetovat celé pickování Warcraft III a začít znovu?')) {
+    reset(silent = false) {
+      if (silent || confirm('Opravdu chcete resetovat celé pickování Warcraft III a začít znovu?')) {
         resetState();
         syncWithCS2Score();
         render();
