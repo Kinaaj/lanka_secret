@@ -236,7 +236,11 @@
         badge.textContent = GAME_TITLES[target] || target.toUpperCase();
       }
 
+      // Náhodně zvolíme, zda se v překryvu dostane modrá přes červenou, nebo červená přes modrou
+      const blueOverRed = Math.random() < 0.5;
       if (overlay) {
+        overlay.classList.toggle('blue-over-red', blueOverRed);
+        overlay.classList.toggle('red-over-blue', !blueOverRed);
         overlay.classList.remove('is-closed');
         overlay.classList.add('is-active', 'is-closing');
       }

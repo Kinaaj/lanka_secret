@@ -745,19 +745,20 @@ body.turn-active-red .side-panel-left {
   position: absolute;
   top: 0;
   height: 100vh;
-  width: calc(50vw + 60px);
+  width: 58vw;
+  overflow: hidden;
   will-change: transform;
   transition: transform 0.65s cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 .curtain-wing-left {
   left: 0;
-  transform: translateX(-105%);
+  transform: translateX(-102%);
 }
 
 .curtain-wing-right {
   right: 0;
-  transform: translateX(105%);
+  transform: translateX(102%);
 }
 
 .curtain-transition-overlay.is-closed .curtain-wing-left,
@@ -770,52 +771,94 @@ body.turn-active-red .side-panel-left {
   transform: translateX(0);
 }
 
+/* Náhodné překrytí: Jednou je modrá přes červenou, jindy červená přes modrou */
+.curtain-transition-overlay.blue-over-red .curtain-wing-left {
+  z-index: 12;
+  filter: drop-shadow(10px 0 25px rgba(0, 0, 0, 0.9)) drop-shadow(4px 0 16px rgba(19, 81, 216, 0.7));
+}
+.curtain-transition-overlay.blue-over-red .curtain-wing-right {
+  z-index: 11;
+}
+
+.curtain-transition-overlay.red-over-blue .curtain-wing-right {
+  z-index: 12;
+  filter: drop-shadow(-10px 0 25px rgba(0, 0, 0, 0.9)) drop-shadow(-4px 0 16px rgba(198, 40, 40, 0.7));
+}
+.curtain-transition-overlay.red-over-blue .curtain-wing-left {
+  z-index: 11;
+}
+
 .curtain-surface {
   position: absolute;
   inset: 0;
+  pointer-events: none;
 }
 
+/* Modrá plocha — přesný tvar zubů (clip-path) jako u bočního panelu */
 .curtain-surface-blue {
-  background: linear-gradient(135deg, #091a3e 0%, #1351d8 60%, #1e40af 100%);
-  box-shadow: 15px 0 50px rgba(19, 81, 216, 0.6);
+  background-color: #1351d8;
+  clip-path: polygon(0% 0%,
+      calc(100% - 50px) 0%,
+      100% 18%,
+      calc(100% - 40px) 21%,
+      calc(100% - 5px) 46%,
+      calc(100% - 50px) 49%,
+      100% 75%,
+      calc(100% - 35px) 78%,
+      calc(100% - 10px) 100%,
+      0% 100%);
 }
 
+/* Červená plocha — přesný tvar zubů (clip-path) jako u bočního panelu */
 .curtain-surface-red {
-  background: linear-gradient(225deg, #3e0909 0%, #d81313 60%, #991b1b 100%);
-  box-shadow: -15px 0 50px rgba(216, 19, 19, 0.6);
+  background-color: #c62828;
+  clip-path: polygon(15px 0%,
+      50px 14%,
+      20px 16%,
+      55px 36%,
+      25px 39%,
+      50px 60%,
+      12px 63%,
+      55px 83%,
+      25px 86%,
+      40px 100%,
+      100% 100%,
+      100% 0%);
 }
 
 .curtain-edge {
   position: absolute;
   top: 0;
-  bottom: 0;
   height: 100%;
   pointer-events: none;
+  overflow: visible;
 }
 
 .curtain-edge-left {
   right: 0;
-  width: 55px;
+  width: 50px;
 }
 
 .curtain-edge-right {
   left: 0;
-  width: 60px;
+  width: 55px;
 }
 
 .curtain-stroke {
   fill: none;
-  stroke-width: 7;
+  stroke-width: 2.2;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
 }
 
 .curtain-stroke-blue {
   stroke: #60a5fa;
-  filter: drop-shadow(0 0 16px rgba(96, 165, 250, 0.9));
+  filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.95));
 }
 
 .curtain-stroke-red {
   stroke: #f87171;
-  filter: drop-shadow(0 0 16px rgba(248, 113, 113, 0.9));
+  filter: drop-shadow(0 0 10px rgba(248, 113, 113, 0.95));
 }
 
 .curtain-center-logo {
