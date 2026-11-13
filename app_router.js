@@ -29,8 +29,25 @@
         if (!link) return;
 
         const href = link.getAttribute('href') || '';
-        if (href.startsWith('score.html') || href === '#score') {
+        if (href.startsWith('score.html') || href === '#score' || href.includes('score.html')) {
           e.preventDefault();
+          // Pokud odkaz nese synchronizační parametry (?pick_cs2=... nebo ?reset_cs2=...)
+          if (href.includes('?')) {
+            try {
+              const url = new URL(href, window.location.href);
+              for (const [key, value] of url.searchParams.entries()) {
+                if (key.startsWith('pick_')) {
+                  const gameId = key.replace('pick_', '');
+                  localStorage.setItem(`lanka_pick_${gameId}`, decodeURIComponent(value));
+                } else if (key.startsWith('reset_')) {
+                  const gameId = key.replace('reset_', '');
+                  localStorage.removeItem(`lanka_pick_${gameId}`);
+                }
+              }
+            } catch (err) {
+              console.warn('Nelze parsovat query parametry z odkazu:', err);
+            }
+          }
           this.navigateTo('score');
         }
       });
@@ -80,7 +97,7 @@
         this.activeGameId = null;
         this.currentView = 'score';
 
-        document.body.classList.remove('in-pick-view');
+        document.body.classList.remove('in-pick-view', 'turn-active-blue', 'turn-active-red');
         delete document.body.dataset.game;
         document.body.dataset.view = 'score';
 

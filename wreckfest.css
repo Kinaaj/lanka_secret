@@ -19,7 +19,7 @@ body {
   height: 100vh;
 }
 
-.container {
+body[data-game="wreckfest"] .container {
   height: 100vh;
   min-height: 100vh;
   max-height: 100vh;
@@ -27,22 +27,7 @@ body {
   padding: 0 95px;
 }
 
-.top-header {
-  position: fixed;
-  top: 1.15rem;
-  right: 95px;
-  left: 95px;
-  z-index: 200;
-  pointer-events: none;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.top-buttons-group {
-  pointer-events: auto;
-}
-
-.pick-layout {
+body[data-game="wreckfest"] .pick-layout {
   height: 100vh;
   min-height: 100vh;
   max-height: 100vh;
@@ -53,8 +38,8 @@ body {
   overflow: hidden;
 }
 
-/* Levá osa posunutá mírně doprava */
-.timeline-column {
+/* Levá osa posunutá mírně doprava v Wreckfestu */
+body[data-game="wreckfest"] .timeline-column {
   width: 320px;
   flex-shrink: 0;
   margin: auto 0;
@@ -62,18 +47,18 @@ body {
   height: fit-content;
 }
 
-/* Zmenšení a sjednocení spojovacích šipek v ose */
-.timeline-arrow-row {
+/* Zmenšení a sjednocení spojovacích šipek v ose pro Wreckfest */
+body[data-game="wreckfest"] .timeline-arrow-row {
   height: 22px;
 }
 
-.timeline-arrow-icon svg {
+body[data-game="wreckfest"] .timeline-arrow-icon svg {
   width: 14px;
   height: 14px;
 }
 
-/* Pravá pracovní plocha se scrollem */
-.workspace-column {
+/* Pravá pracovní plocha se scrollem pro Wreckfest */
+body[data-game="wreckfest"] .workspace-column {
   flex: 1;
   min-width: 0;
   height: 100%;

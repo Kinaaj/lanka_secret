@@ -109,6 +109,15 @@
           this.notifyState();
         }
       });
+
+      // Pokračování v přehrávání při návratu na stránku / reloadu (pokud hudba hrála)
+      try {
+        const wasPlaying = sessionStorage.getItem('lanka_music_playing') === 'true' || localStorage.getItem('lanka_music_playing') === 'true';
+        const lastGame = sessionStorage.getItem('lanka_active_music_game') || localStorage.getItem('lanka_active_music_game');
+        if (wasPlaying && lastGame && GAME_PLAYLISTS[lastGame]) {
+          this.playGame(lastGame);
+        }
+      } catch (e) { }
     }
 
     /**
@@ -267,6 +276,12 @@
      * Propojí prvky uživatelského rozhraní s přehrávačem
      */
     bindUI(options = {}) {
+      if (this.uiBound && !options.force) {
+        this.notifyState();
+        return;
+      }
+      this.uiBound = true;
+
       const toggleBtn = options.toggleBtn || document.getElementById('musicToggleBtn');
       const muteBtn = options.muteBtn || document.getElementById('musicMuteBtn');
       const slider = options.slider || document.getElementById('musicVolumeSlider');

@@ -1561,7 +1561,11 @@ function renderRoleAssigner(container, step) {
     }
 
     saveState();
-    window.location.href = getScoreUrl();
+    if (window.LankaRouter) {
+      window.LankaRouter.navigateTo('score');
+    } else {
+      window.location.href = getScoreUrl();
+    }
   });
 }
 
