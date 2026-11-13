@@ -370,6 +370,10 @@ body.in-pick-view .score-only-control {
 .view-score {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 body.in-pick-view .view-score {
@@ -593,18 +597,47 @@ body.turn-active-red .side-panel-left {
   color: #ffffff;
 }
 
+/* Tlačítko pro ŠUM (White/Ambient noise loop) */
+.hud-noise-btn {
+  position: relative;
+  transition: all 0.25s ease;
+}
+
+.hud-noise-btn .noise-icon {
+  width: 15px;
+  height: 15px;
+  transition: transform 0.2s ease, stroke 0.2s ease;
+}
+
+.hud-noise-btn.is-playing {
+  background-color: #1e3a29;
+  border-color: #22c55e;
+  color: #4ade80;
+  box-shadow: 0 0 14px rgba(34, 197, 94, 0.4);
+}
+
+.hud-noise-btn.is-playing .noise-icon {
+  stroke: #4ade80;
+  animation: noiseWave 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes noiseWave {
+  0% { transform: scale(0.95); opacity: 0.85; }
+  100% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 4px #22c55e); }
+}
+
 .content-area {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5rem 6rem 3rem;
+  padding: 1.5rem 6rem;
+  box-sizing: border-box;
   transition: padding 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 body.teams-visible .content-area {
-  padding-left: 330px;
-  padding-right: 330px;
+  padding: 1.5rem 330px;
 }
 
 body.intro-mode .content-area {

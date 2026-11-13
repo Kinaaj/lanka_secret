@@ -356,7 +356,227 @@
     }
   }
 
-  // Globální singleton přehrávače
+  // Globální singleton hudebního přehrávače
   window.LankaMusic = new LankaMusicPlayer();
+
+  // =====================================================================
+  // LANKA 2027 — ŠUM DO POZADÍ (WHITE / AMBIENT NOISE LOOP)
+  // =====================================================================
+  class LankaNoisePlayer {
+    constructor() {
+      this.audio = new Audio();
+      this.audio.loop = true;
+      this.isPlaying = false;
+      this.volume = 0.75;
+      this.audio.volume = this.volume;
+      this.uiBound = false;
+      this.listeners = [];
+
+      // Cesty k souboru (zkusí postupně assets/audio/noise.mp3, assets/audio/sum.mp3, assets/noise.mp3)
+      this.sources = [
+        'assets/audio/noise.mp3',
+        'assets/audio/sum.mp3',
+        'assets/noise.mp3',
+        'assets/sum.mp3'
+      ];
+      this.currentSrcIndex = 0;
+      this.audio.src = this.sources[0];
+
+      this.audio.addEventListener('error', () => {
+        if (this.currentSrcIndex < this.sources.length - 1) {
+          this.currentSrcIndex++;
+          this.audio.src = this.sources[this.currentSrcIndex];
+          if (this.isPlaying) {
+            this.audio.play().catch(() => {});
+          }
+        } else {
+          console.warn('LankaNoise: Soubor pro šum zatím nebyl nalezen. Nahrajte prosím soubor noise.mp3 do složky assets/audio/.');
+          this.isPlaying = false;
+          this.notifyState();
+        }
+      });
+
+      // Obnovení stavu po obnovení stránky
+      const wasPlaying = localStorage.getItem('lanka_noise_playing') === 'true';
+      if (wasPlaying) {
+        this.start();
+      }
+    }
+
+    toggle() {
+      if (this.isPlaying) {
+        this.stop();
+      } else {
+        this.start();
+      }
+    }
+
+    start() {
+      const playPromise = this.audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          this.isPlaying = true;
+          localStorage.setItem('lanka_noise_playing', 'true');
+          this.notifyState();
+        }).catch((err) => {
+          console.log('LankaNoise: Čeká na první interakci uživatele se stránkou:', err.message);
+          const unlock = () => {
+            this.audio.play().then(() => {
+              this.isPlaying = true;
+              localStorage.setItem('lanka_noise_playing', 'true');
+              this.notifyState();
+            }).catch(() => {});
+            document.removeEventListener('pointerdown', unlock);
+            document.removeEventListener('click', unlock);
+          };
+          document.addEventListener('pointerdown', unlock, { once: true });
+          document.addEventListener('click', unlock, { once: true });
+        });
+      }
+    }
+
+    stop() {
+      this.audio.pause();
+      this.isPlaying = false;
+      localStorage.setItem('lanka_noise_playing', 'false');
+      this.notifyState();
+    }
+
+    notifyState() {
+      this.listeners.forEach((cb) => {
+        try { cb(this.isPlaying); } catch (e) { console.error(e); }
+      });
+    }
+
+    subscribe(cb) {
+      if (typeof cb === 'function') {
+        this.listeners.push(cb);
+        try { cb(this.isPlaying); } catch (e) {}
+      }
+    }
+
+    bindUI(btnId = 'noiseToggleBtn') {
+      if (this.uiBound) return;
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      this.uiBound = true;
+
+      btn.addEventListener('click', () => {
+        this.toggle();
+      });
+
+      this.subscribe((isPlaying) => {
+        btn.classList.toggle('is-playing', isPlaying);
+        btn.classList.toggle('btn-active', isPlaying);
+        const label = btn.querySelector('.noise-btn-label');
+        if (label) {
+          label.textContent = isPlaying ? 'ŠUM: ZAP' : 'ŠUM';
+        }
+      });
+    }
+  }
+
+  window.LankaNoise = new LankaNoisePlayer();
+
+  // =====================================================================
+  // LANKA 2027 — ZVUKOVÝ EFEKT KLIKNUTÍ (CLICK SFX POOL)
+  // =====================================================================
+  class LankaSoundEffects {
+    constructor() {
+      this.poolSize = 6;
+      this.pool = [];
+      this.poolIndex = 0;
+      this.lastPlayTime = 0;
+      this.debounceMs = 35; // Minimální interval pro zabránění zdvojeného zvuku při bublání
+
+      const soundSrc = 'assets/click.mp3';
+
+      for (let i = 0; i < this.poolSize; i++) {
+        const audio = new Audio(soundSrc);
+        audio.preload = 'auto';
+        audio.volume = 0.55;
+        this.pool.push(audio);
+      }
+
+      this.initGlobalClickListener();
+    }
+
+    playClick() {
+      const now = performance.now();
+      if (now - this.lastPlayTime < this.debounceMs) {
+        return;
+      }
+      this.lastPlayTime = now;
+
+      try {
+        const sound = this.pool[this.poolIndex];
+        this.poolIndex = (this.poolIndex + 1) % this.poolSize;
+        sound.currentTime = 0;
+        const p = sound.play();
+        if (p !== undefined) {
+          p.catch(() => {});
+        }
+      } catch (err) {
+        // Ignorovat případná omezení
+      }
+    }
+
+    initGlobalClickListener() {
+      // Delegace kliknutí na libovolný interaktivní prvek na stránce
+      const interactiveSelector = [
+        'button',
+        'a',
+        'input[type="button"]',
+        'input[type="submit"]',
+        '[role="button"]',
+        '.gcell-icon-clickable',
+        '.cell-circle',
+        '.map-card',
+        '.wf-pickable-card',
+        '.map-card-wf',
+        '.rps-card',
+        '.rps-action-btn',
+        '.side-choice-card',
+        '.side-proceed-btn',
+        '.side-draw-btn',
+        '.player-draggable-tile',
+        '.map-role-slot',
+        '.loser-team-card',
+        '.loser-card-btn',
+        '.lol-half',
+        '.lol-reselect-loser-btn',
+        '.hud-action-btn',
+        '.hud-music-btn',
+        '.hud-volume-btn',
+        '.map-detail-btn',
+        '.map-modal-btn',
+        '.summary-btn',
+        '.summary-go-score-btn',
+        '.wc-rule-card',
+        '.score-intro-start-btn',
+        '.header-action-btn',
+        '.header-back-btn',
+        '.roulette-spin-btn'
+      ].join(', ');
+
+      document.addEventListener('click', (e) => {
+        const target = e.target.closest(interactiveSelector);
+        if (target) {
+          this.playClick();
+        }
+      }, true); // Use capture phase so SFX triggers immediately on user action
+    }
+  }
+
+  window.LankaSFX = new LankaSoundEffects();
+
+  // Automatické navázání UI po načtení DOMu
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.LankaNoise) window.LankaNoise.bindUI();
+    });
+  } else {
+    if (window.LankaNoise) window.LankaNoise.bindUI();
+  }
 
 })(window);

@@ -910,6 +910,9 @@ loadTeamsFromDraft();
 if (window.LankaMusic) {
   window.LankaMusic.bindUI();
 }
+if (window.LankaNoise) {
+  window.LankaNoise.bindUI();
+}
 
 window.addEventListener('pageshow', () => {
   syncPickDataFromUrl();
