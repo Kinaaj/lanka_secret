@@ -309,11 +309,8 @@ function buildTable() {
       iconCell.classList.add('gcell-icon-clickable');
       iconCell.title = `Přejít na pickování (${game.name || gameLabel})`;
       iconCell.addEventListener('click', () => {
-        if (window.LankaMusic) {
-          window.LankaMusic.playGame(game.id);
-        }
         if (window.LankaRouter) {
-          window.LankaRouter.navigateTo(game.id);
+          window.LankaRouter.transitionTo(game.id);
         } else {
           window.location.hash = '#' + game.id;
         }
@@ -820,6 +817,18 @@ if (startBtn) {
   startBtn.addEventListener('click', triggerStartIntro);
 }
 
+window.showIntroScreen = showIntroScreen;
+
+window.resetTournamentScores = function () {
+  results.forEach(gRounds => gRounds.fill(0));
+  gameWinner.fill(0);
+  try {
+    localStorage.removeItem('lanka_tournament_score');
+  } catch (e) { /* ignore */ }
+  buildTable();
+  updateTournamentWinner();
+};
+
 const introBtn = document.getElementById('introBtn');
 if (introBtn) {
   introBtn.addEventListener('click', showIntroScreen);
@@ -849,15 +858,16 @@ document.addEventListener('keydown', (e) => {
 // =====================================================================
 // RESET
 // =====================================================================
-document.getElementById('resetBtn').addEventListener('click', () => {
-  results.forEach(gRounds => gRounds.fill(0));
-  gameWinner.fill(0);
-  try {
-    localStorage.removeItem('lanka_tournament_score');
-  } catch (e) { /* ignore */ }
-  buildTable();
-  updateTournamentWinner();
-});
+const resetBtn = document.getElementById('resetBtn');
+if (resetBtn) {
+  resetBtn.addEventListener('click', () => {
+    if (window.LankaRouter && typeof window.LankaRouter.showResetModal === 'function') {
+      window.LankaRouter.showResetModal();
+    } else {
+      window.resetTournamentScores();
+    }
+  });
+}
 
 // =====================================================================
 // INIT & EXTERNAL SYNC

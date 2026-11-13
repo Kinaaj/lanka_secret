@@ -34,6 +34,26 @@
     })();
   </script>
 
+  <!-- ── PŘECHODOVÉ ZÁVĚSY (CURTAIN TRANSITION) ────────────────────────── -->
+  <div class="curtain-transition-overlay" id="curtainOverlay" aria-hidden="true">
+    <div class="curtain-wing curtain-wing-left">
+      <div class="curtain-surface curtain-surface-blue"></div>
+      <svg class="curtain-edge curtain-edge-left" viewBox="0 0 50 1000" preserveAspectRatio="none">
+        <path class="curtain-stroke curtain-stroke-blue" d="M0,0 L50,180 L10,210 L45,460 L0,490 L50,750 L15,780 L40,1000" />
+      </svg>
+    </div>
+    <div class="curtain-wing curtain-wing-right">
+      <div class="curtain-surface curtain-surface-red"></div>
+      <svg class="curtain-edge curtain-edge-right" viewBox="0 0 55 1000" preserveAspectRatio="none">
+        <path class="curtain-stroke curtain-stroke-red" d="M15,0 L50,140 L20,160 L55,360 L25,390 L50,600 L12,630 L55,830 L25,860 L40,1000" />
+      </svg>
+    </div>
+    <div class="curtain-center-logo">
+      <div class="curtain-logo-text">LANKA 2027</div>
+      <div class="curtain-game-badge" id="curtainGameBadge">COUNTER-STRIKE 2</div>
+    </div>
+  </div>
+
   <!-- ── INTRO / VS PRE-FÁZE (OBRAZOVKA PŘED STARTEM) ────────────────────── -->
   <div class="score-intro-overlay" id="scoreIntroOverlay" aria-modal="true" role="dialog">
     <div class="score-intro-center">
@@ -123,15 +143,7 @@
           <span class="noise-btn-label">ŠUM</span>
         </button>
 
-        <!-- Akce v pickovacích obrazovkách (pouze když je otevřený pick) -->
-        <button id="resetPickBtn" class="hud-action-btn pick-only-control" title="Resetovat aktuální pick">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-            <path d="M3 3v5h5"/>
-          </svg>
-          <span>RESET PICKU</span>
-        </button>
-
+        <!-- Akce v pickovacích obrazovkách: Zpět na skóre (přímo po ruce) -->
         <a href="#score" id="headerScoreBtn" class="hud-action-btn pick-only-control" title="Zpět na skóre turnaje">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M19 12H5M12 19l-7-7 7-7"/>
@@ -139,28 +151,35 @@
           <span>SKÓRE</span>
         </a>
 
-        <!-- Akce ve skóre (pouze když je zobrazeno skóre) -->
-        <button id="introBtn" class="hud-action-btn score-only-control" title="Zobrazit úvodní VS obrazovku">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="5 3 19 12 5 21 5 3"/>
-          </svg>
-          <span>VS INTRO</span>
-        </button>
-        <button id="resetBtn" class="hud-action-btn score-only-control" title="Resetovat skóre turnaje">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-            <path d="M3 3v5h5"/>
-          </svg>
-          <span>RESET</span>
-        </button>
-
-        <!-- Trvalé tlačítko Fullscreen -->
-        <button id="fullscreenBtn" class="hud-action-btn" title="Zobrazit na celou obrazovku">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
-          </svg>
-          <span>FULLSCREEN</span>
-        </button>
+        <!-- Rozbalovací menu (VS Intro, Fullscreen, Reset picku, Celkový reset) -->
+        <div class="hud-dropdown-wrap" id="hudDropdownWrap">
+          <button id="hudMenuToggleBtn" class="hud-action-btn hud-menu-btn" title="Otevřít menu nastavení a akcí" aria-expanded="false" aria-label="Menu akcí">
+            <svg class="menu-icon-dots" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="1.5"></circle>
+              <circle cx="12" cy="5" r="1.5"></circle>
+              <circle cx="12" cy="19" r="1.5"></circle>
+            </svg>
+          </button>
+          <div class="hud-dropdown-menu" id="hudDropdownMenu" style="display:none;">
+            <button type="button" class="dropdown-item" id="dropdownIntroBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>VS Úvodní obrazovka</span>
+            </button>
+            <button type="button" class="dropdown-item" id="dropdownFullscreenBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+              <span>Celá obrazovka</span>
+            </button>
+            <button type="button" class="dropdown-item dropdown-item-pick-only" id="dropdownResetPickBtn" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              <span>Resetovat aktuální pick</span>
+            </button>
+            <div class="dropdown-divider"></div>
+            <button type="button" class="dropdown-item item-danger" id="dropdownResetAllBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              <span>Celkový reset turnaje...</span>
+            </button>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -210,6 +229,27 @@
       </div>
       <div class="map-modal-body">
         <img src="" alt="Detail mapy" class="map-modal-img" id="mapModalImg">
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL PRO POTVRZENÍ CELKOVÉHO RESETU ────────────────────────── -->
+  <div class="confirm-modal-backdrop" id="resetConfirmModal" style="display:none;" aria-modal="true" role="dialog">
+    <div class="confirm-modal-window">
+      <div class="confirm-modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <h3 class="confirm-modal-title">OPRAVDU RESETOVAT CELÝ TURNAJ?</h3>
+      <p class="confirm-modal-desc">
+        Tato akce kompletně vymaže <strong>veškeré body, odehraná kola a všechny drafty map a rolí</strong> (CS2, Warcraft III, LoL, Overwatch 2 i Wreckfest).
+      </p>
+      <div class="confirm-modal-actions">
+        <button type="button" class="confirm-modal-btn btn-cancel" id="resetModalCancelBtn">ZRUŠIT</button>
+        <button type="button" class="confirm-modal-btn btn-danger" id="resetModalConfirmBtn">RESETOVAT VŠECHNO</button>
       </div>
     </div>
   </div>
