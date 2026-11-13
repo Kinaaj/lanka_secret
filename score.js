@@ -47,7 +47,7 @@ const GAMES = [
     position: 'center center',
     scale: 1,
     rounds: 5,
-    pickUrl: null,
+    pickUrl: 'overwatch.html',
   },
   {
     id: 'wreckfest',
@@ -55,8 +55,8 @@ const GAMES = [
     src: 'assets/images/wreckfest_icon.webp',
     position: 'center top',
     scale: 1.15,
-    rounds: 3,
-    pickUrl: null,
+    rounds: 5,
+    pickUrl: 'wreckfest.html',
   },
 ];
 
@@ -88,26 +88,104 @@ const CAPTAIN_RED = {
 };
 
 const ALL_PLAYERS_DEFAULT = [
-  { id: 'player-1', name: 'GIRY', realName: 'Vojtěch Michal', photo: 'assets/images/players/Giry.jpg', team: 'pool' },
-  { id: 'player-2', name: 'Winters', realName: 'Karel Kosík', photo: 'assets/images/players/Karel.jpg', team: 'pool' },
-  { id: 'player-3', name: 'Pravdomil Kecal', realName: 'Dan Žáček', photo: 'assets/images/players/Pravdomil Kecal.jpg', team: 'pool' },
-  { id: 'player-4', name: 'Vojcii', realName: 'Vojtěch Kos', photo: 'assets/images/players/Vojcii.jpg', team: 'pool' },
-  { id: 'player-5', name: 'Kahanate', realName: 'David Kuba', photo: 'assets/images/players/David.jpg', team: 'pool' },
-  { id: 'player-6', name: 'Balib', realName: 'Libor Barvík', photo: 'assets/images/players/Balib.jpg', team: 'pool' },
-  { id: 'player-7', name: 'Chleba', realName: 'Jiří Hanzlík', photo: 'assets/images/players/Jirka.jpg', team: 'pool' },
-  { id: 'player-8', name: 'Trebkiller', realName: 'Vladimír Hořký', photo: 'assets/images/players/Trebkiller.jpg', team: 'pool' },
+  { id: 'player-1', name: 'GIRY', realName: 'Vojtěch Michal', photo: 'assets/images/players/Giry.jpg', team: 'blue' },
+  { id: 'player-2', name: 'Winters', realName: 'Karel Kosík', photo: 'assets/images/players/Karel.jpg', team: 'blue' },
+  { id: 'player-4', name: 'Vojcii', realName: 'Vojtěch Kos', photo: 'assets/images/players/Vojcii.jpg', team: 'blue' },
+  { id: 'player-7', name: 'Chleba', realName: 'Jiří Hanzlík', photo: 'assets/images/players/Jirka.jpg', team: 'blue' },
+  { id: 'player-5', name: 'Kahanate', realName: 'David Kuba', photo: 'assets/images/players/David.jpg', team: 'red' },
+  { id: 'player-6', name: 'Balib', realName: 'Libor Barvík', photo: 'assets/images/players/Balib.jpg', team: 'red' },
+  { id: 'player-3', name: 'Pravdomil Kecal', realName: 'Dan Žáček', photo: 'assets/images/players/Pravdomil Kecal.jpg', team: 'red' },
+  { id: 'player-8', name: 'Trebkiller', realName: 'Vladimír Hořký', photo: 'assets/images/players/Trebkiller.jpg', team: 'red' },
 ];
 
 // =====================================================================
 // PICK DATA PRO JEDNOTLIVÉ HRY (z pickovací obrazovky)
 // Složka: map_picks/<gameId>/<mapId>.<ext>
 // =====================================================================
+function getGamePickUrl(game, g) {
+  if (!game || !game.pickUrl) return null;
+  let url = game.pickUrl;
+  if (game.id === 'warcraft') {
+    let cs2W = gameWinner[0];
+    if (!cs2W && results[0]) {
+      const b = results[0].filter(v => v === 1).length;
+      const r = results[0].filter(v => v === 2).length;
+      if (b >= 2) cs2W = 1;
+      else if (r >= 2) cs2W = 2;
+    }
+    if (cs2W === 1) {
+      url += '?cs2_winner=blue';
+    } else if (cs2W === 2) {
+      url += '?cs2_winner=red';
+    }
+  }
+  if (game.id === 'lol') {
+    let g0W = gameWinner[0];
+    let g1W = gameWinner[1];
+    if (!g0W && results[0]) {
+      const b = results[0].filter(v => v === 1).length;
+      const r = results[0].filter(v => v === 2).length;
+      if (b >= 2) g0W = 1;
+      else if (r >= 2) g0W = 2;
+    }
+    if (!g1W && results[1]) {
+      const b = results[1].filter(v => v === 1).length;
+      const r = results[1].filter(v => v === 2).length;
+      if (b >= 2) g1W = 1;
+      else if (r >= 2) g1W = 2;
+    }
+
+    const params = [];
+    if (g0W === 1 && g1W === 1) {
+      params.push('lead=blue');
+    } else if (g0W === 2 && g1W === 2) {
+      params.push('lead=red');
+    }
+
+    const lol1 = (results[2] && results[2][0]) || (gameWinner[2] || 0);
+    const lol2 = (results[2] && results[2][1]) || 0;
+    if (lol1 === 1) params.push('lol_g1=blue');
+    else if (lol1 === 2) params.push('lol_g1=red');
+    if (lol2 === 1) params.push('lol_g2=blue');
+    else if (lol2 === 2) params.push('lol_g2=red');
+
+    if (params.length > 0) {
+      url += '?' + params.join('&');
+    }
+  }
+  if (game.id === 'overwatch') {
+    // Zjistíme, kdo prohrává po prvních 3 hrách (CS2, Warcraft, LoL)
+    let blueWins = 0, redWins = 0;
+    for (let prevG = 0; prevG < 3; prevG++) {
+      let w = gameWinner[prevG];
+      if (!w && results[prevG]) {
+        const numR = GAME_ICONS[prevG].rounds || 3;
+        const maj = Math.ceil(numR / 2);
+        const b = results[prevG].filter(v => v === 1).length;
+        const r = results[prevG].filter(v => v === 2).length;
+        if (b >= maj) w = 1;
+        else if (r >= maj) w = 2;
+      }
+      if (w === 1) blueWins++;
+      else if (w === 2) redWins++;
+    }
+    if (blueWins > redWins) {
+      url += '?ow_first=red';
+    } else if (redWins > blueWins) {
+      url += '?ow_first=blue';
+    }
+  }
+  return url;
+}
+
 function resolveMapImage(gameId, roundData) {
   if (!roundData) return null;
 
   // 1. Přímá cesta nebo explicitní název souboru
   if (roundData.mapImage) {
-    if (roundData.mapImage.includes('/')) return roundData.mapImage;
+    if (roundData.mapImage.startsWith('map_picks/') || roundData.mapImage.startsWith('assets/')) {
+      return roundData.mapImage;
+    }
     return `map_picks/${gameId}/${roundData.mapImage}`;
   }
 
@@ -226,60 +304,19 @@ function buildTable() {
     // Ikona
     const iconCell = document.createElement('div');
     iconCell.className = 'gcell-icon';
-    if (game.pickUrl) {
+    const pickUrl = getGamePickUrl(game, g);
+    if (pickUrl) {
       iconCell.classList.add('gcell-icon-clickable');
       iconCell.title = `Přejít na pickování (${game.name || gameLabel})`;
       iconCell.addEventListener('click', () => {
-        let url = game.pickUrl;
-        if (game.id === 'warcraft') {
-          let cs2W = gameWinner[0];
-          if (!cs2W && results[0]) {
-            const b = results[0].filter(v => v === 1).length;
-            const r = results[0].filter(v => v === 2).length;
-            if (b >= 2) cs2W = 1;
-            else if (r >= 2) cs2W = 2;
-          }
-          if (cs2W === 1) {
-            url += '?cs2_winner=blue';
-          } else if (cs2W === 2) {
-            url += '?cs2_winner=red';
-          }
+        if (window.LankaMusic) {
+          try {
+            sessionStorage.setItem('lanka_music_playing', 'true');
+            sessionStorage.setItem('lanka_active_music_game', game.id);
+            localStorage.setItem('lanka_active_music_game', game.id);
+          } catch (e) { }
         }
-        if (game.id === 'lol') {
-          let g0W = gameWinner[0];
-          let g1W = gameWinner[1];
-          if (!g0W && results[0]) {
-            const b = results[0].filter(v => v === 1).length;
-            const r = results[0].filter(v => v === 2).length;
-            if (b >= 2) g0W = 1;
-            else if (r >= 2) g0W = 2;
-          }
-          if (!g1W && results[1]) {
-            const b = results[1].filter(v => v === 1).length;
-            const r = results[1].filter(v => v === 2).length;
-            if (b >= 2) g1W = 1;
-            else if (r >= 2) g1W = 2;
-          }
-
-          const params = [];
-          if (g0W === 1 && g1W === 1) {
-            params.push('lead=blue');
-          } else if (g0W === 2 && g1W === 2) {
-            params.push('lead=red');
-          }
-
-          const lol1 = (results[2] && results[2][0]) || (gameWinner[2] || 0);
-          const lol2 = (results[2] && results[2][1]) || 0;
-          if (lol1 === 1) params.push('lol_g1=blue');
-          else if (lol1 === 2) params.push('lol_g1=red');
-          if (lol2 === 1) params.push('lol_g2=blue');
-          else if (lol2 === 2) params.push('lol_g2=red');
-
-          if (params.length > 0) {
-            url += '?' + params.join('&');
-          }
-        }
-        window.location.href = url;
+        window.location.href = pickUrl;
       });
     }
     const img = document.createElement('img');
@@ -327,7 +364,7 @@ function buildTable() {
         const mapImgSrc = resolveMapImage(game.id, roundData);
         if (mapImgSrc) {
           const bg = document.createElement('div');
-          bg.className = 'round-bg-image';
+          bg.className = 'round-bg-image' + (game.id === 'wreckfest' ? ' round-bg-wreckfest' : '');
           bg.style.backgroundImage = `url('${encodeURI(mapImgSrc)}')`;
           roundCell.appendChild(bg);
 
@@ -338,8 +375,55 @@ function buildTable() {
 
         const mapTitle = roundData.mapName || roundData.metaTop || roundData.map || '';
         let ctLabel = '';
-        // U Warcraftu chceme zobrazit pouze název mapy (žádné Modří, Červení ani Decider)
-        if (game.id !== 'warcraft') {
+        let wreckfestCarClass = '';
+
+        // U Warcraftu a Wreckfestu chceme zobrazit specifické popisky
+        if (game.id === 'warcraft') {
+          // Pouze název mapy
+          ctLabel = '';
+        } else if (game.id === 'wreckfest') {
+          // U Wreckfestu zobrazit např: "Crash Canyon — Main circuit", a odznak třídy auta
+          let trackName = roundData.trackName || '';
+          wreckfestCarClass = roundData.carClass || '';
+
+          if (roundData.metaBottom) {
+            if (roundData.metaBottom.includes('•')) {
+              const parts = roundData.metaBottom.split('•');
+              if (!trackName) trackName = parts[0].trim();
+              if (!wreckfestCarClass) wreckfestCarClass = parts[1].trim();
+            } else if (!trackName) {
+              trackName = roundData.metaBottom.trim();
+            }
+          }
+
+          ctLabel = trackName;
+
+          // Pokud máme třídu auta, přidáme trvalý odznak do pravého horního rohu buňky
+          if (wreckfestCarClass) {
+            const carBadge = document.createElement('div');
+            let carCls = 'car-custom';
+            const cLower = wreckfestCarClass.toLowerCase();
+            let badgeText = wreckfestCarClass;
+
+            if (cLower.includes('max a') || cLower === 'a') {
+              carCls = 'car-max-a';
+              badgeText = 'MAX A';
+            } else if (cLower.includes('max b') || cLower === 'b') {
+              carCls = 'car-max-b';
+              badgeText = 'MAX B';
+            } else if (cLower.includes('max c') || cLower === 'c') {
+              carCls = 'car-max-c';
+              badgeText = 'MAX C';
+            } else if (cLower.includes('konkrétní')) {
+              carCls = 'car-custom';
+              badgeText = 'KONKRÉTNÍ';
+            }
+
+            carBadge.className = `round-car-badge ${carCls}`;
+            carBadge.textContent = badgeText;
+            roundCell.appendChild(carBadge);
+          }
+        } else {
           if (roundData.ctTeam) {
             ctLabel = `CT: ${roundData.ctTeam === 'blue' ? 'Modří' : 'Červení'}`;
           } else if (roundData.metaBottom) {
@@ -349,14 +433,46 @@ function buildTable() {
           }
         }
 
-        const infoText = [mapTitle, ctLabel].filter(Boolean).join(', ');
+        const infoText = [mapTitle, ctLabel].filter(Boolean).join(game.id === 'wreckfest' ? ' — ' : ', ');
 
         if (infoText) {
           const infoEl = document.createElement('div');
           infoEl.className = 'round-info-label';
           infoEl.textContent = infoText;
           roundCell.appendChild(infoEl);
+          roundCell.title = infoText + (wreckfestCarClass ? ` (${wreckfestCarClass})` : '');
         }
+
+        // Plovoucí HUD pruh dole na obrazovce při najetí na buňku
+        roundCell.addEventListener('mouseenter', () => {
+          const hud = document.getElementById('scoreHoverHud');
+          if (!hud) return;
+
+          let hudHtml = `<span class="score-hud-game-tag">${game.name} • ${r + 1}. KOLO</span>`;
+
+          if (mapTitle || ctLabel) {
+            hudHtml += `<span class="score-hud-divider"></span>`;
+            if (mapTitle) hudHtml += `<span class="score-hud-title">${mapTitle}</span>`;
+            if (ctLabel) hudHtml += `<span class="score-hud-sub">${mapTitle ? '— ' : ''}${ctLabel}</span>`;
+          }
+
+          if (wreckfestCarClass) {
+            let carCls = 'car-custom';
+            const cLower = wreckfestCarClass.toLowerCase();
+            if (cLower.includes('max a') || cLower === 'a') carCls = 'car-max-a';
+            else if (cLower.includes('max b') || cLower === 'b') carCls = 'car-max-b';
+            else if (cLower.includes('max c') || cLower === 'c') carCls = 'car-max-c';
+            hudHtml += `<span class="score-hud-divider"></span><span class="score-hud-car-badge ${carCls}">AUTA: ${wreckfestCarClass}</span>`;
+          }
+
+          hud.innerHTML = hudHtml;
+          hud.classList.add('is-visible');
+        });
+
+        roundCell.addEventListener('mouseleave', () => {
+          const hud = document.getElementById('scoreHoverHud');
+          if (hud) hud.classList.remove('is-visible');
+        });
       }
 
       const zoneLeft = document.createElement('div');
@@ -570,37 +686,55 @@ function loadTeamsFromDraft() {
 
   const allPlayers = ALL_PLAYERS_DEFAULT.map(dp => {
     const match = savedPlayers?.find(p => p.id === dp.id);
-    return { ...dp, team: match ? match.team : dp.team };
+    return { ...dp, team: (match && match.team !== 'pool') ? match.team : dp.team };
   });
 
-  // Blue: kapitán slot 1 + hráči v pořadí 2–5 (zigzag: levý sloupec 1,3,5 / pravý 2,4)
-  const bluePlayers = allPlayers.filter(p => p.team === 'blue');
-  const redPlayers = allPlayers.filter(p => p.team === 'red');
+  // Blue: kapitán slot 1 + hráči v pořadí 2–5
+  let bluePlayers = allPlayers.filter(p => p.team === 'blue');
+  let redPlayers = allPlayers.filter(p => p.team === 'red');
 
-  renderTeamSidebar('blueSubLeft', 'blueSubRight', CAPTAIN_BLUE, bluePlayers);
+  // Fallback pokud by ještě nebyly přiřazeny týmy: Modrý (Giry, Winters, Vojcii, Chleba), Červený (Kahanate, Balib, Danik, Trebkiller)
+  if (bluePlayers.length === 0 && redPlayers.length === 0) {
+    bluePlayers = [
+      allPlayers.find(p => p.id === 'player-1'), // Giry
+      allPlayers.find(p => p.id === 'player-2'), // Winters
+      allPlayers.find(p => p.id === 'player-4'), // Vojcii
+      allPlayers.find(p => p.id === 'player-7'), // Chleba (Jirka)
+    ].filter(Boolean);
+
+    redPlayers = [
+      allPlayers.find(p => p.id === 'player-5'), // Kahanate
+      allPlayers.find(p => p.id === 'player-6'), // Balib
+      allPlayers.find(p => p.id === 'player-3'), // Pravdomil Kecal (Dan Žáček)
+      allPlayers.find(p => p.id === 'player-8'), // Trebkiller
+    ].filter(Boolean);
+  }
+
+  // Modrý tým: 3-sloupec vlevo (blueSubLeft), 2-sloupec vpravo (blueSubRight)
+  renderTeamSidebar('blueSubRight', 'blueSubLeft', CAPTAIN_BLUE, bluePlayers);
+  // Červený tým: 2-sloupec vlevo (redSubLeft), 3-sloupec vpravo (redSubRight)
   renderTeamSidebar('redSubLeft', 'redSubRight', CAPTAIN_RED, redPlayers);
 }
 
 /**
  * Vykreslí draft-style zigzag layout do sidebaru.
- * Sloty jsou: L1, R1, L2, R2, L3 (kapitan je vždy L1)
+ * Sestaví 5 slotů v zigzag pořadí: Slot 1 (vrch 3-col), Slot 2 (vrch 2-col),
+ * Slot 3 (střed 3-col), Slot 4 (spodek 2-col), Slot 5 (spodek 3-col)
  */
-function renderTeamSidebar(leftId, rightId, captain, players) {
-  const leftCol = document.getElementById(leftId);
-  const rightCol = document.getElementById(rightId);
-  if (!leftCol || !rightCol) return;
-  leftCol.innerHTML = '';
-  rightCol.innerHTML = '';
+function renderTeamSidebar(subcol2Id, subcol3Id, captain, players) {
+  const col2 = document.getElementById(subcol2Id);
+  const col3 = document.getElementById(subcol3Id);
+  if (!col2 || !col3) return;
+  col2.innerHTML = '';
+  col3.innerHTML = '';
 
-  // Sestavíme 5 slotů v zigzag pořadí: L1, R1, L2, R2, L3
   const allMembers = [captain, ...players.slice(0, 4)];
-  // slot index → [column, position]
   const slots = [
-    [leftCol, allMembers[0]], // L1 — kapitán
-    [rightCol, allMembers[1]], // R1
-    [leftCol, allMembers[2]], // L2
-    [rightCol, allMembers[3]], // R2
-    [leftCol, allMembers[4]], // L3
+    [col3, allMembers[0]], // Slot 1 — kapitán (vrch 3-col)
+    [col2, allMembers[1]], // Slot 2 — 1. draftovaný hráč (vrch 2-col)
+    [col3, allMembers[2]], // Slot 3 — 2. draftovaný hráč (střed 3-col)
+    [col2, allMembers[3]], // Slot 4 — 3. draftovaný hráč (spodek 2-col)
+    [col3, allMembers[4]], // Slot 5 — 4. draftovaný hráč (spodek 3-col)
   ];
 
   slots.forEach(([col, member]) => {
@@ -614,10 +748,15 @@ function renderTeamSidebar(leftId, rightId, captain, players) {
 
 function createSidebarCard(player) {
   const card = document.createElement('div');
-  card.className = 'sidebar-card';
+  card.className = 'sidebar-card' + (player.isCaptain ? ' is-captain' : '');
 
   const nickLen = (player.name || '').length;
-  const nickClass = nickLen > 9 ? 'sidebar-card-nick is-long' : 'sidebar-card-nick';
+  let nickClass = 'sidebar-card-nick';
+  if (nickLen > 12) {
+    nickClass += ' is-very-long-name';
+  } else if (nickLen > 8) {
+    nickClass += ' is-long';
+  }
 
   card.innerHTML = `
     <div class="sidebar-card-photo-wrapper">
@@ -635,11 +774,77 @@ function createSidebarCard(player) {
 function createEmptySlot() {
   const slot = document.createElement('div');
   slot.className = 'sidebar-card sidebar-card-empty';
-  slot.style.cssText = 'height:136px; border:1.5px dashed rgba(255,255,255,0.1); background:rgba(0,0,0,0.15); border-radius:7px;';
+  slot.style.cssText = 'border:1.5px dashed rgba(255,255,255,0.12); background:rgba(0,0,0,0.15); border-radius:8px;';
   return slot;
 }
 
+// =====================================================================
+// INTRO / VS PRE-FÁZE CONTROLLER
+// =====================================================================
+function triggerStartIntro() {
+  const body = document.body;
+  if (!body.classList.contains('intro-mode') || body.classList.contains('intro-leaving')) return;
 
+  body.classList.add('intro-leaving');
+  const overlay = document.getElementById('scoreIntroOverlay');
+  if (overlay) overlay.classList.add('is-hiding');
+
+  try {
+    sessionStorage.setItem('lanka_score_intro_played', 'true');
+  } catch (e) { /* ignore */ }
+
+  setTimeout(() => {
+    body.classList.remove('intro-mode', 'intro-leaving');
+    if (overlay) {
+      overlay.classList.remove('is-hiding');
+    }
+    renderBreakMarkers();
+  }, 850);
+}
+
+function showIntroScreen() {
+  try {
+    sessionStorage.removeItem('lanka_score_intro_played');
+  } catch (e) { /* ignore */ }
+  loadTeamsFromDraft();
+  const overlay = document.getElementById('scoreIntroOverlay');
+  if (overlay) {
+    overlay.classList.remove('is-hiding');
+  }
+  document.body.classList.remove('intro-leaving');
+  document.body.classList.add('intro-mode');
+}
+
+const startBtn = document.getElementById('scoreIntroStartBtn');
+if (startBtn) {
+  startBtn.addEventListener('click', triggerStartIntro);
+}
+
+const introBtn = document.getElementById('introBtn');
+if (introBtn) {
+  introBtn.addEventListener('click', showIntroScreen);
+}
+
+const fullscreenBtn = document.getElementById('fullscreenBtn');
+if (fullscreenBtn) {
+  fullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => { });
+    } else {
+      document.exitFullscreen().catch(() => { });
+    }
+  });
+}
+
+// Možnost odpálit START stiskem mezerníku nebo Enteru na klávesnici / TV ovladači
+document.addEventListener('keydown', (e) => {
+  if (document.body.classList.contains('intro-mode') && !document.body.classList.contains('intro-leaving')) {
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      triggerStartIntro();
+    }
+  }
+});
 
 // =====================================================================
 // RESET
@@ -700,11 +905,17 @@ function syncPickDataFromUrl() {
 syncPickDataFromUrl();
 loadTournamentScore();
 buildTable();
+loadTeamsFromDraft();
+
+if (window.LankaMusic) {
+  window.LankaMusic.bindUI();
+}
 
 window.addEventListener('pageshow', () => {
   syncPickDataFromUrl();
   loadTournamentScore();
   buildTable();
+  loadTeamsFromDraft();
 });
 
 // Automatická aktualizace tabulky při změně pick dat (např. z jiné záložky)

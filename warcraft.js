@@ -272,7 +272,7 @@ function renderTimeline() {
     if (!isTeamsChosen) {
       if (step.team === 'A') teamLabel = 'TÝM A';
       else if (step.team === 'B') teamLabel = 'TÝM B';
-      else if (step.type === 'decider') teamLabel = 'DECIDER';
+      else if (step.type === 'decider') teamLabel = '50/50';
     }
 
     const teamColor = getTeamColor(step.team);
@@ -320,7 +320,7 @@ function renderTimeline() {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="cs2loser-svg">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
               </svg>
-              <span>PORAŽENÝ Z CS2 (1. BAN)</span>
+              <span>PROHRÁVAJÍCÍ ZAČÍNÁ</span>
             </div>
           </div>
         `;
@@ -370,7 +370,7 @@ function renderTimeline() {
     // PICKY A DECIDER
     if (step.type === 'pick' || step.type === 'decider') {
       const isDecider = step.type === 'decider';
-      const frameTeamLabel = isDecider && !isTeamsChosen ? 'DECIDER' : teamLabel;
+      const frameTeamLabel = isDecider ? '50/50' : teamLabel;
       const frameTeamCls = isDecider ? 'team-neutral' : teamColorCls;
       const mapOrderText = `${step.mapNumber}. MAPA`;
 
@@ -387,13 +387,7 @@ function renderTimeline() {
       let renderKey = '';
       if (currentMap) {
         const imgSrc = getMapImagePath(currentMap.mapId);
-        let tagHtml = '';
-        if (currentMap.pickedBy) {
-          const whoLabel = currentMap.pickedBy === 'blue' ? 'Modří' : currentMap.pickedBy === 'red' ? 'Červení' : 'Decider';
-          tagHtml = `<div class="frame-ct-tag">${currentMap.mapName}, ${whoLabel}</div>`;
-        } else {
-          tagHtml = `<div class="frame-ct-tag">${currentMap.mapName}</div>`;
-        }
+        const tagHtml = `<div class="frame-ct-tag">${currentMap.mapName}</div>`;
 
         renderKey = `map-${currentMap.mapId}-${currentMap.pickedBy || ''}`;
         frameInnerHtml = `
@@ -669,10 +663,40 @@ function renderMapPoolGrid(container, step) {
     return;
   }
 
-  // Celková výstavba mřížky
+  // Celková výstavba mřížky s informačními buňkami pravidel dole
   container.innerHTML = `
     <div class="maps-grid-wrapper">
       <div class="maps-grid" id="mapsGrid"></div>
+      
+      <!-- Informační buňky pravidel turnaje (Zlaté doly a Food cap) -->
+      <div class="wc-rules-bar" id="wcRulesBar">
+        <div class="wc-rule-card">
+          <div class="wc-rule-icon-box">
+            <img src="map_picks/warcraft/gold_icon.png" alt="Zlato" class="wc-rule-icon-img" onerror="this.onerror=null; this.src='map_picks/warcraft/gold_coin.png';">
+          </div>
+          <div class="wc-rule-info">
+            <div class="wc-rule-title">ZÁSOBY ZLATA V DOLECH</div>
+            <div class="wc-rule-desc">Doly u základen 5 500 zlata, ostatní 8 000 zlata.</div>
+          </div>
+        </div>
+
+        <div class="wc-rule-card">
+          <div class="wc-rule-icon-box">
+            <img src="map_picks/warcraft/food.png" alt="Food cap" class="wc-rule-icon-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="wc-rule-icon-fallback" style="display: none;">
+              <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+              <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+              <line x1="6" y1="1" x2="6" y2="4"></line>
+              <line x1="10" y1="1" x2="10" y2="4"></line>
+              <line x1="14" y1="1" x2="14" y2="4"></line>
+            </svg>
+          </div>
+          <div class="wc-rule-info">
+            <div class="wc-rule-title">LIMIT JEDNOTEK (FOOD CAP)</div>
+            <div class="wc-rule-desc">Limit jídla omezen na 65.</div>
+          </div>
+        </div>
+      </div>
     </div>
   `;
 
@@ -797,11 +821,16 @@ function renderDeciderActionBar(container, step, candidateMaps, isDecider, isDec
   }
 
   const wrapper = container.querySelector('.maps-grid-wrapper') || container;
+  const rulesBar = document.getElementById('wcRulesBar');
   if (!actionBar) {
     actionBar = document.createElement('div');
     actionBar.id = 'deciderActionBar';
     actionBar.className = 'decider-action-bar';
-    wrapper.appendChild(actionBar);
+    if (rulesBar && rulesBar.parentNode === wrapper) {
+      wrapper.insertBefore(actionBar, rulesBar);
+    } else {
+      wrapper.appendChild(actionBar);
+    }
   }
 
   if (!isDeciderDrawn) {
@@ -1087,8 +1116,6 @@ function renderSummaryView(container) {
   pickState.pickedMaps.forEach(pm => {
     const card = document.createElement('div');
     card.className = 'summary-map-card';
-    const teamCls = pm.pickedBy === 'blue' ? 'ct-blue' : pm.pickedBy === 'red' ? 'ct-red' : '';
-    const teamText = pm.pickedBy === 'blue' ? 'MODRÝ TÝM' : pm.pickedBy === 'red' ? 'ČERVENÝ TÝM' : 'DECIDER';
 
     card.innerHTML = `
       <div class="summary-map-order">${pm.round}. MAPA</div>
@@ -1106,7 +1133,6 @@ function renderSummaryView(container) {
       </div>
       <div class="summary-map-details">
         <div class="summary-map-name">${pm.mapName}</div>
-        <div class="summary-map-side ${teamCls}">${teamText}</div>
       </div>
     `;
 
@@ -1234,6 +1260,11 @@ function closeMapDetailModal() {
 // INICIALIZACE A TLAČÍTKA
 // =====================================================================
 document.addEventListener('DOMContentLoaded', () => {
+  if (window.LankaMusic) {
+    window.LankaMusic.bindUI();
+    window.LankaMusic.playGame('warcraft');
+  }
+
   loadState();
   render();
 

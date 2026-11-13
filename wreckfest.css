@@ -1,0 +1,977 @@
+/* =====================================================================
+   WRECKFEST PICKING STYLES (Rozšíření cs.css)
+   ===================================================================== */
+
+/* ── GLOBÁLNÍ NASTAVENÍ PŘIBLÍŽENÍ A POZICE OBRÁZKŮ MAP ───────────────
+   Přesné zarovnání: Wreckfest mapy mají obsah v boxu X [0..80%], Y [0..74%].
+   - transform-origin: 0% 0% ukotví levý horní roh (aby se neřezal vršek)
+   - scale(1.36): perfektně roztáhne aktivní obsah přes celou plochu bez černých pruhů
+   ───────────────────────────────────────────────────────────────────── */
+:root {
+  --wf-map-scale: 1.34;
+  --wf-map-pos: 0% 0%;
+  --wf-map-shift: translate(-6px, -5px);
+}
+
+/* ── FIXNÍ ROZVRŽENÍ: OSA VLEVO I TLAČÍTKA NAHOŘE DRŽÍ, SCROLLUJE SE POUZE WORKSPACE ── */
+body {
+  overflow: hidden;
+  height: 100vh;
+}
+
+.container {
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  padding: 0 95px;
+}
+
+.top-header {
+  position: fixed;
+  top: 1.15rem;
+  right: 95px;
+  left: 95px;
+  z-index: 200;
+  pointer-events: none;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.top-buttons-group {
+  pointer-events: auto;
+}
+
+.pick-layout {
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
+  padding: 4.5rem 1rem 1.5rem 0;
+  display: flex;
+  align-items: stretch;
+  gap: 3.5rem;
+  overflow: hidden;
+}
+
+/* Levá osa posunutá mírně doprava */
+.timeline-column {
+  width: 320px;
+  flex-shrink: 0;
+  margin: auto 0;
+  margin-left: 2.5rem;
+  height: fit-content;
+}
+
+/* Zmenšení a sjednocení spojovacích šipek v ose */
+.timeline-arrow-row {
+  height: 22px;
+}
+
+.timeline-arrow-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Pravá pracovní plocha se scrollem */
+.workspace-column {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 1.25rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.workspace-column::-webkit-scrollbar {
+  width: 6px;
+}
+
+.workspace-column::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.workspace-column::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.workspace-column::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* ── HORIZONTÁLNÍ TABULKA / ŘÁDKY MAP A TRATÍ ────────────────────────── */
+.wf-workspace-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-bottom: 2.5rem;
+}
+
+.wf-category-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.wf-category-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  padding-left: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.wf-category-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(148, 163, 184, 0.25), transparent);
+}
+
+.wf-map-rows-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* Jeden řádek: Vlevo obrázek mapy, vpravo tratě */
+.wf-map-row {
+  display: grid;
+  grid-template-columns: 295px 1fr;
+  align-items: center;
+  gap: 1.35rem;
+  background: rgba(18, 22, 30, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 0.8rem 1rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.wf-map-row:hover {
+  background: rgba(26, 32, 44, 0.8);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* Levý sloupec: Náhled mapy */
+.wf-map-poster {
+  position: relative;
+  width: 295px;
+  height: 152px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0d1117;
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
+}
+
+.wf-map-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--wf-map-pos);
+  transform-origin: 0% 0%;
+  transform: var(--wf-map-shift) scale(var(--wf-map-scale));
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.wf-map-row:hover .wf-map-poster img {
+  transform: var(--wf-map-shift) scale(calc(var(--wf-map-scale) * 1.03));
+}
+
+.wf-map-poster-name {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.65rem 0.75rem 0.4rem;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.92) 0%, transparent 100%);
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Pravý sloupec: Horizontální řádek tratí */
+.wf-tracks-tracklist {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.95rem;
+}
+
+/* Karta jednotlivé tratě / arény (přesně dimenzováno na 3 vedle sebe na řádek) */
+.wf-track-card {
+  position: relative;
+  width: 285px;
+  height: 152px;
+  border-radius: 10px;
+  background: #141822;
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0.65rem 0.85rem;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  user-select: none;
+}
+
+.wf-track-card:hover {
+  transform: translateY(-2px);
+  border-color: #60a5fa;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), 0 0 10px rgba(96, 165, 250, 0.3);
+}
+
+/* Když vybírá Modrý nebo Červený tým */
+.wf-track-card.hover-blue:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), 0 0 12px rgba(59, 130, 246, 0.4);
+}
+
+.wf-track-card.hover-red:hover {
+  border-color: #ef4444;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), 0 0 12px rgba(239, 68, 68, 0.4);
+}
+
+/* Obrázek layoutu trati na pozadí */
+.wf-track-layout-img {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 38px;
+  object-fit: contain;
+  width: calc(100% - 16px);
+  height: 86px;
+  opacity: 0.88;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.wf-track-card:hover .wf-track-layout-img {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.wf-track-overlay-grad {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(10, 14, 22, 0.95) 0%, rgba(10, 14, 22, 0.45) 45%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Texty na kartě trati */
+.wf-track-info {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wf-track-name {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wf-track-meta {
+  font-size: 0.74rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+.wf-track-meta span {
+  display: inline-block;
+}
+
+/* Tlačítko REVERSE vpravo nahoře na kartě */
+.wf-reverse-toggle-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 3;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #94a3b8;
+  transition: all 0.2s ease;
+}
+
+.wf-reverse-toggle-btn:hover {
+  background: #1e293b;
+  border-color: #f59e0b;
+  color: #f59e0b;
+  transform: scale(1.1);
+}
+
+.wf-reverse-toggle-btn.is-active {
+  background: #f59e0b;
+  border-color: #f59e0b;
+  color: #000;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
+
+.wf-reverse-toggle-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Vybrané / zakázané karty */
+.wf-track-card.is-picked {
+  opacity: 0.3;
+  filter: grayscale(1);
+  pointer-events: none;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+/* ── TIMELINE RÁMEČEK S MINIATUROU TRATĚ ──────────────────────────────── */
+.wf-timeline-picked-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.wf-timeline-bg-map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--wf-map-pos);
+  transform-origin: 0% 0%;
+  transform: var(--wf-map-shift) scale(var(--wf-map-scale));
+  filter: brightness(0.65) contrast(1.1);
+}
+
+.wf-timeline-layout-mini {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  max-width: 65%;
+  max-height: 60%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.95));
+  z-index: 2;
+}
+
+.wf-timeline-frame-tag {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.4rem 0.5rem 0.2rem;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.92) 0%, transparent 100%);
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.4px;
+  text-align: center;
+  z-index: 3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── FINÁLNÍ OBRAZOVKA (SUMMARY BO5) ─────────────────────────────────── */
+.wf-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 1250px;
+  margin: 1.5rem auto;
+}
+
+.wf-summary-card {
+  position: relative;
+  background: #141822;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.wf-summary-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.wf-summary-visual {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #090d14;
+  overflow: hidden;
+}
+
+.wf-summary-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--wf-map-pos);
+  transform-origin: 0% 0%;
+  transform: var(--wf-map-shift) scale(var(--wf-map-scale));
+  filter: brightness(0.7);
+}
+
+.wf-summary-layout-img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 70%;
+  max-height: 65%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.95));
+}
+
+.wf-summary-order-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #e2e8f0;
+}
+
+.wf-summary-details {
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  background: #181d28;
+}
+
+.wf-summary-map-name {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.wf-summary-track-name {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.wf-summary-mode-tag {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* Losování 50/50 animace */
+.wf-roulette-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px;
+  gap: 1.5rem;
+}
+
+.wf-roulette-display {
+  width: 380px;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  background: #141822;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wf-roulette-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--wf-map-pos);
+  transform-origin: 0% 0%;
+  transform: var(--wf-map-shift) scale(var(--wf-map-scale));
+  filter: brightness(0.7);
+}
+
+.wf-roulette-layout {
+  position: absolute;
+  max-width: 65%;
+  max-height: 60%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.95));
+}
+
+.wf-roulette-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.8rem;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.95), transparent);
+  text-align: center;
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #fff;
+}
+
+/* Box pro losování aut v decideru */
+.wf-roulette-car-box {
+  width: 380px;
+  background: #141822;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 0.75rem 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-family: 'Chakra Petch', sans-serif;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s ease;
+}
+
+.wf-roulette-car-box.is-rolling {
+  border-color: #60a5fa;
+  box-shadow: 0 0 20px rgba(96, 165, 250, 0.35);
+}
+
+.wf-roulette-car-box.is-locked {
+  border-color: #f59e0b;
+  box-shadow: 0 0 24px rgba(245, 158, 11, 0.45);
+}
+
+.wf-roulette-car-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.wf-roulette-car-badge {
+  font-family: 'Orbitron', 'Chakra Petch', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 3px 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  transition: all 0.15s ease;
+}
+
+.wf-roulette-car-badge.badge-a {
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.15);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+}
+
+.wf-roulette-car-badge.badge-b {
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  background: rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+.wf-roulette-car-badge.badge-c {
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  background: rgba(16, 185, 129, 0.15);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.wf-roulette-car-badge.badge-custom {
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  background: rgba(245, 158, 11, 0.15);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+/* =====================================================================
+   KROK: VÝBĚR TŘÍDY AUTA (MAX A, MAX B, MAX C, KONKRÉTNÍ AUTO)
+   ===================================================================== */
+.wf-car-selection-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1140px;
+  margin: 0 auto;
+  animation: viewFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.wf-car-preview-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.wf-car-preview-card {
+  position: relative;
+  width: 380px;
+  height: 125px;
+  background: #141822;
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.wf-car-prev-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--wf-map-pos);
+  transform-origin: 0% 0%;
+  transform: var(--wf-map-shift) scale(var(--wf-map-scale));
+  filter: brightness(0.55);
+}
+
+.wf-car-prev-layout {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  max-width: 60%;
+  max-height: 65%;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.95));
+  z-index: 2;
+}
+
+.wf-car-prev-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(10, 14, 22, 0.95) 0%, rgba(10, 14, 22, 0.35) 60%, transparent 100%);
+  z-index: 3;
+}
+
+.wf-car-prev-content {
+  position: relative;
+  z-index: 4;
+  padding: 0.65rem 0.95rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wf-car-prev-tag {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #94a3b8;
+  letter-spacing: 1px;
+}
+
+.wf-car-prev-name {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.4px;
+}
+
+.wf-car-prev-meta {
+  font-size: 0.72rem;
+  color: #cbd5e1;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.wf-car-back-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.wf-car-back-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.wf-car-back-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #fff;
+  transform: translateX(-2px);
+}
+
+/* Mřížka 4 karet výběru aut */
+.wf-car-cards-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.wf-car-card {
+  flex: 1;
+  min-width: 235px;
+  max-width: 265px;
+  min-height: 280px;
+  background: #141822;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  padding: 1.75rem 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  user-select: none;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.wf-car-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: transparent;
+  transition: background 0.22s ease;
+}
+
+.wf-car-card:hover {
+  transform: translateY(-5px);
+}
+
+.wf-car-card.is-selecting {
+  transform: scale(0.97) !important;
+  filter: brightness(1.25);
+}
+
+/* Jednotlivé karty a barvy */
+.wf-car-card.card-max-a:hover {
+  border-color: #ef4444;
+  box-shadow: 0 6px 24px rgba(239, 68, 68, 0.35);
+}
+.wf-car-card.card-max-a::before {
+  background: #ef4444;
+}
+.wf-car-card.card-max-a .wf-car-badge {
+  color: #f87171;
+}
+
+.wf-car-card.card-max-b:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 6px 24px rgba(59, 130, 246, 0.35);
+}
+.wf-car-card.card-max-b::before {
+  background: #3b82f6;
+}
+.wf-car-card.card-max-b .wf-car-badge {
+  color: #60a5fa;
+}
+
+.wf-car-card.card-max-c:hover {
+  border-color: #10b981;
+  box-shadow: 0 6px 24px rgba(16, 185, 129, 0.35);
+}
+.wf-car-card.card-max-c::before {
+  background: #10b981;
+}
+.wf-car-card.card-max-c .wf-car-badge {
+  color: #34d399;
+}
+
+.wf-car-card.card-custom:hover {
+  border-color: #f59e0b;
+  box-shadow: 0 6px 24px rgba(245, 158, 11, 0.35);
+}
+.wf-car-card.card-custom::before {
+  background: #f59e0b;
+}
+.wf-car-card.card-custom .wf-car-badge {
+  color: #fbbf24;
+}
+
+.wf-car-badge {
+  font-family: 'Orbitron', 'Chakra Petch', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 2px;
+  margin-bottom: 0.6rem;
+  transition: transform 0.22s ease;
+}
+
+.wf-car-card:hover .wf-car-badge {
+  transform: scale(1.08);
+}
+
+.wf-badge-icon svg {
+  width: 42px;
+  height: 42px;
+}
+
+.wf-car-title {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  color: #fff;
+  margin-bottom: 0.2rem;
+}
+
+.wf-car-sub {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.wf-car-desc {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  line-height: 1.4;
+  margin-bottom: 1.25rem;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wf-car-pill {
+  margin-top: auto;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+/* Timeline označení auta */
+.wf-timeline-tag-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wf-timeline-car-tag {
+  color: #f59e0b;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+
+.wf-timeline-car-tag.is-pending {
+  color: #60a5fa;
+  animation: pulse 1.2s infinite;
+}
+
+/* Summary tagy */
+.wf-summary-tags-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 5px;
+}
+
+.wf-summary-car-tag {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 4px;
+  padding: 2px 7px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

@@ -1,0 +1,176 @@
+/* =====================================================================
+   OVERWATCH 2 PICKING STYLES (DĚDÍ VŠECHNO Z cs.css)
+   PŘIZPŮSOBENÍ PRO MAPY NA ŠÍŘKU (16:9) A DETAILNÍ LIGHTBOX
+   ===================================================================== */
+
+/* ── KARTY MAP (Widescreen 16:9) ────────────────────────────────────── */
+.map-card-image-box {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto !important;
+  background-color: #1a1c22;
+  overflow: hidden;
+  position: relative;
+}
+
+.map-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.88;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  display: block;
+}
+
+.map-card:hover .map-card-img {
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+/* ── ČASOVÁ OSA — UZEL: PROHRÁVAJÍCÍ VYBÍRÁ PRVNÍ (STEJNĚ JAKO LOLKO) ── */
+.timeline-skip-node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.95rem;
+  border-radius: 11px;
+  background-color: #22252c;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+  user-select: none;
+}
+
+.timeline-skip-node.is-active {
+  border-color: #ffffff;
+  background-color: #2b303c;
+  transform: scale(1.04);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 12px rgba(255, 255, 255, 0.18);
+}
+
+.timeline-skip-node.is-completed {
+  border-color: rgba(255, 255, 255, 0.15);
+  opacity: 0.75;
+}
+
+.timeline-skip-node .skip-svg {
+  width: 17px;
+  height: 17px;
+  display: block;
+  stroke: #94a3b8;
+  flex-shrink: 0;
+}
+
+/* ── HLAVIČKA MÓDU NAD MAPAMI (POUZE NÁZEV MÓDU) ──────────────────── */
+.workspace-header {
+  text-align: center;
+  margin: 0 0 1.5rem 0;
+}
+
+.workspace-header .workspace-title {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 1.85rem;
+  font-weight: 900;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0;
+}
+
+/* ── KARTA PRO JIŽ VYBRANOU MAPU V TÉMŽE MÓDU (DISABLED) ───────────── */
+.map-card.is-already-picked {
+  opacity: 0.38;
+  filter: grayscale(0.9);
+  pointer-events: none;
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ── SOUHRN DOKONČENÉHO PICKU BO5 ──────────────────────────────────── */
+.summary-wrapper {
+  max-width: 1400px !important;
+  margin: 0 auto;
+}
+
+.summary-bo5-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr) !important;
+  gap: 1.25rem !important;
+  width: 100%;
+}
+
+@media (max-width: 1300px) {
+  .summary-bo5-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+.summary-map-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #22252c;
+  border: 3.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.summary-map-order {
+  padding: 0.5rem 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  color: #86efac;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.summary-map-image-box {
+  width: 100% !important;
+  aspect-ratio: 16 / 9 !important;
+  height: auto !important;
+  background-color: #1a1c22;
+  overflow: hidden;
+}
+
+.summary-map-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.summary-map-details {
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.summary-map-name {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summary-map-mode {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #94a3b8;
+}

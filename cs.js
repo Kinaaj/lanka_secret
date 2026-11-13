@@ -223,7 +223,7 @@ function renderTimeline() {
     if (!isTeamsChosen) {
       if (step.team === 'A') teamLabel = 'TÝM A';
       else if (step.team === 'B') teamLabel = 'TÝM B';
-      else if (step.type === 'decider') teamLabel = 'DECIDER';
+      else if (step.type === 'decider') teamLabel = '50/50';
     }
 
     const teamColor = getTeamColor(step.team); // 'blue' | 'red' | null
@@ -266,18 +266,19 @@ function renderTimeline() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rps-svg" title="Kámen">
                   <path d="M6 10l3-5 6 1 4 5-1 7-7 3-6-3z"/>
                 </svg>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rps-svg" title="Papír">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                  <line x1="16" y1="13" x2="8" y2="13"/>
-                  <line x1="16" y1="17" x2="8" y2="17"/>
-                </svg>
+
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rps-svg" title="Nůžky">
                   <circle cx="6" cy="6" r="3"/>
                   <circle cx="6" cy="18" r="3"/>
                   <line x1="20" y1="4" x2="8.12" y2="15.88"/>
                   <line x1="14.47" y1="14.48" x2="20" y2="20"/>
                   <line x1="8.12" y1="8.12" x2="12" y2="12"/>
+                </svg>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rps-svg" title="Papír">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
                 </svg>
               </div>
             </div>
@@ -324,7 +325,7 @@ function renderTimeline() {
     // PICKY (1. Mapa, 2. Mapa, 3. Mapa): Rámeček stejný jako ve výběru
     if (step.type === 'pick' || step.type === 'decider') {
       const isDecider = step.type === 'decider';
-      const frameTeamLabel = isDecider && !isTeamsChosen ? 'DECIDER' : teamLabel;
+      const frameTeamLabel = isDecider ? '50/50' : teamLabel;
       const frameTeamCls = isDecider ? 'team-neutral' : teamColorCls;
       const mapOrderText = `${step.mapNumber}. MAPA`;
 
@@ -1358,6 +1359,11 @@ function render() {
 // INICIALIZACE A TLAČÍTKA
 // =====================================================================
 document.addEventListener('DOMContentLoaded', () => {
+  if (window.LankaMusic) {
+    window.LankaMusic.bindUI();
+    window.LankaMusic.playGame('cs2');
+  }
+
   loadState();
   render();
 

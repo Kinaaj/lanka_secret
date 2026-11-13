@@ -1702,3 +1702,124 @@ body.turn-active-red .side-panel-left {
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+/* =====================================================================
+   HUD HUDBA & HLASITOST (PICK OBRAZOVKY)
+   ===================================================================== */
+.hud-music-widget {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #22252c;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 0.25rem 0.6rem;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
+}
+
+.hud-music-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: 'Chakra Petch', sans-serif;
+  letter-spacing: 0.5px;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hud-music-btn:hover {
+  background-color: #323744;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.hud-music-btn.is-playing {
+  background-color: #323744;
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.hud-music-btn.is-playing:hover {
+  background-color: #3d4353;
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+}
+
+.hud-music-btn svg {
+  width: 13px;
+  height: 13px;
+}
+
+.hud-volume-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.hud-volume-btn {
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-radius: 4px;
+  transition: color 0.15s ease;
+}
+
+.hud-volume-btn:hover {
+  color: #ffffff;
+}
+
+.hud-volume-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.hud-volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 60px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.hud-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.4);
+  transition: transform 0.15s;
+}
+
+.hud-volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  background: #ffffff;
+}
+
+.hud-volume-val {
+  font-family: 'Chakra Petch', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #9ca3af;
+  min-width: 28px;
+  text-align: right;
+}

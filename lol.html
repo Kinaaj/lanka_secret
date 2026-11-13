@@ -41,6 +41,37 @@
       </div>
 
       <div class="top-buttons-group">
+        <!-- Hudební přehrávač (Stop tlačítko + Hlasitost) -->
+        <div class="hud-music-widget" id="pickMusicWidget">
+          <button id="musicToggleBtn" class="hud-music-btn" title="Přehrát / Zastavit hudbu" aria-label="Hudba">
+            <svg class="music-icon-playing" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+              <rect x="6" y="4" width="4" height="16"></rect>
+              <rect x="14" y="4" width="4" height="16"></rect>
+            </svg>
+            <svg class="music-icon-paused" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <span class="music-btn-label">HUDBA</span>
+          </button>
+
+          <div class="hud-volume-control">
+            <button id="musicMuteBtn" class="hud-volume-btn" title="Ztlumit / Zapnout zvuk" aria-label="Ztlumit">
+              <svg class="vol-icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+              </svg>
+              <svg class="vol-icon-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <line x1="23" y1="9" x2="17" y2="15"></line>
+                <line x1="17" y1="9" x2="23" y2="15"></line>
+              </svg>
+            </button>
+            <input type="range" id="musicVolumeSlider" class="hud-volume-slider" min="0" max="100" value="40" title="Hlasitost (40 %)">
+            <span class="hud-volume-val" id="musicVolumeVal">40%</span>
+          </div>
+        </div>
+
         <button id="resetPickBtn" class="hud-action-btn" title="Resetovat volbu stran">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
@@ -76,6 +107,7 @@
 
   </main>
 
+  <script src="music_player.js"></script>
   <script src="lol.js"></script>
 </body>
 

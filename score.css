@@ -23,7 +23,16 @@ body {
   width: 80px;
   z-index: 10;
   overflow: hidden;
-  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width 0.85s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+body.intro-mode .spike-panel {
+  width: calc(50vw - 20px);
+  z-index: 50;
+}
+
+body.intro-mode.intro-leaving .spike-panel {
+  width: 80px;
 }
 
 body.teams-visible .spike-panel {
@@ -128,10 +137,17 @@ body.teams-visible .spike-panel {
   overflow: hidden;
 }
 
-body.teams-visible .team-sidebar-content {
+body.teams-visible .team-sidebar-content,
+body.intro-mode .team-sidebar-content {
   opacity: 1;
-  pointer-events: all;
-  transition: opacity 0.3s ease 0.2s;
+  pointer-events: auto;
+  transition: opacity 0.35s ease;
+}
+
+body.intro-mode.intro-leaving .team-sidebar-content {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 
 /* Název týmu — nad zigzag arénou */
@@ -304,6 +320,18 @@ body.teams-visible .team-sidebar-content {
   top: 1.4rem;
   right: 5rem;
   z-index: 200;
+  transition: opacity 0.4s ease;
+}
+
+body.intro-mode .top-controls {
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.intro-mode.intro-leaving .top-controls {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.4s ease 0.35s;
 }
 
 .top-buttons-group {
@@ -311,6 +339,128 @@ body.teams-visible .team-sidebar-content {
   align-items: center;
   gap: 0.6rem;
 }
+
+/* =====================================================================
+   HUD HUDBA & HLASITOST (SCORE & PICK OBRAZOVKY)
+   ===================================================================== */
+.hud-music-widget {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #22252c;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 0.25rem 0.6rem;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
+}
+
+.hud-music-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: 'Chakra Petch', sans-serif;
+  letter-spacing: 0.5px;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hud-music-btn:hover {
+  background-color: #323744;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.hud-music-btn.is-playing {
+  background-color: #323744;
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.hud-music-btn.is-playing:hover {
+  background-color: #3d4353;
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+}
+
+.hud-music-btn svg {
+  width: 13px;
+  height: 13px;
+}
+
+.hud-volume-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.hud-volume-btn {
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-radius: 4px;
+  transition: color 0.15s ease;
+}
+
+.hud-volume-btn:hover {
+  color: #ffffff;
+}
+
+.hud-volume-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.hud-volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 60px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.hud-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.4);
+  transition: transform 0.15s;
+}
+
+.hud-volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  background: #ffffff;
+}
+
+.hud-volume-val {
+  font-family: 'Chakra Petch', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #9ca3af;
+  min-width: 28px;
+  text-align: right;
+}
+
 
 .hud-action-btn {
   display: inline-flex;
@@ -353,12 +503,25 @@ body.teams-visible .team-sidebar-content {
   align-items: center;
   justify-content: center;
   padding: 5rem 6rem 3rem;
-  transition: padding 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: padding 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 body.teams-visible .content-area {
   padding-left: 330px;
   padding-right: 330px;
+}
+
+body.intro-mode .content-area {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.95);
+}
+
+body.intro-mode.intro-leaving .content-area {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+  transition: opacity 0.6s ease 0.25s, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.25s;
 }
 
 /* =====================================================================
@@ -599,10 +762,21 @@ body.teams-visible .content-area {
   transition: opacity 0.25s ease, transform 0.25s ease, filter 0.25s ease;
 }
 
+/* Wreckfest mapy: 1024x512 plátno s herním obsahem v boxu [X: 5..819px, Y: 4..381px]
+   Posunuto lehce doleva a nahoru (-6px -5px) a rozšířeno, aby se ořízly prázdné okraje i tenké černé linky na krajích */
+.round-bg-image.round-bg-wreckfest {
+  background-size: 138% auto;
+  background-position: -6px -5px;
+}
+
 .gcell-round:hover .round-bg-image {
   opacity: 0.52;
   filter: contrast(1.15) brightness(0.75);
   transform: scale(1.03);
+}
+
+.gcell-round:hover .round-bg-image.round-bg-wreckfest {
+  transform: scale(1.05);
 }
 
 /* Jemný tmavý přechod přes mapu pro perfektní kontrast textu a tečky */
@@ -614,27 +788,171 @@ body.teams-visible .content-area {
   z-index: 1;
 }
 
-/* Popisek vybrané mapy a strany vlevo dole */
+/* Popisek vybrané mapy a strany vlevo dole (kompaktní, nepřekrývá buňku) */
 .round-info-label {
   position: absolute;
-  bottom: 8px;
-  left: 10px;
+  bottom: 6px;
+  left: 8px;
   font-family: 'Chakra Petch', sans-serif;
-  /* ── ZDE LZE NASTAVIT VELIKOST A OPACITY PÍSMA POPISEK V BUŇKÁCH: ── */
   font-size: 0.6rem;
   opacity: 0.85;
   font-weight: 700;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
   color: #ffffff;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95), 0 0 10px rgba(0, 0, 0, 0.9);
   pointer-events: none;
   z-index: 5;
-  line-height: 1.1;
-  max-width: calc(100% - 20px);
+  line-height: 1.15;
+  max-width: calc(100% - 16px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  user-select: none;
+}
+
+/* Odznak třídy auta vpravo nahoře pro Wreckfest */
+.round-car-badge {
+  position: absolute;
+  top: 5px;
+  right: 6px;
+  font-family: 'Orbitron', 'Chakra Petch', sans-serif;
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  z-index: 5;
+  pointer-events: none;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+  color: #fff;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.gcell-round:hover .round-car-badge {
+  transform: scale(1.03);
+  opacity: 1;
+}
+
+.round-car-badge.car-max-a {
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.round-car-badge.car-max-b {
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.5);
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.round-car-badge.car-max-c {
+  color: #6ee7b7;
+  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(16, 185, 129, 0.2);
+}
+
+.round-car-badge.car-custom {
+  color: #fde047;
+  border-color: rgba(245, 158, 11, 0.5);
+  background: rgba(245, 158, 11, 0.2);
+}
+
+/* =====================================================================
+   PLOVOUCÍ INFORMAČNÍ HUD DOLE NA OBRAZOVCE (PŘI NAJETÍ NA BUŇKU KOLA)
+   ===================================================================== */
+.score-hover-hud {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(14, 18, 26, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  padding: 8px 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.85), 0 0 16px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: 'Chakra Petch', sans-serif;
+  user-select: none;
+}
+
+.score-hover-hud.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.score-hud-game-tag {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.score-hud-divider {
+  width: 1px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.score-hud-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.score-hud-sub {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  letter-spacing: 0.4px;
+}
+
+.score-hud-car-badge {
+  font-family: 'Orbitron', 'Chakra Petch', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  padding: 2px 9px;
+  border-radius: 5px;
+  text-transform: uppercase;
+}
+
+.score-hud-car-badge.car-max-a {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  color: #fca5a5;
+}
+
+.score-hud-car-badge.car-max-b {
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.5);
+  color: #93c5fd;
+}
+
+.score-hud-car-badge.car-max-c {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  color: #6ee7b7;
+}
+
+.score-hud-car-badge.car-custom {
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  color: #fde047;
 }
 
 /* Klikací a hover zóny (vlevo modrá, vpravo červená) */
@@ -869,4 +1187,282 @@ body.teams-visible .content-area {
 
 .tournament-winner-panel.winner-red .winner-panel-value {
   color: #ffffff;
+}
+
+/* =====================================================================
+   INTRO / PRE-FÁZE TURNAJE (PRE-MATCH VS REŽIM)
+   ===================================================================== */
+
+/* Velikost a pozice spike panelů v intro módu */
+body.intro-mode .spike-left,
+body.intro-mode .spike-right {
+  width: calc(50vw - 20px);
+  z-index: 50;
+  transition: width 0.85s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+body.intro-mode.intro-leaving .spike-left,
+body.intro-mode.intro-leaving .spike-right {
+  width: 80px;
+}
+
+/* Odsazení arény uvnitř velkých panelů v intro módu */
+body.intro-mode .spike-left .team-sidebar-content {
+  padding: 0 75px 0 35px;
+}
+
+body.intro-mode .spike-right .team-sidebar-content {
+  padding: 0 35px 0 75px;
+}
+
+/* Zvětšený název týmu v intro módu */
+body.intro-mode .sidebar-team-title {
+  font-size: 2.3rem;
+  letter-spacing: 3.5px;
+  margin-bottom: 2.2rem;
+  transition: all 0.3s ease;
+}
+
+/* Zvětšená draft aréna v intro módu */
+body.intro-mode .sidebar-zigzag {
+  gap: 1.25rem;
+}
+
+body.intro-mode .sidebar-subcol {
+  width: 155px;
+  gap: 16px;
+}
+
+body.intro-mode .sidebar-subcol-2 {
+  margin-top: 108px;
+}
+
+/* Draft-styl karty hráčů v intro módu */
+body.intro-mode .sidebar-card {
+  width: 155px;
+  border-radius: 8px;
+  border-width: 1.5px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
+  background-color: #22252c;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+
+body.intro-mode .spike-left .sidebar-card {
+  border-color: rgba(96, 165, 250, 0.45);
+}
+
+body.intro-mode .spike-right .sidebar-card {
+  border-color: rgba(248, 113, 113, 0.45);
+}
+
+body.intro-mode .sidebar-card:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7);
+}
+
+body.intro-mode .sidebar-card-info {
+  padding: 0.55rem 0.35rem;
+  min-height: 48px;
+}
+
+body.intro-mode .sidebar-card-nick {
+  font-size: 1.02rem;
+  letter-spacing: 0.8px;
+}
+
+body.intro-mode .sidebar-card-nick.is-long {
+  font-size: 0.83rem;
+  letter-spacing: 0.25px;
+}
+
+body.intro-mode .sidebar-card-nick.is-very-long-name {
+  font-size: 0.75rem;
+  letter-spacing: 0.15px;
+}
+
+body.intro-mode .sidebar-card-real {
+  font-size: 0.72rem;
+  letter-spacing: 0.3px;
+  margin-top: 2px;
+  color: #9ca3af;
+}
+
+body.intro-mode .sidebar-card-empty {
+  height: 203px !important;
+  border-radius: 8px !important;
+}
+
+body.intro-mode .score-hover-hud {
+  display: none !important;
+}
+
+/* =====================================================================
+   STŘEDOVÝ VS OVERLAY A TLAČÍTKO START
+   ===================================================================== */
+.score-intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.intro-mode .score-intro-overlay {
+  display: flex;
+}
+
+.score-intro-overlay.is-hiding,
+body.intro-leaving .score-intro-overlay {
+  opacity: 0;
+  transform: scale(0.88);
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.score-intro-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  pointer-events: auto;
+  user-select: none;
+}
+
+/* Velké VS uprostřed mezi modrým a červeným týmem */
+.score-intro-vs {
+  font-family: 'Orbitron', 'Chakra Petch', sans-serif;
+  font-size: 6.5rem;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 6px;
+  line-height: 1;
+  color: #ffffff;
+  text-align: center;
+  text-shadow:
+    -8px 0 28px rgba(59, 130, 246, 0.95),
+    8px 0 28px rgba(239, 68, 68, 0.95),
+    0 0 16px rgba(255, 255, 255, 0.9),
+    0 8px 30px rgba(0, 0, 0, 0.95);
+  animation: vsClashGlow 2.8s ease-in-out infinite alternate;
+}
+
+@keyframes vsClashGlow {
+  0% {
+    text-shadow:
+      -8px 0 24px rgba(59, 130, 246, 0.85),
+      8px 0 24px rgba(239, 68, 68, 0.85),
+      0 0 14px rgba(255, 255, 255, 0.85),
+      0 8px 30px rgba(0, 0, 0, 0.95);
+    transform: scale(1);
+  }
+  100% {
+    text-shadow:
+      -12px 0 36px rgba(59, 130, 246, 1),
+      12px 0 36px rgba(239, 68, 68, 1),
+      0 0 24px rgba(255, 255, 255, 1),
+      0 10px 35px rgba(0, 0, 0, 1);
+    transform: scale(1.03);
+  }
+}
+
+/* O něco menší tlačítko START pod VS */
+.score-intro-start-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 3.6rem;
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(30, 35, 48, 0.96) 0%, rgba(18, 20, 28, 0.98) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow:
+    0 0 20px rgba(255, 255, 255, 0.12),
+    0 8px 24px rgba(0, 0, 0, 0.75);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.score-intro-start-btn:hover {
+  transform: translateY(-3px) scale(1.06);
+  border-color: #ffffff;
+  background: linear-gradient(135deg, rgba(38, 45, 62, 0.98) 0%, rgba(22, 25, 36, 1) 100%);
+  box-shadow:
+    -7px 0 26px rgba(59, 130, 246, 0.55),
+    7px 0 26px rgba(239, 68, 68, 0.55),
+    0 0 30px rgba(255, 255, 255, 0.4),
+    0 12px 32px rgba(0, 0, 0, 0.85);
+}
+
+.score-intro-start-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.score-intro-start-btn .start-btn-label {
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.score-intro-start-btn .start-btn-glow {
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  transform: rotate(25deg);
+  pointer-events: none;
+  animation: startBtnShine 3.5s ease-in-out infinite;
+}
+
+@keyframes startBtnShine {
+  0%, 70% { left: -60%; }
+  100% { left: 160%; }
+}
+
+/* Přizpůsobení pro menší výšku obrazovky (např. notebooky nebo okno bez fullscreenu) */
+@media (max-height: 820px) {
+  body.intro-mode .sidebar-team-title {
+    font-size: 1.6rem;
+    margin-bottom: 1.2rem;
+  }
+  body.intro-mode .sidebar-subcol {
+    width: 125px;
+    gap: 10px;
+  }
+  body.intro-mode .sidebar-subcol-2 {
+    margin-top: 85px;
+  }
+  body.intro-mode .sidebar-card {
+    width: 125px;
+  }
+  body.intro-mode .sidebar-card-nick {
+    font-size: 0.85rem;
+  }
+  body.intro-mode .sidebar-card-real {
+    font-size: 0.62rem;
+  }
+  body.intro-mode .sidebar-card-empty {
+    height: 165px !important;
+  }
+  body.intro-mode .score-intro-vs {
+    font-size: 4.5rem;
+  }
+  body.intro-mode .score-intro-start-btn {
+    font-size: 1.35rem;
+    padding: 0.7rem 2.6rem;
+  }
 }

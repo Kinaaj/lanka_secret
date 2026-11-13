@@ -131,6 +131,41 @@
   flex-shrink: 0;
 }
 
+.timeline-skip-node.is-rule {
+  font-size: 0.73rem;
+  gap: 0.45rem;
+  padding: 0.45rem 0.65rem;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.timeline-skip-node.is-rule .skip-svg {
+  width: 14px;
+  height: 14px;
+}
+
+.timeline-skip-node.is-rule .rule-sep {
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.68rem;
+  margin: 0 0.1rem;
+}
+
+.timeline-skip-node.is-rule .rule-rps-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.timeline-skip-node.is-rule .rule-rps-svg {
+  width: 14px;
+  height: 14px;
+  stroke: #94a3b8;
+  display: block;
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
 /* ---------------------------------------------------------------------
    INTERAKTIVNÍ DIAGONÁLNÍ MAPA SUMMONER'S RIFT
    --------------------------------------------------------------------- */

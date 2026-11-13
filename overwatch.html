@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lanka 2027 — Overwatch 2 Pickování map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Orbitron:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="cs.css">
+  <link rel="stylesheet" href="overwatch.css">
+</head>
+
+<body>
+
+  <!-- ── BAREVNÝ PRUH VLEVO (Modrá) ────────────────────────────────────── -->
+  <div class="side-panel side-panel-left" aria-hidden="true">
+    <div class="side-surface side-surface-blue"></div>
+    <svg class="side-edge side-edge-left" viewBox="0 0 50 1000" preserveAspectRatio="none">
+      <path class="side-stroke side-stroke-blue" d="M0,0 L50,180 L10,210 L45,460 L0,490 L50,750 L15,780 L40,1000" />
+    </svg>
+  </div>
+
+  <!-- ── BAREVNÝ PRUH VPRAVO (Červená) ─────────────────────────────────── -->
+  <div class="side-panel side-panel-right" aria-hidden="true">
+    <div class="side-surface side-surface-red"></div>
+    <svg class="side-edge side-edge-right" viewBox="0 0 55 1000" preserveAspectRatio="none">
+      <path class="side-stroke side-stroke-red" d="M15,0 L50,140 L20,160 L55,360 L25,390 L50,600 L12,630 L55,830 L25,860 L40,1000" />
+    </svg>
+  </div>
+
+  <main class="container" id="mainContainer">
+
+    <!-- Horní lišta: Indikátor týmu na řadě + HUD tlačítka -->
+    <header class="top-header">
+      <div class="top-turn-display" id="topTurnDisplay">
+        <!-- Renderováno dynamicky v overwatch.js -->
+      </div>
+
+      <div class="top-buttons-group">
+        <!-- Hudební přehrávač (Stop tlačítko + Hlasitost) -->
+        <div class="hud-music-widget" id="pickMusicWidget">
+          <button id="musicToggleBtn" class="hud-music-btn" title="Přehrát / Zastavit hudbu" aria-label="Hudba">
+            <svg class="music-icon-playing" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+              <rect x="6" y="4" width="4" height="16"></rect>
+              <rect x="14" y="4" width="4" height="16"></rect>
+            </svg>
+            <svg class="music-icon-paused" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <span class="music-btn-label">HUDBA</span>
+          </button>
+
+          <div class="hud-volume-control">
+            <button id="musicMuteBtn" class="hud-volume-btn" title="Ztlumit / Zapnout zvuk" aria-label="Ztlumit">
+              <svg class="vol-icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+              </svg>
+              <svg class="vol-icon-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <line x1="23" y1="9" x2="17" y2="15"></line>
+                <line x1="17" y1="9" x2="23" y2="15"></line>
+              </svg>
+            </button>
+            <input type="range" id="musicVolumeSlider" class="hud-volume-slider" min="0" max="100" value="40" title="Hlasitost (40 %)">
+            <span class="hud-volume-val" id="musicVolumeVal">40%</span>
+          </div>
+        </div>
+
+        <button id="resetPickBtn" class="hud-action-btn" title="Resetovat pickování map">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+          <span>RESET PICKU</span>
+        </button>
+        <a href="score.html" id="headerScoreBtn" class="hud-action-btn" title="Přejít na skóre">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span>SKÓRE</span>
+        </a>
+        <button id="fullscreenBtn" class="hud-action-btn" title="Zobrazit na celou obrazovku">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+          </svg>
+          <span>FULLSCREEN</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Hlavní rozvržení: Osnova vlevo + Pracovní plocha vpravo -->
+    <div class="pick-layout">
+      <!-- LEVÝ SLOUPEC: ČASOVÁ OSA -->
+      <aside class="timeline-column" id="timelineCol">
+        <div class="timeline-container" id="timelineContainer"></div>
+      </aside>
+
+      <!-- PRAVÁ ČÁST: INTERAKTIVNÍ VÝBĚR -->
+      <section class="workspace-column" id="workspaceCol"></section>
+    </div>
+
+  </main>
+
+  <script src="music_player.js"></script>
+  <script src="overwatch.js"></script>
+</body>
+
+</html>
+

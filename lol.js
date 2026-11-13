@@ -678,11 +678,11 @@ function renderTimeline() {
               <span class="team-mini-label ${skipColorCls}">${skipName}</span>
             </div>
             <div class="timeline-row-action">
-              <div class="timeline-skip-node ${isActive ? 'is-active' : ''} ${isPast ? 'is-completed' : ''}" title="Prohrávající 2:0 začíná (1. volba strany)">
+              <div class="timeline-skip-node ${isActive ? 'is-active' : ''} ${isPast ? 'is-completed' : ''}" title="Prohrávající začíná (1. volba strany)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="skip-svg">
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                 </svg>
-                <span>PROHRÁVAJÍCÍ 2:0 ZAČÍNÁ</span>
+                <span>PROHRÁVAJÍCÍ ZAČÍNÁ</span>
               </div>
             </div>
           `;
@@ -698,35 +698,50 @@ function renderTimeline() {
           }
         }
       } else {
+        const teamCls = pickState.teamA === 'blue' ? 'team-blue' : pickState.teamA === 'red' ? 'team-red' : '';
+        const teamName = pickState.teamA === 'blue' ? 'MODRÝ' : pickState.teamA === 'red' ? 'ČERVENÝ' : '';
+        const teamSpanHtml = pickState.teamA ? `<span class="team-mini-label ${teamCls}">${teamName}</span>` : '';
+
         if (needsFullBuild) {
           row.innerHTML = `
-            <div class="timeline-row-team"></div>
+            <div class="timeline-row-team">${teamSpanHtml}</div>
             <div class="timeline-row-action">
-              <div class="timeline-rps-node ${isActive ? 'is-active' : ''} ${isPast ? 'is-completed' : ''}" title="Kámen Nůžky Papír">
-                <div class="rps-icons-row">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rps-svg" title="Kámen">
+              <div class="timeline-skip-node is-rule ${isActive ? 'is-active' : ''} ${isPast ? 'is-completed' : ''}" title="Prohrávající začíná, jinak Kámen Nůžky Papír">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="skip-svg">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+                <span>PROHRÁVAJÍCÍ ZAČÍNÁ</span>
+                <span class="rule-sep">JINAK</span>
+                <div class="rule-rps-row">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rule-rps-svg" title="Kámen">
                     <path d="M6 10l3-5 6 1 4 5-1 7-7 3-6-3z"/>
                   </svg>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rps-svg" title="Papír">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                    <line x1="16" y1="13" x2="8" y2="13"/>
-                    <line x1="16" y1="17" x2="8" y2="17"/>
-                  </svg>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rps-svg" title="Nůžky">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rule-rps-svg" title="Nůžky">
                     <circle cx="6" cy="6" r="3"/>
                     <circle cx="6" cy="18" r="3"/>
                     <line x1="20" y1="4" x2="8.12" y2="15.88"/>
                     <line x1="14.47" y1="14.48" x2="20" y2="20"/>
                     <line x1="8.12" y1="8.12" x2="12" y2="12"/>
                   </svg>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rule-rps-svg" title="Papír">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                  </svg>
                 </div>
               </div>
             </div>
           `;
         } else {
-          const rpsNode = row.querySelector('.timeline-rps-node');
-          if (rpsNode) rpsNode.className = `timeline-rps-node ${isActive ? 'is-active' : ''} ${isPast ? 'is-completed' : ''}`;
+          const teamSpan = row.querySelector('.timeline-row-team');
+          if (teamSpan) {
+            teamSpan.innerHTML = teamSpanHtml;
+          }
+          const ruleNode = row.querySelector('.timeline-skip-node');
+          if (ruleNode) {
+            ruleNode.className = `timeline-skip-node is-rule ${isActive ? 'is-active' : ''} ${isPast ? 'is-completed' : ''}`;
+          }
         }
       }
       return;
@@ -1578,6 +1593,11 @@ function render() {
 // INICIALIZACE A TLAČÍTKA
 // =====================================================================
 document.addEventListener('DOMContentLoaded', () => {
+  if (window.LankaMusic) {
+    window.LankaMusic.bindUI();
+    window.LankaMusic.playGame('lol');
+  }
+
   loadState();
   render();
 
