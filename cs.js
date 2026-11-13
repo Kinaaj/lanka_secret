@@ -1,3 +1,7 @@
+(function(window) {
+  'use strict';
+  window.LankaPickModules = window.LankaPickModules || {};
+
 // =====================================================================
 // CS2 MAP PICKING ENGINE
 // =====================================================================
@@ -1358,29 +1362,46 @@ function render() {
 // =====================================================================
 // INICIALIZACE A TLAČÍTKA
 // =====================================================================
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.LankaMusic) {
-    window.LankaMusic.bindUI();
-    window.LankaMusic.playGame('cs2');
-  }
-
-  loadState();
-  render();
-
-  // Reset picku
-  document.getElementById('resetPickBtn')?.addEventListener('click', () => {
-    if (confirm('Opravdu chcete resetovat celé pickování CS2 a začít znovu?')) {
-      resetState();
+  window.LankaPickModules.cs2 = {
+    id: 'cs2',
+    name: 'Counter-Strike 2',
+    mount() {
+      loadState();
       render();
+    },
+    unmount() {
+      const ws = document.getElementById('workspaceCol');
+      if (ws) ws.innerHTML = '';
+      const tl = document.getElementById('timelineContainer');
+      if (tl) tl.innerHTML = '';
+      const turn = document.getElementById('topTurnDisplay');
+      if (turn) { turn.className = 'top-turn-display is-hidden'; turn.innerHTML = ''; }
+    },
+    reset() {
+      if (confirm('Opravdu chcete resetovat celé pickování CS2 a začít znovu?')) {
+        resetState();
+        render();
+      }
     }
-  });
+  };
 
-  // Fullscreen
-  document.getElementById('fullscreenBtn')?.addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => { });
-    } else {
-      document.exitFullscreen().catch(() => { });
-    }
-  });
-});
+  if (!window.LankaSPA) {
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.LankaMusic) {
+        window.LankaMusic.bindUI();
+        window.LankaMusic.playGame('cs2');
+      }
+      window.LankaPickModules.cs2.mount();
+      document.getElementById('resetPickBtn')?.addEventListener('click', () => {
+        window.LankaPickModules.cs2.reset();
+      });
+      document.getElementById('fullscreenBtn')?.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => { });
+        } else {
+          document.exitFullscreen().catch(() => { });
+        }
+      });
+    });
+  }
+})(window);

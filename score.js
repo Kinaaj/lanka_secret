@@ -310,13 +310,13 @@ function buildTable() {
       iconCell.title = `Přejít na pickování (${game.name || gameLabel})`;
       iconCell.addEventListener('click', () => {
         if (window.LankaMusic) {
-          try {
-            sessionStorage.setItem('lanka_music_playing', 'true');
-            sessionStorage.setItem('lanka_active_music_game', game.id);
-            localStorage.setItem('lanka_active_music_game', game.id);
-          } catch (e) { }
+          window.LankaMusic.playGame(game.id);
         }
-        window.location.href = pickUrl;
+        if (window.LankaRouter) {
+          window.LankaRouter.navigateTo(game.id);
+        } else {
+          window.location.hash = '#' + game.id;
+        }
       });
     }
     const img = document.createElement('img');

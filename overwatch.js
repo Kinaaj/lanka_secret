@@ -1,3 +1,7 @@
+(function(window) {
+  'use strict';
+  window.LankaPickModules = window.LankaPickModules || {};
+
 // =====================================================================
 // OVERWATCH 2 MAP PICKING ENGINE (BO5)
 // MÓDY: CONTROL -> ESCORT -> HYBRID -> CONTROL -> ESCORT
@@ -687,59 +691,50 @@ function render() {
   updateScoreLinks();
 }
 
-// =====================================================================
-// INICIALIZACE A TLAČÍTKA
-// =====================================================================
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.LankaMusic) {
-    window.LankaMusic.bindUI();
-    window.LankaMusic.playGame('overwatch');
-  }
-
-  loadState();
-
-  // Pokud ještě nebyl začínající tým vybrán, zkusíme automaticky synchronizovat s turnajem
-  if (pickState.currentStepIndex === 0 && !pickState.teamA) {
-    syncWithTournamentScore();
-  }
-
-  render();
-
-  // Naslouchání změnám z jiných záložek (např. score.html)
-  window.addEventListener('storage', (e) => {
-    if (e.key === 'lanka_tournament_score' || e.key === STATE_BACKUP_KEY) {
+  window.LankaPickModules.overwatch = {
+    id: 'overwatch',
+    name: 'Overwatch 2',
+    mount() {
       loadState();
       if (pickState.currentStepIndex === 0 && !pickState.teamA) {
         syncWithTournamentScore();
       }
       render();
+    },
+    unmount() {
+      const ws = document.getElementById('workspaceCol');
+      if (ws) ws.innerHTML = '';
+      const tl = document.getElementById('timelineContainer');
+      if (tl) tl.innerHTML = '';
+      const turn = document.getElementById('topTurnDisplay');
+      if (turn) { turn.className = 'top-turn-display is-hidden'; turn.innerHTML = ''; }
+    },
+    reset() {
+      if (confirm('Opravdu chcete resetovat pickování map pro Overwatch 2 a začít znovu?')) {
+        resetState();
+        syncWithTournamentScore();
+        render();
+      }
     }
-  });
+  };
 
-  // Re-synchronizace při návratu z BFCache
-  window.addEventListener('pageshow', () => {
-    loadState();
-    if (pickState.currentStepIndex === 0 && !pickState.teamA) {
-      syncWithTournamentScore();
-    }
-    render();
-  });
-
-  // Tlačítko Reset picku
-  document.getElementById('resetPickBtn')?.addEventListener('click', () => {
-    if (confirm('Opravdu chcete resetovat pickování map pro Overwatch 2 a začít znovu?')) {
-      resetState();
-      syncWithTournamentScore();
-      render();
-    }
-  });
-
-  // Tlačítko Fullscreen
-  document.getElementById('fullscreenBtn')?.addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => { });
-    } else {
-      document.exitFullscreen().catch(() => { });
-    }
-  });
-});
+  if (!window.LankaSPA) {
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.LankaMusic) {
+        window.LankaMusic.bindUI();
+        window.LankaMusic.playGame('overwatch');
+      }
+      window.LankaPickModules.overwatch.mount();
+      document.getElementById('resetPickBtn')?.addEventListener('click', () => {
+        window.LankaPickModules.overwatch.reset();
+      });
+      document.getElementById('fullscreenBtn')?.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => { });
+        } else {
+          document.exitFullscreen().catch(() => { });
+        }
+      });
+    });
+  }
+})(window);

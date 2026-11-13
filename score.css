@@ -315,23 +315,90 @@ body.intro-mode.intro-leaving .team-sidebar-content {
   z-index: 1;
 }
 
-.top-controls {
+.app-top-header {
   position: fixed;
-  top: 1.4rem;
+  top: 1.2rem;
+  left: 95px;
   right: 5rem;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   z-index: 200;
   transition: opacity 0.4s ease;
+  pointer-events: none;
 }
 
-body.intro-mode .top-controls {
+.app-top-header > * {
+  pointer-events: auto;
+}
+
+body.in-pick-view .app-top-header {
+  justify-content: space-between;
+  right: 95px;
+}
+
+body.intro-mode .app-top-header {
   opacity: 0;
   pointer-events: none;
 }
 
-body.intro-mode.intro-leaving .top-controls {
+body.intro-mode.intro-leaving .app-top-header {
   opacity: 1;
   pointer-events: auto;
   transition: opacity 0.4s ease 0.35s;
+}
+
+/* Řízení tlačítek podle aktuálního pohledu (Score vs Pick) */
+.pick-only-control {
+  display: none !important;
+}
+
+body.in-pick-view .pick-only-control {
+  display: inline-flex !important;
+}
+
+body.in-pick-view .score-only-control {
+  display: none !important;
+}
+
+/* Řízení zobrazení pohledů (Score vs Pick) */
+.spa-view {
+  width: 100%;
+}
+
+.view-score {
+  display: flex;
+  flex-direction: column;
+}
+
+body.in-pick-view .view-score {
+  display: none !important;
+}
+
+.view-pick {
+  display: none;
+  flex-direction: column;
+  padding-top: 4.8rem;
+}
+
+body.in-pick-view .view-pick {
+  display: flex !important;
+}
+
+body.in-pick-view .container {
+  padding: 0 95px;
+}
+
+/* V picku skrýt texty hráčů ze spike panelů a nechat jen bleskové hrany */
+body.in-pick-view .team-sidebar-content {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+body.in-pick-view .spike-panel {
+  width: 80px !important;
+  pointer-events: none !important;
 }
 
 .top-buttons-group {

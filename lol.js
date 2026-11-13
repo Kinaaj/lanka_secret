@@ -1,3 +1,7 @@
+(function(window) {
+  'use strict';
+  window.LankaPickModules = window.LankaPickModules || {};
+
 // =====================================================================
 // LEAGUE OF LEGENDS — PICKOVÁNÍ STRAN A ROZHOZENÍ ROLÍ
 // =====================================================================
@@ -533,6 +537,8 @@ function saveToScoreStorage() {
 
   updateScoreLinks();
 }
+
+let swapSelection = null;
 
 function resetState() {
   pickState = {
@@ -1589,57 +1595,48 @@ function render() {
   updateScoreLinks();
 }
 
-// =====================================================================
-// INICIALIZACE A TLAČÍTKA
-// =====================================================================
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.LankaMusic) {
-    window.LankaMusic.bindUI();
-    window.LankaMusic.playGame('lol');
-  }
-
-  loadState();
-  render();
-
-  // Naslouchání změnám z jiných oken / záložek (např. score.html)
-  window.addEventListener('storage', (e) => {
-    if (!e.key || e.key === 'lanka_tournament_score' || e.key === STATE_BACKUP_KEY) {
+  window.LankaPickModules.lol = {
+    id: 'lol',
+    name: 'League of Legends',
+    mount() {
       loadState();
-      render();
-    }
-  });
-
-  // Re-synchronizace při návratu tlačítkem Zpět v prohlížeči (BFCache)
-  window.addEventListener('pageshow', () => {
-    loadState();
-    render();
-  });
-
-  // Re-synchronizace při přepnutí záložky zpět do picku
-  window.addEventListener('focus', () => {
-    loadState();
-    render();
-  });
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) {
-      loadState();
-      render();
-    }
-  });
-
-  document.getElementById('resetPickBtn')?.addEventListener('click', () => {
-    if (confirm('Opravdu chcete resetovat volbu stran a rozhození rolí pro League of Legends a začít znovu?')) {
-      resetState();
       syncWithTournamentScore();
       render();
+    },
+    unmount() {
+      const ws = document.getElementById('workspaceCol');
+      if (ws) ws.innerHTML = '';
+      const tl = document.getElementById('timelineContainer');
+      if (tl) tl.innerHTML = '';
+      const turn = document.getElementById('topTurnDisplay');
+      if (turn) { turn.className = 'top-turn-display is-hidden'; turn.innerHTML = ''; }
+    },
+    reset() {
+      if (confirm('Opravdu chcete resetovat volbu stran a rozhození rolí pro League of Legends a začít znovu?')) {
+        resetState();
+        syncWithTournamentScore();
+        render();
+      }
     }
-  });
+  };
 
-  document.getElementById('fullscreenBtn')?.addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => { });
-    } else {
-      document.exitFullscreen().catch(() => { });
-    }
-  });
-});
+  if (!window.LankaSPA) {
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.LankaMusic) {
+        window.LankaMusic.bindUI();
+        window.LankaMusic.playGame('lol');
+      }
+      window.LankaPickModules.lol.mount();
+      document.getElementById('resetPickBtn')?.addEventListener('click', () => {
+        window.LankaPickModules.lol.reset();
+      });
+      document.getElementById('fullscreenBtn')?.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => { });
+        } else {
+          document.exitFullscreen().catch(() => { });
+        }
+      });
+    });
+  }
+})(window);

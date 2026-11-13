@@ -1,3 +1,7 @@
+(function(window) {
+  'use strict';
+  window.LankaPickModules = window.LankaPickModules || {};
+
 // =====================================================================
 // WARCRAFT III MAP PICKING ENGINE
 // =====================================================================
@@ -1256,19 +1260,10 @@ function closeMapDetailModal() {
   currentDetailMapId = null;
 }
 
-// =====================================================================
-// INICIALIZACE A TLAČÍTKA
-// =====================================================================
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.LankaMusic) {
-    window.LankaMusic.bindUI();
-    window.LankaMusic.playGame('warcraft');
-  }
-
-  loadState();
-  render();
-
-  // Ovládání modalu detailu mapy
+let modalListenersInitialized = false;
+function initModalListeners() {
+  if (modalListenersInitialized) return;
+  modalListenersInitialized = true;
   document.getElementById('mapModalCloseBtn')?.addEventListener('click', closeMapDetailModal);
   document.getElementById('mapModalBackdrop')?.addEventListener('click', (e) => {
     if (e.target.id === 'mapModalBackdrop') closeMapDetailModal();
@@ -1280,49 +1275,53 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeMapDetailModal();
   });
+}
 
-  // Naslouchání změnám z jiných oken / score.html
-  window.addEventListener('storage', (e) => {
-    if (!e.key || e.key === 'lanka_tournament_score' || e.key === STATE_BACKUP_KEY) {
+  window.LankaPickModules.warcraft = {
+    id: 'warcraft',
+    name: 'Warcraft III',
+    mount() {
+      initModalListeners();
       loadState();
-      render();
-    }
-  });
-
-  // Re-synchronizace při návratu tlačítkem Zpět v prohlížeči (BFCache)
-  window.addEventListener('pageshow', () => {
-    loadState();
-    render();
-  });
-
-  // Re-synchronizace při přepnutí záložky zpět do picku
-  window.addEventListener('focus', () => {
-    loadState();
-    render();
-  });
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) {
-      loadState();
-      render();
-    }
-  });
-
-  // Reset picku
-  document.getElementById('resetPickBtn')?.addEventListener('click', () => {
-    if (confirm('Opravdu chcete resetovat celé pickování Warcraft III a začít znovu?')) {
-      resetState();
       syncWithCS2Score();
       render();
+    },
+    unmount() {
+      closeMapDetailModal();
+      const ws = document.getElementById('workspaceCol');
+      if (ws) ws.innerHTML = '';
+      const tl = document.getElementById('timelineContainer');
+      if (tl) tl.innerHTML = '';
+      const turn = document.getElementById('topTurnDisplay');
+      if (turn) { turn.className = 'top-turn-display is-hidden'; turn.innerHTML = ''; }
+    },
+    reset() {
+      if (confirm('Opravdu chcete resetovat celé pickování Warcraft III a začít znovu?')) {
+        resetState();
+        syncWithCS2Score();
+        render();
+      }
     }
-  });
+  };
 
-  // Fullscreen
-  document.getElementById('fullscreenBtn')?.addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => { });
-    } else {
-      document.exitFullscreen().catch(() => { });
-    }
-  });
-});
+  if (!window.LankaSPA) {
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.LankaMusic) {
+        window.LankaMusic.bindUI();
+        window.LankaMusic.playGame('warcraft');
+      }
+      window.LankaPickModules.warcraft.mount();
+      document.getElementById('resetPickBtn')?.addEventListener('click', () => {
+        window.LankaPickModules.warcraft.reset();
+      });
+      document.getElementById('fullscreenBtn')?.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => { });
+        } else {
+          document.exitFullscreen().catch(() => { });
+        }
+      });
+    });
+  }
+})(window);
 

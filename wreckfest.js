@@ -1,3 +1,7 @@
+(function(window) {
+  'use strict';
+  window.LankaPickModules = window.LankaPickModules || {};
+
 // =====================================================================
 // WRECKFEST MAP & TRACK PICKING ENGINE (Bo5)
 // Pořadí: ZÁVOD -> ZÁVOD -> DERBY -> DERBY -> ZÁVOD (50/50 Random)
@@ -963,24 +967,42 @@ function render() {
   updateScoreLinks();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.LankaMusic) {
-    window.LankaMusic.bindUI();
-    window.LankaMusic.playGame('wreckfest');
-  }
-
-  loadState();
-
-  document.getElementById('resetPickBtn')?.addEventListener('click', resetPick);
-
-  document.getElementById('fullscreenBtn')?.addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
-    } else {
-      document.exitFullscreen().catch(() => {});
+  window.LankaPickModules.wreckfest = {
+    id: 'wreckfest',
+    name: 'Wreckfest',
+    mount() {
+      loadState();
+      render();
+    },
+    unmount() {
+      const ws = document.getElementById('workspaceCol');
+      if (ws) ws.innerHTML = '';
+      const tl = document.getElementById('timelineContainer');
+      if (tl) tl.innerHTML = '';
+      const turn = document.getElementById('topTurnDisplay');
+      if (turn) { turn.className = 'top-turn-display is-hidden'; turn.innerHTML = ''; }
+    },
+    reset() {
+      resetPick();
     }
-  });
+  };
 
-  render();
-});
+  if (!window.LankaSPA) {
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.LankaMusic) {
+        window.LankaMusic.bindUI();
+        window.LankaMusic.playGame('wreckfest');
+      }
+      window.LankaPickModules.wreckfest.mount();
+      document.getElementById('resetPickBtn')?.addEventListener('click', resetPick);
+      document.getElementById('fullscreenBtn')?.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      });
+    });
+  }
+})(window);
 
