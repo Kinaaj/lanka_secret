@@ -774,7 +774,6 @@ body.turn-active-red .side-panel-left {
 /* Náhodné překrytí: Jednou je modrá přes červenou, jindy červená přes modrou */
 .curtain-transition-overlay.blue-over-red .curtain-wing-left {
   z-index: 12;
-  filter: drop-shadow(10px 0 25px rgba(0, 0, 0, 0.9)) drop-shadow(4px 0 16px rgba(19, 81, 216, 0.7));
 }
 .curtain-transition-overlay.blue-over-red .curtain-wing-right {
   z-index: 11;
@@ -782,7 +781,6 @@ body.turn-active-red .side-panel-left {
 
 .curtain-transition-overlay.red-over-blue .curtain-wing-right {
   z-index: 12;
-  filter: drop-shadow(-10px 0 25px rgba(0, 0, 0, 0.9)) drop-shadow(-4px 0 16px rgba(198, 40, 40, 0.7));
 }
 .curtain-transition-overlay.red-over-blue .curtain-wing-left {
   z-index: 11;
@@ -794,7 +792,7 @@ body.turn-active-red .side-panel-left {
   pointer-events: none;
 }
 
-/* Modrá plocha — přesný tvar zubů (clip-path) jako u bočního panelu */
+/* Modrá plocha — přesný tvar zubů (clip-path) jako u bočního panelu bez přidaného halo */
 .curtain-surface-blue {
   background-color: #1351d8;
   clip-path: polygon(0% 0%,
@@ -807,9 +805,10 @@ body.turn-active-red .side-panel-left {
       calc(100% - 35px) 78%,
       calc(100% - 10px) 100%,
       0% 100%);
+  filter: drop-shadow(6px 0 18px rgba(0, 0, 0, 0.8)) drop-shadow(4px 0 14px rgba(19, 81, 216, 0.6));
 }
 
-/* Červená plocha — přesný tvar zubů (clip-path) jako u bočního panelu */
+/* Červená plocha — přesný tvar zubů (clip-path) jako u bočního panelu bez přidaného halo */
 .curtain-surface-red {
   background-color: #c62828;
   clip-path: polygon(15px 0%,
@@ -824,6 +823,7 @@ body.turn-active-red .side-panel-left {
       40px 100%,
       100% 100%,
       100% 0%);
+  filter: drop-shadow(-6px 0 18px rgba(0, 0, 0, 0.8)) drop-shadow(-4px 0 14px rgba(198, 40, 40, 0.6));
 }
 
 .curtain-edge {
@@ -846,19 +846,17 @@ body.turn-active-red .side-panel-left {
 
 .curtain-stroke {
   fill: none;
-  stroke-width: 2.2;
+  stroke-width: 2;
   stroke-linecap: square;
   stroke-linejoin: miter;
 }
 
 .curtain-stroke-blue {
-  stroke: #60a5fa;
-  filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.95));
+  stroke: #93c5fd;
 }
 
 .curtain-stroke-red {
-  stroke: #f87171;
-  filter: drop-shadow(0 0 10px rgba(248, 113, 113, 0.95));
+  stroke: #fca5a5;
 }
 
 .curtain-center-logo {
@@ -871,9 +869,10 @@ body.turn-active-red .side-panel-left {
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
-  z-index: 10;
+  z-index: 100;
   opacity: 0;
-  transition: opacity 0.35s ease 0.25s, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.25s;
+  pointer-events: none;
+  transition: opacity 0.35s ease 0.2s, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
 }
 
 .curtain-transition-overlay.is-closed .curtain-center-logo,
@@ -884,24 +883,24 @@ body.turn-active-red .side-panel-left {
 
 .curtain-logo-text {
   font-family: 'Orbitron', monospace;
-  font-size: 2.8rem;
+  font-size: 3.2rem;
   font-weight: 900;
   letter-spacing: 6px;
   color: #ffffff;
-  text-shadow: 0 0 30px rgba(255, 255, 255, 0.7), 0 4px 18px rgba(0, 0, 0, 0.9);
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.85), 0 4px 20px rgba(0, 0, 0, 0.95);
 }
 
 .curtain-game-badge {
   font-family: 'Chakra Petch', sans-serif;
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   font-weight: 800;
   letter-spacing: 3px;
   color: #fbbf24;
-  padding: 6px 20px;
+  padding: 8px 26px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.65);
-  border: 1.5px solid rgba(251, 191, 36, 0.5);
-  box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+  background: rgba(14, 18, 26, 0.9);
+  border: 1.5px solid rgba(251, 191, 36, 0.6);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.9), 0 0 20px rgba(251, 191, 36, 0.3);
   text-transform: uppercase;
 }
 
